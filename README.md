@@ -25,7 +25,7 @@ Then use a maeva driver to plug into a database.
 
 import mysql from 'maeva-mysql';
 
-maeva.connect(mysql);
+maeva.connect(mysql());
 
 User.insert({username: 'foo'});
 ```

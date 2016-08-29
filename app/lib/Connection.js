@@ -1,42 +1,41 @@
 // @flow
-
-import mongodb, {Db} from 'mongodb';
+import 'babel-polyfill';
 import {EventEmitter} from 'events';
-import sequencer from 'promise-sequencer';
 
 class Connection extends EventEmitter {
 
   // ---------------------------------------------------------------------------
 
   static connections: Connection[] = [];
-  static url: string = 'mongodb://@localhost';
   static events: EventEmitter = new EventEmitter();
   static index: number = 0;
 
   // ---------------------------------------------------------------------------
 
-  static connect(url: ?string): Connection {
-    const mongodb_url: string = url || this.url;
+  static test(url: number|string): Function {
+    return (conn: Connection): Promise<*> => new Promise((resolve) => {
+      conn.connected = true;
+      conn.db = {};
+      conn.emit('connected', conn);
+      this.events.emit('connected', conn);
+      resolve();
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+
+  static async connect(driver: Function): Connection {
     const connection: Connection = new Connection();
     connection.index = this.index;
     this.index++;
     this.connections.push(connection);
 
-    sequencer
-      .promisify(
-        mongodb.MongoClient.connect,
-        [mongodb_url],
-        mongodb.MongoClient
-      )
-      .then(db => {
-        connection.connected = true;
-        connection.db = db;
-        connection.emit('connected', connection);
-        this.events.emit('connected', connection);
-      })
-      .catch(error => {
-        connection.emit('error', error);
-      });
+    try {
+      await driver(connection);
+    } catch (error) {
+      connection.emit('error', error);
+      this.events.emit('error', error);
+    }
 
     return connection;
   }
