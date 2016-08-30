@@ -12,17 +12,12 @@ class Connection extends EventEmitter {
 
   // ---------------------------------------------------------------------------
 
-  static test(url: number|string): Function {
+  static test(url: number|string): (conn: Connection) => Promise<void> {
     return (conn: Connection): Promise<*> => new Promise((resolve, reject) => {
       try {
-        conn.connected = true;
-        conn.db = {};
-        // add disconnect
         conn.disconnectDriver = () => new Promise((resolve) => {
           resolve();
         });
-        conn.emit('connected', conn);
-        this.events.emit('connected', conn);
         resolve();
       } catch (error) {
         reject(error);
@@ -40,6 +35,9 @@ class Connection extends EventEmitter {
         this.index++;
         this.connections.push(connection);
         await driver(connection);
+        connection.connected = true;
+        connection.emit('connected', connection);
+        this.events.emit('connected', connection);
         resolve(connection);
       } catch (error) {
         connection.emit('error', error);
