@@ -202,24 +202,26 @@ You can write drivers for any database. Here we share how to do a simple JSON da
 ```js
 import _ from 'lodash'; // for simplicity's sake
 
-function connect(url) {
+function connect() {
   // we need to return a function that will be called with a maeva connection handler
   return (connection) => {
     // and this function returns a promise
     return new Promise((resolve, reject) => {
       // we initiate our local db
-      let db = [];
+      const db = {
+        users: [],
+      };
       // we create our CRUD
       connection.operations = {
         find: (where) => new Promise((resolve) => {
-          resolve(_.find(db, where));
+          resolve(_.find(db.users, where));
         }),
         insert: (document) => new Promise((resolve) => {
-          db.push(document);
+          db.users.push(document);
           resolve();
         }),
         update: (where, updater) => new Promise((resolve) => {
-          db = db.map((document) => {
+          db.users = db.users.map((document) => {
             let _document = document;
             if (_.isMatch(document, where)) {
               _document = {
@@ -232,7 +234,7 @@ function connect(url) {
           resolve();
         }),
         delete: (where) => new Promise((resolve) => {
-          db = _.filter(db, where);
+          db.users = _.filter(db.users, where);
           resolve();
         }),
       };
@@ -243,4 +245,8 @@ function connect(url) {
     });
   }
 }
+
+maeva.connect(connect());
+
+User.find({name: 'james'});
 ```
