@@ -1,3 +1,5 @@
+import Model from '../lib/Model';
+
 let _undefined;
 
 export default [
@@ -6,6 +8,7 @@ export default [
     Number: false,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['null', null, {
@@ -13,6 +16,7 @@ export default [
     Number: false,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['number', 1, {
@@ -20,6 +24,7 @@ export default [
     Number: true,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['not a number', NaN, {
@@ -27,6 +32,7 @@ export default [
     Number: false,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['infinity', Infinity, {
@@ -34,6 +40,7 @@ export default [
     Number: false,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['decimal', 1.34, {
@@ -41,6 +48,7 @@ export default [
     Number: true,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['negative', -24, {
@@ -48,6 +56,7 @@ export default [
     Number: true,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['empty string', '', {
@@ -55,6 +64,7 @@ export default [
     Number: false,
     String: true,
     Array: false,
+    Model: false,
   }],
 
   ['string', 'abc', {
@@ -62,6 +72,7 @@ export default [
     Number: false,
     String: true,
     Array: false,
+    Model: false,
   }],
 
   ['numeric string', '1', {
@@ -69,6 +80,7 @@ export default [
     Number: false,
     String: true,
     Array: false,
+    Model: false,
   }],
 
   ['true', true, {
@@ -76,6 +88,7 @@ export default [
     Number: false,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['false', false, {
@@ -83,6 +96,7 @@ export default [
     Number: false,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['empty object', {}, {
@@ -90,6 +104,7 @@ export default [
     Number: false,
     String: false,
     Array: false,
+    Model: false,
   }],
 
   ['empty array', [], {
@@ -97,5 +112,14 @@ export default [
     Number: false,
     String: false,
     Array: true,
+    Model: false,
+  }],
+
+  ['Model', new Model(), {
+    Boolean: false,
+    Number: false,
+    String: false,
+    Array: false,
+    Model: true,
   }],
 ];

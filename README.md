@@ -8,12 +8,14 @@ JS models. Database agnostic.
 Use `maeva` to define a model.
 
 ```js
-// User.js
-
 import {Model} from 'maeva';
 
 class User extends Model {
-  static username = String;
+  static schema = {
+    name: String,
+    active: Boolean,
+    score: Number,
+  };
 }
 
 ```
@@ -21,13 +23,11 @@ class User extends Model {
 Then use a maeva driver to plug into a database.
 
 ```js
-// index.js
-
 import mysql from 'maeva-mysql';
 
 maeva.connect(mysql());
 
-User.insert({username: 'foo'});
+User.insert({name: 'lambda', active: true, score: 100});
 ```
 
 You could eventually use more than one database for the same model simultaneously:
