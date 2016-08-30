@@ -106,6 +106,36 @@ new Foo({mixed: 0});
 new Foo({mixed: 'hello'});
 ```
 
+# Associate
+
+You can associate a type to another model.
+
+```js
+class Bar extends Model {}
+
+class Foo extends Model {
+  static schema = {
+    bar: Bar
+  };
+}
+```
+
+## Circular dependencies
+
+In case of cicular dependencies, you can use a getter:
+
+```js
+import Bar from './Bar'; // and Bar also imports Foo
+
+class Foo extends Model {
+  static schema = {
+    get bar() { // use a getter to not get a null value
+      return Bar;
+    }
+  };
+}
+```
+
 # Other options
 
 ```js
