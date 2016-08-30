@@ -194,3 +194,53 @@ User
   .conn(mysqlConnection, mongodbConnection)
   .insert({username: 'foo'});
 ```
+
+# Drivers
+
+You can write drivers for any database. Here we share how to do a simple JSON database.
+
+```js
+import _ from 'lodash'; // for simplicity's sake
+
+function connect(url) {
+  // we need to return a function that will be called with a maeva connection handler
+  return (connection) => {
+    // and this function returns a promise
+    return new Promise((resolve, reject) => {
+      // we initiate our local db
+      let db = [];
+      // we create our CRUD
+      connection.operations = {
+        find: (where) => new Promise((resolve) => {
+          resolve(_.find(db, where));
+        }),
+        insert: (document) => new Promise((resolve) => {
+          db.push(document);
+          resolve();
+        }),
+        update: (where, updater) => new Promise((resolve) => {
+          db = db.map((document) => {
+            let _document = document;
+            if (_.isMatch(document, where)) {
+              _document = {
+                ...document,
+                ...update,
+              };
+            }
+            return _document;
+          });
+          resolve();
+        }),
+        delete: (where) => new Promise((resolve) => {
+          db = _.filter(db, where);
+          resolve();
+        }),
+      };
+      // we tell how to disconnect (here we'll do nothing)
+      connection.disconnectDriver = () => new Promise((ok) => ok());
+      // we resolve our promise
+      resolve();
+    });
+  }
+}
+```

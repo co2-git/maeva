@@ -1,7 +1,7 @@
 // @flow
 import _ from 'lodash';
 
-export default class MungoObject {
+export default class Shape {
   constructor(object: Object = {}) {
     Object.assign(this, object);
   }

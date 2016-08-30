@@ -14,7 +14,7 @@ function describeField(label, field, expected) {
   });
 }
 
-describe.only('Schema', () => {
+describe('Schema', () => {
   const schema = new Schema({
     short: String,
     long: {type: String},

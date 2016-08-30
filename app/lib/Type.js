@@ -1,14 +1,12 @@
 // @flow
-import MungoObject from './Type/Object';
-import MungoArray from './Type/Array';
-import MungoNumber from './Type/Number';
-import MungoString from './Type/String';
-import MungoBoolean from './Type/Boolean';
+import _Number from './Type/Number';
+import _String from './Type/String';
+import _Boolean from './Type/Boolean';
+import _Date from './Type/Date';
 
 export default class Type {
-  static Object = MungoObject;
-  static Array = MungoArray;
-  static Number = MungoNumber;
-  static String = MungoString;
-  static Boolean = MungoBoolean;
+  static Number = _Number;
+  static String = _String;
+  static Boolean = _Boolean;
+  static Date = _Date;
 }
