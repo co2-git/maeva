@@ -13,40 +13,39 @@ class Connection extends EventEmitter {
   // ---------------------------------------------------------------------------
 
   static test(url: number|string): Function {
-    return (conn: Connection): Promise<*> => new Promise((resolve) => {
-      conn.connected = true;
-      conn.db = {};
-      conn.emit('connected', conn);
-      this.events.emit('connected', conn);
-      resolve();
+    return (conn: Connection): Promise<*> => new Promise((resolve, reject) => {
+      try {
+        conn.connected = true;
+        conn.db = {};
+        // add disconnect
+        conn.disconnectDriver = () => new Promise((resolve) => {
+          resolve();
+        });
+        conn.emit('connected', conn);
+        this.events.emit('connected', conn);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   // ---------------------------------------------------------------------------
 
-  static async connect(driver: Function): Connection {
-    const connection: Connection = new Connection();
-    connection.index = this.index;
-    this.index++;
-    this.connections.push(connection);
-
-    try {
-      await driver(connection);
-    } catch (error) {
-      connection.emit('error', error);
-      this.events.emit('error', error);
-    }
-
-    return connection;
-  }
-
-  // ---------------------------------------------------------------------------
-
-  static connectify(url: ?string): Promise<Connection> {
-    return new Promise((resolve, reject) => {
-      this.connect(url)
-        .on('connected', resolve)
-        .on('error', reject);
+  static connect(driver: Function): Promise<Connection> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const connection: Connection = new Connection();
+        connection.index = this.index;
+        this.index++;
+        this.connections.push(connection);
+        await driver(connection);
+        resolve(connection);
+      } catch (error) {
+        connection.emit('error', error);
+        this.events.emit('error', error);
+        reject(error);
+      }
     });
   }
 
@@ -66,7 +65,6 @@ class Connection extends EventEmitter {
 
   connected: boolean = false;
   disconnected: boolean = false;
-  db: Db = null;
   index: number = 0;
 
   // ---------------------------------------------------------------------------
@@ -76,15 +74,17 @@ class Connection extends EventEmitter {
   // ---------------------------------------------------------------------------
 
   disconnect(): Promise<void> {
-    return sequencer(
-      () => this.db.close(),
-      () => new Promise((resolve) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.disconnectDriver();
         this.connected = false;
         this.disconnected = true;
         this.emit('disconnected');
         resolve();
-      })
-    );
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   // ---------------------------------------------------------------------------

@@ -35,8 +35,8 @@ You could eventually use more than one database for the same model simultaneousl
 ```js
 import mysql from 'maeva-mysql';
 import mongodb from 'maeva-mongodb';
-const mysqlConnection = maeva.connect(mysql);
-const mongodbConnection = mongodb.connect(mongodb);
+const mysqlConnection = maeva.connect(mysql());
+const mongodbConnection = mongodb.connect(mongodb());
 User
   .conn(mysqlConnection, mongodbConnection)
   .insert({username: 'foo'});
