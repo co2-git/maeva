@@ -62,7 +62,7 @@ new Foo({subdocument: {foo: 'hello'}});
 Enclose type in array brackets to declare an array:
 
 ```js
-import {Model, Type} from 'maeva';
+import {Model} from 'maeva';
 
 class Foo extends Model {
   static schema = {
@@ -78,7 +78,7 @@ new Foo({numbers: [1, 2, 3]});
 An array with more than one type is seen as a tuple:
 
 ```js
-import {Model, Type} from 'maeva';
+import {Model} from 'maeva';
 
 class Foo extends Model {
   static schema = {
@@ -104,6 +104,51 @@ class Foo extends Model {
 
 new Foo({mixed: 0});
 new Foo({mixed: 'hello'});
+```
+
+# Other options
+
+```js
+class Foo extends Model {
+  static schema = {
+    field: {
+      type: String,
+      required: true, // this field is required upon insertion
+      default: 'hello', // default value. You can pass a function to be called
+      validate: (value) => /abc/.test(value), // a boolean function that will reject false results on any write operations
+    },
+  };
+}
+```
+
+# Indexes
+
+Indexes might vary from a database to another but expect standard indexes to be exposed:
+
+```js
+class Foo extends Model {
+  static schema = {
+    field: {
+      index: true, // index this field
+      unique: true, // mark this field as unique
+    },
+  };
+}
+```
+
+## Compound indexes
+
+```js
+class Foo extends Model {
+  static schema = {
+    field1: {
+      index: ['field2'], // index this field with field2
+      unique: ['field3'], // mark this field as unique with field3
+    },
+    field2: Boolean,
+    field3: String,
+  };
+}
 ```
 
 # Connections
