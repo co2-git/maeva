@@ -4,7 +4,9 @@ import Model from '../lib/Model';
 import Schema from '../lib/Schema';
 import should from 'should';
 
-class Bar extends Model {}
+class Bar extends Model {
+  static _collectionName = 'barz';
+}
 
 class Foo extends Model {
   static schema = {
@@ -28,6 +30,17 @@ describe('Model', () => {
     it('should return a Schema', () => {
       const schema = Foo.getSchema();
       should(schema).be.an.instanceOf(Schema);
+    });
+  });
+  describe('Collection name', () => {
+    it('should be a getCollectionName function', () => {
+      should(Foo.getCollectionName).be.a.Function();
+    });
+    it('should return pluralized collection if no custom name present', () => {
+      should(Foo.getCollectionName()).be.eql('foos');
+    });
+    it('should return custom collection name if present', () => {
+      should(Bar.getCollectionName()).eql('barz');
     });
   });
 });

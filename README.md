@@ -17,7 +17,6 @@ class User extends Model {
     score: Number,
   };
 }
-
 ```
 
 Then use a maeva driver to plug into a database.
@@ -180,6 +179,27 @@ class Foo extends Model {
   };
 }
 ```
+
+# CRUD
+
+All database expose the same CRUD operations:
+
+## find
+
+```js
+Model.find({foo: true, number: {$gt: 0}}, {limit: 10, reverse: true});
+```
+
+You can use modifiers via the `$` prefix.
+
+## projection
+
+You can use the following projection:
+
+- limit (number)
+- skip (number)
+- sort (view below)
+- reverse (boolean, to reverse order)
 
 # Connections
 

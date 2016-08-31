@@ -15,6 +15,12 @@ class Connection extends EventEmitter {
   static test(url: number|string): (conn: Connection) => Promise<void> {
     return (conn: Connection): Promise<*> => new Promise((resolve, reject) => {
       try {
+        conn.operations = {
+          find: (doc) => new Promise((resolve) => resolve(doc)),
+          insert: (doc) => new Promise((resolve) => resolve(doc)),
+          update: (doc) => new Promise((resolve) => resolve(doc)),
+          delete: (doc) => new Promise((resolve) => resolve(doc)),
+        };
         conn.disconnectDriver = () => new Promise((resolve) => {
           resolve();
         });
@@ -64,10 +70,25 @@ class Connection extends EventEmitter {
   connected: boolean = false;
   disconnected: boolean = false;
   index: number = 0;
+  operations: {[action: string]: Promise<*>} = {};
 
   // ---------------------------------------------------------------------------
 
   // Instance methods
+
+  // ---------------------------------------------------------------------------
+
+  ready(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.connected) {
+        resolve();
+      } else {
+        this.on('connected', () => {
+          resolve();
+        });
+      }
+    });
+  }
 
   // ---------------------------------------------------------------------------
 

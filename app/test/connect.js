@@ -37,6 +37,24 @@ describe('Connect', () => {
       it('should have index 0', () => {
         should(conn.index).eql(0);
       });
+      it('should have operations', () => {
+        should(conn).have.property('operations').which.is.an.Object();
+      });
+      it('should have operation find', () => {
+        should(conn.operations).have.property('find').which.is.a.Function();
+      });
+      it('should have operation insert', () => {
+        should(conn.operations).have.property('insert').which.is.a.Function();
+      });
+      it('should have operation update', () => {
+        should(conn.operations).have.property('update').which.is.a.Function();
+      });
+      it('should have operation delete', () => {
+        should(conn.operations).have.property('delete').which.is.a.Function();
+      });
+      describe.skip('Ready function', () => {
+        it('should be ready now', () => 1);
+      });
     });
     describe('connections', () => {
       it('should have 1 connection in list', () => {
