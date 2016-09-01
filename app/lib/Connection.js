@@ -17,7 +17,10 @@ class Connection extends EventEmitter {
       try {
         conn.operations = {
           find: (doc) => new Promise((resolve) => resolve(doc)),
-          insert: (doc) => new Promise((resolve) => resolve(doc)),
+          insert: (doc) => new Promise((resolve) => resolve(
+            Array.isArray(doc.documents) ?
+              doc.documents.map(doc => doc.toJSON()) : doc.documents.toJSON()
+          )),
           update: (doc) => new Promise((resolve) => resolve(doc)),
           delete: (doc) => new Promise((resolve) => resolve(doc)),
         };

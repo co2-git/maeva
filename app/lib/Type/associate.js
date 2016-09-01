@@ -1,19 +1,17 @@
 // @flow
 import MaevaError from '../Error';
-import MungoObject from './Object';
-import MungoArray from './Array';
-import MungoNumber from './Number';
-import MungoString from './String';
-import MungoBoolean from './Boolean';
+import _Number from './Number';
+import _String from './String';
+import _Boolean from './Boolean';
+import _Date from './Date';
 
 export default
 function associate(type: Function): Function {
   switch (type) {
-  case Object: return MungoObject;
-  case Array: return MungoArray;
-  case Number: return MungoNumber;
-  case String: return MungoString;
-  case Boolean: return MungoBoolean;
+  case Number: return _Number;
+  case String: return _String;
+  case Boolean: return _Boolean;
+  case Date: return _Date;
   default: throw new MaevaError('Could not associate type', {type});
   }
 }

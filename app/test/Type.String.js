@@ -14,14 +14,31 @@ function validateString(type, value, bool) {
   });
 }
 
+function convertString(type, value, expected) {
+  describe(`Convert ${type} to String`, () => {
+    it('should be the expected value', () => {
+      should(_String.convert(value)).be.eql(expected);
+    });
+  });
+}
+
 const arrayValidaters = validaters.map(validater => [
   validater[0],
   validater[1],
-  validater[2].String,
+  validater[2].String[0],
+]);
+
+const arrayConverters = validaters.map(validater => [
+  validater[0],
+  validater[1],
+  validater[2].String[1],
 ]);
 
 describe('String type', () => {
   describe('Validate', () => {
     arrayValidaters.forEach((validater) => validateString(...validater));
+  });
+  describe('Convert', () => {
+    arrayConverters.forEach((converter) => convertString(...converter));
   });
 });

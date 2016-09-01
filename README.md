@@ -201,6 +201,13 @@ You can use the following projection:
 - sort (view below)
 - reverse (boolean, to reverse order)
 
+# Singleton
+
+```js
+const foo = new Foo({bar: 1});
+foo.set({barz: true}).save();
+```
+
 # Connections
 
 You could eventually use more than one database for the same model simultaneously:
