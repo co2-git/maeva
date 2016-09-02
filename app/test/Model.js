@@ -16,13 +16,17 @@ class Foo extends Model {
   };
 }
 
-describe('Model', () => {
+describe.only('Model', () => {
   it('should be a class', () => {
     should(Model).be.a.Function();
   });
   describe('type', () => {
     it('should have a validator function', () => {
       should(Model).have.property('validate')
+        .which.is.a.Function();
+    });
+    it('should have a converter function', () => {
+      should(Model).have.property('convert')
         .which.is.a.Function();
     });
   });

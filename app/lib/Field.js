@@ -1,4 +1,6 @@
 import Type from './Type';
+import MaevaError from './Error';
+
 export default class Field {
   required = false;
   constructor(field) {
@@ -6,9 +8,20 @@ export default class Field {
     Object.defineProperties(this, {
       $type: {
         enumerable: false,
-        value: Type.associate(this.type),
+        value: this.associate(),
       },
     });
+  }
+  associate() {
+    try {
+      return Type.associate(this.type);
+    } catch (error) {
+      throw MaevaError.rethrow(
+        error,
+        'Could not associate field type',
+        {field: this},
+      );
+    }
   }
   convert(value) {
     return this.$type.convert(value);

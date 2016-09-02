@@ -14,14 +14,31 @@ function validateModel(type, value, bool) {
   });
 }
 
+function convertModel(type, value, expected) {
+  describe(`Convert ${type} to Model`, () => {
+    it('should be the expected value', () => {
+      should(Model.convert(value)).be.eql(expected);
+    });
+  });
+}
+
 const arrayValidaters = validaters.map(validater => [
   validater[0],
   validater[1],
-  validater[2].Model,
+  validater[2].Model[0],
+]);
+
+const arrayConverters = validaters.map(validater => [
+  validater[0],
+  validater[1],
+  validater[2].Model[1],
 ]);
 
 describe('Model type', () => {
   describe('Validate', () => {
     arrayValidaters.forEach((validater) => validateModel(...validater));
+  });
+  describe('Convert', () => {
+    arrayConverters.forEach((converter) => convertModel(...converter));
   });
 });

@@ -1,55 +1,38 @@
 /* global describe it before */
 import should from 'should';
-import MungoError from '../lib/Error';
+import MaevaError, {makeMessage} from '../lib/Error';
 
 describe('Mungo Error', () => {
   describe('Unit', () => {
     it('should be a class', () => {
-      should(MungoError).be.a.Function();
+      should(MaevaError).be.a.Function();
     });
     it('has static function rethrow', () => {
-      should(MungoError).have.property('rethrow').which.is.a.Function();
+      should(MaevaError).have.property('rethrow').which.is.a.Function();
     });
   });
   describe('New mungo error with only a message', () => {
     let error;
     before(() => {
-      error = new MungoError('Ouch');
+      error = new MaevaError('Ouch');
     });
     it('should be an error', () => {
       should(error).be.an.instanceOf(Error);
     });
-    it('should have the right original message', () => {
-      should(error).have.property('originalMessage').which.eql('Ouch');
-    });
     it('should have empty options', () => {
       should(error).have.property('options').which.eql({});
-    });
-    it('should have a serialized message', () => {
-      should(error).have.property('message')
-        .which.eql(JSON.stringify({
-          message: 'Ouch',
-          options: {},
-        }, null, 2));
     });
   });
   describe('New mungo error with options', () => {
     let error;
     before(() => {
-      error = new MungoError('Ouch', {foo: 1});
+      error = new MaevaError('Ouch', {foo: 1});
     });
     it('should be an error', () => {
       should(error).be.an.instanceOf(Error);
     });
-    it('should have the right original message', () => {
-      should(error).have.property('originalMessage').which.eql('Ouch');
-    });
-    it('should have a serialized message', () => {
-      should(error).have.property('message')
-        .which.eql(JSON.stringify({
-          message: 'Ouch',
-          options: {foo: 1},
-        }, null, 2));
+    it('should have the message', () => {
+      should(error).have.property('message').which.eql('Ouch');
     });
     it('should have options', () => {
       should(error).have.property('options').which.eql({foo: 1});
@@ -58,26 +41,30 @@ describe('Mungo Error', () => {
   describe('New mungo error with options and code', () => {
     let error;
     before(() => {
-      error = new MungoError('Ouch', {foo: 1, code: 2});
+      error = new MaevaError('Ouch', {foo: 1, code: 2});
     });
     it('should be an error', () => {
       should(error).be.an.instanceOf(Error);
     });
-    it('should have the right original message', () => {
-      should(error).have.property('originalMessage').which.eql('Ouch');
-    });
-    it('should have a serialized message', () => {
-      should(error).have.property('message')
-        .which.eql(JSON.stringify({
-          message: 'Ouch',
-          options: {foo: 1, code: 2},
-        }, null, 2));
-    });
     it('should have options', () => {
-      should(error).have.property('options').which.eql({foo: 1, code: 2});
+      should(error).have.property('options').which.eql({foo: 1});
     });
     it('should have code', () => {
       should(error).have.property('code').which.eql(2);
+    });
+  });
+  describe('Rethrow', () => {
+    let error;
+    before(() => {
+      const error1 = new MaevaError('Error #1', {number: 1});
+      error = MaevaError.rethrow(error1, 'Error #2', {number: 2});
+    });
+    it('should be an error', () => {
+      should(error).be.an.instanceOf(Error);
+    });
+    it('should have previous error', () => {
+      should(error).have.property('previous')
+        .which.is.an.instanceOf(MaevaError);
     });
   });
 });

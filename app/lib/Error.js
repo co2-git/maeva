@@ -1,4 +1,5 @@
 // @flow
+import _ from 'lodash';
 
 class ExtendableError extends Error {
   constructor(message: string) {
@@ -9,51 +10,25 @@ class ExtendableError extends Error {
   }
 }
 
-export default class MungoError extends ExtendableError {
-  static MISSING_REQUIRED_FIELD = 1;
-  static DISTINCT_ARRAY_CONSTRAINT = 2;
-  static COLLECTION_NOT_FOUND = 3;
-
-  static rethrow(
-      error: Error,
-      message: string,
-      options: Object = {}
-    ): MungoError {
-    options.error = {};
-    if (error instanceof this) {
-      options.error = {
-        ...error,
-        message: error.originalMessage,
-        stack: error.stack.split(/\n/),
-      };
-    } else {
-      options.error = {
-        ...error,
-        stack: error.stack.split(/\n/),
-      };
-    }
-    return new MungoError(message, options);
+export default class MaevaError extends ExtendableError {
+  static rethrow(error: Error, message: string, options: Object = {}
+  ): MaevaError {
+    return new MaevaError(message, {...options, error});
   }
 
   message: string;
-  originalMessage: string;
   code: number | string;
-  options: Object;
+  options: Object = {};
+  previous: ?Error;
 
   constructor(message: string, options: Object = {}) {
     super(message);
-    let msg: string = message;
-    try {
-      msg = JSON.stringify({message, options}, null, 2);
-    } catch (error) {
-      msg = message;
-    } finally {
-      super(msg);
-    }
-    this.originalMessage = message;
     if ('code' in options) {
       this.code = options.code;
     }
-    this.options = options;
+    if ('error' in options) {
+      this.previous = options.error;
+    }
+    this.options = _.omit(options, ['code', 'error']);
   }
 }

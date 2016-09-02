@@ -1,10 +1,27 @@
 // @flow
+import _ from 'lodash';
 import Schema from './Schema';
 import Connection from './Connection';
+import MaevaError from './Error';
 
 export default class Model {
+  static getInfo(options = {}) {
+    return {
+      ..._.pick(this, ['name']),
+      schema: options.skipSchema ? false : this.getSchema(),
+      collectionName: this.getCollectionName(),
+    };
+  }
   static getSchema(): Schema {
-    return new Schema(this.schema);
+    try {
+      return new Schema(this.schema);
+    } catch (error) {
+      throw MaevaError.rethrow(
+        error,
+        'Could not build schema',
+        {model: this.getInfo({skipSchema: true})},
+      );
+    }
   }
   static getCollectionName() {
     if (this._collectionName) {
@@ -17,6 +34,18 @@ export default class Model {
       return true;
     }
     return false;
+  }
+  static convert(value: any): Model|any {
+    switch (typeof value) {
+    case 'undefined': return value;
+    case 'number': return value;
+    case 'object': {
+      if (value === null) {
+        return value;
+      }
+    }
+    default: return value;
+    }
   }
   static create(document: ?Object|Object[], options: Object = {}) {
     const promise = new Promise(async (resolve, reject) => {

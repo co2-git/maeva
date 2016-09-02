@@ -105,6 +105,20 @@ new Foo({mixed: 0});
 new Foo({mixed: 'hello'});
 ```
 
+## Any
+
+Accept any type
+
+```js
+import {Model, Type} from 'maeva';
+
+class Foo extends Model {
+  static schema = {
+    any: Type.any,
+  };
+}
+```
+
 # Associate
 
 You can associate a type to another model.

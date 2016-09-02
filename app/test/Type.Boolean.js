@@ -34,7 +34,7 @@ const arrayConverters = validaters.map(validater => [
   validater[2].Boolean[1],
 ]);
 
-describe.only('Boolean type', () => {
+describe('Boolean type', () => {
   describe('Validate', () => {
     arrayValidaters.forEach((validater) => validateBoolean(...validater));
   });
