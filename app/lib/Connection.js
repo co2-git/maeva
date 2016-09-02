@@ -1,6 +1,7 @@
 // @flow
 import 'babel-polyfill';
 import {EventEmitter} from 'events';
+import type {STATUS} from '../../flow';
 
 class Connection extends EventEmitter {
 
@@ -36,19 +37,24 @@ class Connection extends EventEmitter {
 
   // ---------------------------------------------------------------------------
 
-  static connect(driver: Function): Promise<Connection> {
+  static connect(driver: Function, name: ?string): Promise<Connection> {
     return new Promise(async (resolve, reject) => {
       try {
         const connection: Connection = new Connection();
+        if (name) {
+          connection.name = name;
+        }
         connection.index = this.index;
         this.index++;
         this.connections.push(connection);
+        connection.status = 'connecting';
         await driver(connection);
-        connection.connected = true;
+        connection.status = 'connected';
         connection.emit('connected', connection);
         this.events.emit('connected', connection);
         resolve(connection);
       } catch (error) {
+        connection.status = 'failed';
         connection.emit('error', error);
         this.events.emit('error', error);
         reject(error);
@@ -70,10 +76,10 @@ class Connection extends EventEmitter {
 
   // ---------------------------------------------------------------------------
 
-  connected: boolean = false;
-  disconnected: boolean = false;
   index: number = 0;
   operations: {[action: string]: Promise<*>} = {};
+  status: STATUS = 'idle';
+  name: ?string;
 
   // ---------------------------------------------------------------------------
 
@@ -83,12 +89,19 @@ class Connection extends EventEmitter {
 
   ready(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.connected) {
+      switch (this.status) {
+      case 'idle':
+      case 'connecting':
+        this.on('connected', resolve);
+        break;
+      case 'connected':
         resolve();
-      } else {
-        this.on('connected', () => {
-          resolve();
-        });
+        break;
+      case 'disconnecting':
+      case 'disconnected':
+      case 'failed':
+        reject(new Error(`Can not connect, connection is ${this.status}`));
+        break;
       }
     });
   }
@@ -98,9 +111,9 @@ class Connection extends EventEmitter {
   disconnect(): Promise<void> {
     return new Promise(async (resolve, reject) => {
       try {
+        this.status = 'disconnecting';
         await this.disconnectDriver();
-        this.connected = false;
-        this.disconnected = true;
+        this.status = 'disconnected';
         this.emit('disconnected');
         resolve();
       } catch (error) {

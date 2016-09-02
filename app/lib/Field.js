@@ -19,7 +19,7 @@ export default class Field {
       throw MaevaError.rethrow(
         error,
         'Could not associate field type',
-        {field: this},
+        {field: this, code: MaevaError.FAILED_ASSOCIATING__FIELD_TYPE},
       );
     }
   }

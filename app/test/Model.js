@@ -16,7 +16,7 @@ class Foo extends Model {
   };
 }
 
-describe.only('Model', () => {
+describe('Model', () => {
   it('should be a class', () => {
     should(Model).be.a.Function();
   });

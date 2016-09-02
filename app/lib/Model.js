@@ -19,7 +19,10 @@ export default class Model {
       throw MaevaError.rethrow(
         error,
         'Could not build schema',
-        {model: this.getInfo({skipSchema: true})},
+        {
+          model: this.getInfo({skipSchema: true}),
+          code: MaevaError.FAILED_BUILDING_SCHEMA,
+        },
       );
     }
   }
@@ -73,7 +76,6 @@ export default class Model {
           resolve(documents[0]);
         }
       } catch (error) {
-        console.log(error.stack);
         reject(error);
       }
     });
@@ -89,7 +91,6 @@ export default class Model {
     return this.create(...args);
   }
   static find(document: ?Object|Object[], options: Object = {}) {
-    console.log('Model.create', document);
     const promise = new Promise(async (resolve, reject) => {
       try {
         let docs;
@@ -184,14 +185,17 @@ export default class Model {
       return this;
     }
 
-    this[field] = value;
+    this[field] = converted;
 
     return this;
   }
   async connect() {
     if (!this.$conn) {
-      if (Connection.connections.length) {
-        this.$conn = Connection.connections[0];
+      const availableConnections = Connection.connections.filter(
+        conn => conn.status === 'connected'
+      );
+      if (availableConnections.length) {
+        this.$conn = availableConnections[0];
       } else {
         await new Promise((resolveConnected, rejectConnected) => {
           Connection.events.on('connected', (conn) => {
@@ -207,6 +211,9 @@ export default class Model {
     return new Promise(async (resolve, reject) => {
       try {
         await this.connect();
+        this.applyDefault();
+        this.ensureRequired();
+        this.runValidators();
         if (options.dontSend) {
           resolve();
           return;
@@ -224,5 +231,30 @@ export default class Model {
   }
   toJSON() {
     return {...this};
+  }
+  applyDefault() {
+    for (const field in this.$schema) {
+      if (!(field in this) && ('default' in this.$schema[field])) {
+        if (typeof this.$schema[field].default === 'function') {
+          this[field] = this.$schema[field].default(this);
+        } else {
+          this[field] = this.$schema[field].default;
+        }
+      }
+    }
+  }
+  ensureRequired() {
+    for (const field in this.$schema) {
+      if (!(field in this) && this.$schema[field].required) {
+        throw new MaevaError('Missing required field', {
+          model: this.constructor.getInfo(),
+          field,
+          code: MaevaError.MISSING_REQUIRED_FIELD,
+        });
+      }
+    }
+  }
+  runValidators() {
+
   }
 }

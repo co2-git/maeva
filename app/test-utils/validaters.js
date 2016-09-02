@@ -26,7 +26,7 @@ export default [
   ['number 0', 0, {
     Boolean: [false, false],
     Number: [true, 0],
-    String: [false, '1'],
+    String: [false, '0'],
     Date: [false, new Date(0)],
     Array: [false, 1],
     Model: [false, 0],
@@ -44,7 +44,7 @@ export default [
   ['integer', 42, {
     Boolean: [false, true],
     Number: [true, 42],
-    String: [false, '1'],
+    String: [false, '42'],
     Date: [false, new Date(42)],
     Array: [false, 1],
     Model: [false, 42],
@@ -116,7 +116,7 @@ export default [
   ['numeric string 0', '0', {
     Boolean: [false, true],
     Number: [false, 0],
-    String: [true, '1'],
+    String: [true, '0'],
     Date: [false, new Date('0')],
     Array: [false, '1'],
     Model: [false, '0'],

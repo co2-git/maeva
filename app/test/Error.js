@@ -32,7 +32,7 @@ describe('Mungo Error', () => {
       should(error).be.an.instanceOf(Error);
     });
     it('should have the message', () => {
-      should(error).have.property('message').which.eql('Ouch');
+      should(error).have.property('message');
     });
     it('should have options', () => {
       should(error).have.property('options').which.eql({foo: 1});

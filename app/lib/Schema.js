@@ -13,7 +13,7 @@ export default class Schema {
         throw MaevaError.rethrow(
           error,
           'Could not build schema field',
-          {field},
+          {field, code: MaevaError.FAILED_BUILDING_SCHEMA_FIELD},
         );
       }
     }

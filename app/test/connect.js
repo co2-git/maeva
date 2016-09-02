@@ -28,11 +28,8 @@ describe('Connect', () => {
       it('should be a Connection', () => {
         should(conn).be.an.instanceOf(maeva);
       });
-      it('should be connected', () => {
-        should(conn.connected).be.true();
-      });
-      it('should not be connected', () => {
-        should(conn.disconnected).be.false();
+      it('should have status connected', () => {
+        should(conn.status).be.eql('connected');
       });
       it('should have index 0', () => {
         should(conn.index).eql(0);
@@ -74,11 +71,8 @@ describe('Connect', () => {
       it('should be a Connection', () => {
         should(conn).be.an.instanceOf(maeva);
       });
-      it('should be connected', () => {
-        should(conn.connected).be.true();
-      });
-      it('should not be connected', () => {
-        should(conn.disconnected).be.false();
+      it('should have status connected', () => {
+        should(conn.status).be.eql('connected');
       });
       it('should have index 1', () => {
         should(conn.index).eql(1);
@@ -99,11 +93,8 @@ describe('Connect', () => {
         await maeva.connections[0].disconnect();
       });
       describe('connection', () => {
-        it('should not be connected', () => {
-          should(maeva.connections[0].connected).be.false();
-        });
-        it('should not be disconnected', () => {
-          should(maeva.connections[0].disconnected).be.true();
+        it('should have status disconnected', () => {
+          should(maeva.connections[0].status).be.eql('disconnected');
         });
       });
     });
@@ -112,11 +103,8 @@ describe('Connect', () => {
         await maeva.disconnect();
       });
       describe('connection', () => {
-        it('should not be connected', () => {
-          should(maeva.connections[1].connected).be.false();
-        });
-        it('should not be disconnected', () => {
-          should(maeva.connections[1].disconnected).be.true();
+        it('should have status disconnected', () => {
+          should(maeva.connections[1].status).be.eql('disconnected');
         });
       });
     });
