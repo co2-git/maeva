@@ -13,30 +13,6 @@ class Connection extends EventEmitter {
 
   // ---------------------------------------------------------------------------
 
-  static test(url: number|string): (conn: Connection) => Promise<void> {
-    return (conn: Connection): Promise<*> => new Promise((resolve, reject) => {
-      try {
-        conn.operations = {
-          find: (doc) => new Promise((resolve) => resolve(doc)),
-          insert: (doc) => new Promise((resolve) => resolve(
-            Array.isArray(doc.documents) ?
-              doc.documents.map(doc => doc.toJSON()) : doc.documents.toJSON()
-          )),
-          update: (doc) => new Promise((resolve) => resolve(doc)),
-          delete: (doc) => new Promise((resolve) => resolve(doc)),
-        };
-        conn.disconnectDriver = () => new Promise((resolve) => {
-          resolve();
-        });
-        resolve();
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  // ---------------------------------------------------------------------------
-
   static connect(driver: Function, name: ?string): Promise<Connection> {
     return new Promise(async (resolve, reject) => {
       try {

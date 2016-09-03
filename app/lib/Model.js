@@ -90,43 +90,22 @@ export default class Model {
   static push(...args) {
     return this.create(...args);
   }
-  static find(document: ?Object|Object[], options: Object = {}) {
+  static find(query: Object = {}, options: Object = {}) {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        let docs;
-        if (Array.isArray(document)) {
-          docs = document;
-        } else {
-          docs = [document];
-        }
-        const schema = this.getSchema();
-        // apply default
-        // convert values
-        // check required
-        // run validators
-        let candidate = Array.isArray(document) ? docs : docs[0];
-        console.log({options});
-        if (!options.conn) {
-          if (Connection.connections.length) {
-            options.conn = Connection.connections[0];
-          } else {
-            await new Promise((resolveConnected, rejectConnected) => {
-              Connection.events.on('connected', (conn) => {
-                options.conn = conn;
-                resolveConnected();
-              });
-            });
-          }
-        }
-        console.log({conn: options.conn});
-        await options.conn.ready();
-        console.log('ready');
-        const results = await options.conn.operations.insert({
+        const model = new this();
+        await model.connect();
+        const found = await model.$conn.operations.find({
           model: this,
           collection: this.getCollectionName(),
-          documents: candidate,
+          query,
+          options,
         });
-        console.log({results});
+        if (!Array.isArray(found)) {
+          return resolve();
+        }
+        const documents = found.map(doc => new this(doc));
+        resolve(documents);
       } catch (error) {
         console.log(error.stack);
         reject(error);
