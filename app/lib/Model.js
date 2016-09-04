@@ -70,6 +70,8 @@ export default class Model {
         const documents = results.map(
           result => new this(result, {fromDB: true})
         );
+        docs[0].$conn.emit('created', this, documents);
+        maeva.events.emit('created', this, documents);
         if (Array.isArray(document)) {
           resolve(documents);
         } else {
