@@ -71,7 +71,7 @@ export default class Model {
           result => new this(result, {fromDB: true})
         );
         docs[0].$conn.emit('created', this, documents);
-        maeva.events.emit('created', this, documents);
+        Connection.events.emit('created', this, documents);
         if (Array.isArray(document)) {
           resolve(documents);
         } else {
@@ -104,9 +104,9 @@ export default class Model {
           options,
         });
         if (!Array.isArray(found)) {
-          return resolve();
+          return resolve([]);
         }
-        const documents = found.map(doc => new this(doc));
+        const documents = found.map(doc => new this(doc, {fromDB: true}));
         resolve(documents);
       } catch (error) {
         console.log(error.stack);
@@ -123,6 +123,30 @@ export default class Model {
   }
   static select(...args) {
     return this.find(...args);
+  }
+  static update(query, modifier, options) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const model = new this();
+        await model.connect();
+        const docs = await this.find(query, options);
+        docs.forEach(doc => doc.set(modifier));
+        await Promise.all(docs.map(doc => doc.save()));
+        resolve(docs);
+      } catch (error) {
+        console.log(error.stack);
+        reject(error);
+      }
+    });
+  }
+  static edit(...args) {
+    return this.update(...args);
+  }
+  static change(...args) {
+    return this.update(...args);
+  }
+  static patch(...args) {
+    return this.update(...args);
   }
   constructor(document = {}, options = {}) {
     Object.defineProperties(this, {
@@ -143,10 +167,21 @@ export default class Model {
         enumerable: false,
         value: Boolean(options.fromDB),
       },
+      $changed: {
+        enumerable: false,
+        value: {},
+        writable: true,
+      },
+      $old: {
+        enumerable: false,
+        value: {},
+        writable: true,
+      },
     });
     for (const field in document) {
       this.set(field, document[field]);
     }
+    this.$old = this.toJSON();
   }
   set(field, value): Model {
     if (typeof field === 'object') {
@@ -167,6 +202,8 @@ export default class Model {
     }
 
     this[field] = converted;
+
+    this.$changed[field] = converted;
 
     return this;
   }
@@ -199,12 +236,31 @@ export default class Model {
           resolve();
           return;
         }
-        const results = await $this.conn.operations.insert({
-          model: this,
-          collection: this.getCollectionName(),
-          documents: candidate,
-        });
+        if (this.$fromDB) {
+          let get = {};
+          // is database using unique id or primary keys?
+          if (this.$conn.id) {
+            const id = this.$conn.id.name;
+            get = {[id]: this[id]};
+          } else {
+            // otherwise use untouched object
+            get = this.$old;
+          }
+          await this.$conn.operations.update({
+            model: this,
+            collection: this.constructor.getCollectionName(),
+            get,
+            set: this.$changed,
+          });
+        } else {
+          await this.$conn.operations.insert({
+            model: this,
+            collection: this.constructor.getCollectionName(),
+            documents: this.toJSON(),
+          });
+        }
         resolve();
+        this.$changed = {};
       } catch (error) {
         reject(error);
       }

@@ -9,7 +9,7 @@ class Foo extends Model {
   };
 }
 
-describe.only('Find', () => {
+describe('Find', () => {
   before(async () => {
     await maeva.connect(mock());
   });
