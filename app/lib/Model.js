@@ -46,6 +46,7 @@ export default class Model {
       if (value === null) {
         return value;
       }
+      break;
     }
     default: return value;
     }
@@ -92,22 +93,73 @@ export default class Model {
   static push(...args) {
     return this.create(...args);
   }
-  static find(query: Object = {}, options: Object = {}) {
-    const promise = new Promise(async (resolve, reject) => {
+  static makeStatement(query: Object = {}) {
+    return new Promise(async (resolve, reject) => {
       try {
         const model = new this();
         await model.connect();
+        model.$schema = {
+          ...model.$schema,
+          ...new Schema(model.$conn.schema),
+        };
+        const statement = {};
+        for (const field in query) {
+          statement[field] = model.set(field, query[field])[field];
+        }
+        resolve({model, statement});
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  static find(query: Object = {}, options: Object = {}) {
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const {model, statement} = await this.makeStatement(query);
         const found = await model.$conn.operations.find({
           model: this,
           collection: this.getCollectionName(),
-          query,
+          query: statement,
           options,
         });
         if (!Array.isArray(found)) {
           return resolve([]);
         }
-        const documents = found.map(doc => new this(doc, {fromDB: true}));
+        const documents = found.map(doc => new this(doc, {
+          fromDB: true,
+          conn: model.$conn,
+        }));
         resolve(documents);
+      } catch (error) {
+        console.log(error.stack);
+        reject(error);
+      }
+    });
+    return promise;
+  }
+  static findById(id: any, options: Object = {}) {
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const {model} = await this.makeStatement({});
+        if (!model.$conn.id) {
+          throw new MaevaError('Id not supported by vendor');
+        }
+        const idName = model.$conn.id.name;
+        const statementId = model.set(idName, id)[idName];
+        const found = await model.$conn.operations.findById({
+          model: this,
+          collection: this.getCollectionName(),
+          id: statementId,
+          options,
+        });
+        if (!found) {
+          return resolve();
+        }
+        const doc = new this(found, {
+          fromDB: true,
+          conn: model.$conn,
+        });
+        resolve(doc);
       } catch (error) {
         console.log(error.stack);
         reject(error);
@@ -124,12 +176,20 @@ export default class Model {
   static select(...args) {
     return this.find(...args);
   }
-  static update(query, modifier, options) {
+  static getById(...args) {
+    return this.findById(...args);
+  }
+  static fetchById(...args) {
+    return this.findById(...args);
+  }
+  static selectById(...args) {
+    return this.findById(...args);
+  }
+  static update(query, modifier, options = {}) {
     return new Promise(async (resolve, reject) => {
       try {
-        const model = new this();
-        await model.connect();
         const docs = await this.find(query, options);
+        console.log({docs: {...docs}});
         docs.forEach(doc => doc.set(modifier));
         await Promise.all(docs.map(doc => doc.save()));
         resolve(docs);
@@ -139,20 +199,33 @@ export default class Model {
       }
     });
   }
-  static edit(...args) {
-    return this.update(...args);
-  }
-  static change(...args) {
-    return this.update(...args);
-  }
-  static patch(...args) {
-    return this.update(...args);
+  static updateById(id, modifier, options) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const doc = await this.findById(id, options);
+        doc.set(modifier);
+        await doc.save();
+        resolve(doc);
+      } catch (error) {
+        console.log(error.stack);
+        reject(error);
+      }
+    });
   }
   constructor(document = {}, options = {}) {
+    const modelSchema = this.constructor.getSchema();
+    let schema;
+    if (options.fromDB && options.conn) {
+      const vendorSchema = new Schema(options.conn.schema);
+      schema = {...modelSchema, ...vendorSchema};
+    } else {
+      schema = modelSchema;
+    }
     Object.defineProperties(this, {
       $schema: {
         enumerable: false,
-        value: this.constructor.getSchema(),
+        value: schema,
+        writable: true,
       },
       $warnings: {
         enumerable: false,
@@ -166,6 +239,10 @@ export default class Model {
       $fromDB: {
         enumerable: false,
         value: Boolean(options.fromDB),
+      },
+      $original: {
+        enumerable: false,
+        value: document,
       },
       $changed: {
         enumerable: false,
@@ -215,7 +292,7 @@ export default class Model {
       if (availableConnections.length) {
         this.$conn = availableConnections[0];
       } else {
-        await new Promise((resolveConnected, rejectConnected) => {
+        await new Promise((resolveConnected) => {
           Connection.events.on('connected', (conn) => {
             this.$conn = conn;
             resolveConnected();
@@ -292,6 +369,6 @@ export default class Model {
     }
   }
   runValidators() {
-
+    // ...
   }
 }

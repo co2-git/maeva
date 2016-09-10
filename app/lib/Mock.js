@@ -60,6 +60,7 @@ function test(url: number|string): (conn: Connection) => Promise<void> {
         resolve();
       });
       conn.id = false;
+      conn.schema = {};
       resolve();
     } catch (error) {
       reject(error);
