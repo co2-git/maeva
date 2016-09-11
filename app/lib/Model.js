@@ -69,7 +69,7 @@ export default class Model {
           documents: docs,
         });
         const documents = results.map(
-          result => new this(result, {fromDB: true})
+          result => new this(result, {fromDB: true, conn: docs[0].$conn})
         );
         docs[0].$conn.emit('created', this, documents);
         Connection.events.emit('created', this, documents);
@@ -192,6 +192,8 @@ export default class Model {
         console.log({docs: {...docs}});
         docs.forEach(doc => doc.set(modifier));
         await Promise.all(docs.map(doc => doc.save()));
+        docs[0].$conn.emit('updated', this, docs);
+        Connection.events.emit('updated', this, docs);
         resolve(docs);
       } catch (error) {
         console.log(error.stack);
@@ -205,6 +207,8 @@ export default class Model {
         const doc = await this.findById(id, options);
         doc.set(modifier);
         await doc.save();
+        doc.$conn.emit('updated', this, doc);
+        Connection.events.emit('updated', this, doc);
         resolve(doc);
       } catch (error) {
         console.log(error.stack);
