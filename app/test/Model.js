@@ -6,6 +6,7 @@ import should from 'should';
 
 class Bar extends Model {
   static _collectionName = 'barz';
+  static version = 14;
 }
 
 class Foo extends Model {
@@ -16,7 +17,7 @@ class Foo extends Model {
   };
 }
 
-describe('Model', () => {
+describe.only('Model', () => {
   it('should be a class', () => {
     should(Model).be.a.Function();
   });
@@ -45,6 +46,14 @@ describe('Model', () => {
     });
     it('should return custom collection name if present', () => {
       should(Bar.getCollectionName()).eql('barz');
+    });
+  });
+  describe('Migration', () => {
+    it('should have a default model version', () => {
+      should(Foo).have.property('version').which.eql(0);
+    });
+    it('should have declared model version', () => {
+      should(Bar).have.property('version').which.eql(14);
     });
   });
 });

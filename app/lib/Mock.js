@@ -1,24 +1,37 @@
 import _ from 'lodash';
+import Connection from './Connection';
+import type {
+  FINDER,
+  INSERTER,
+  UPDATER,
+  REMOVER,
+} from './flow';
+
 const db = {};
 
 export default
-function test(url: number|string): (conn: Connection) => Promise<void> {
+function test(): (conn: Connection) => Promise<void> {
   return (conn: Connection): Promise<*> => new Promise((resolve, reject) => {
     try {
       conn.operations = {
-        find: (finder) => new Promise((resolve, reject) => {
-          let results = null;
-          if (!_.isEmpty(finder.query)) {
-            results = _.find(db[finder.collection], finder.query);
-          } else {
-            results = db[finder.collection];
+        find: (finder: FINDER) => new Promise((resolveFind, rejectFind) => {
+          try {
+            let results = null;
+            if (!_.isEmpty(finder.query)) {
+              results = _.find(db[finder.collection], finder.query);
+            } else {
+              results = db[finder.collection];
+            }
+            if (_.isObject(results) && !_.isArray(results)) {
+              results = [results];
+            }
+            resolveFind(results);
+          } catch (error) {
+            rejectFind(error);
           }
-          if (_.isObject(results) && !_.isArray(results)) {
-            results = [results];
-          }
-          resolve(results);
         }),
-        insert: (inserter) => new Promise((resolve, reject) => {
+        insert: (inserter: INSERTER) =>
+        new Promise((resolveInsert, rejectInsert) => {
           try {
             if (!db[inserter.collection]) {
               db[inserter.collection] = [];
@@ -28,12 +41,13 @@ function test(url: number|string): (conn: Connection) => Promise<void> {
             } else {
               db[inserter.collection].push(inserter.documents);
             }
-            resolve(inserter.documents);
+            resolveInsert(inserter.documents);
           } catch (error) {
-            reject(error);
+            rejectInsert(error);
           }
         }),
-        update: (updater) => new Promise((resolve, reject) => {
+        update: (updater: UPDATER) =>
+        new Promise((resolveUpdate, rejectUpdate) => {
           try {
             if (!db[updater.collection]) {
               db[updater.collection] = [];
@@ -48,16 +62,33 @@ function test(url: number|string): (conn: Connection) => Promise<void> {
               }
               return doc;
             });
-            resolve(matches.map(doc => ({...doc, ...updater.set})));
+            resolveUpdate(matches.map(doc => ({...doc, ...updater.set})));
           } catch (error) {
             console.log(error.stack);
-            reject(error);
+            rejectUpdate(error);
           }
         }),
-        delete: (doc) => new Promise((resolve) => resolve(doc)),
+        remove: (remover: REMOVER) =>
+        new Promise((resolveRemove, rejectRemove) => {
+          try {
+            if (!db[remover.collection]) {
+              db[remover.collection] = [];
+            }
+            let matches = _.find(db[remover.collection], remover.get) || [];
+            if (!_.isArray(matches)) {
+              matches = [matches];
+            }
+            db[remover.collection] = db[remover.collection].filter(
+              doc => !_.matches(remover.get)(doc)
+            );
+            resolveRemove(matches.length);
+          } catch (error) {
+            rejectRemove(error);
+          }
+        }),
       };
-      conn.disconnectDriver = () => new Promise((resolve) => {
-        resolve();
+      conn.disconnectDriver = () => new Promise((resolveDisconnect) => {
+        resolveDisconnect();
       });
       conn.id = false;
       conn.schema = {};

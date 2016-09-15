@@ -10,8 +10,10 @@ export default class Model {
       ..._.pick(this, ['name']),
       schema: options.skipSchema ? false : this.getSchema(),
       collectionName: this.getCollectionName(),
+      version: this.version,
     };
   }
+  static version = 0;
   static getSchema(): Schema {
     try {
       return new Schema(this.schema);
@@ -137,6 +139,21 @@ export default class Model {
     });
     return promise;
   }
+  static findOne(query: Object = {}, options: Object = {}) {
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const found = this.find(query, {
+          ...options,
+          limit: 1,
+        });
+        resolve(found[0]);
+      } catch (error) {
+        console.log(error.stack);
+        reject(error);
+      }
+    });
+    return promise;
+  }
   static findById(id: any, options: Object = {}) {
     const promise = new Promise(async (resolve, reject) => {
       try {
@@ -215,6 +232,29 @@ export default class Model {
         reject(error);
       }
     });
+  }
+  static remove(query, modifier, options = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const {model, statement} = await this.makeStatement(query);
+        const removed = await model.$conn.operations.remove({
+          model: this,
+          collection: this.getCollectionName(),
+          get: statement,
+          options,
+        });
+        resolve(removed);
+      } catch (error) {
+        console.log(error.stack);
+        reject(error);
+      }
+    });
+  }
+  static delete(...args) {
+    return this.remove(...args);
+  }
+  static pull(...args) {
+    return this.remove(...args);
   }
   constructor(document = {}, options = {}) {
     const modelSchema = this.constructor.getSchema();
