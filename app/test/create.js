@@ -3,6 +3,7 @@ import should from 'should';
 import maeva, {Model} from '..';
 import mock from '../lib/mock';
 import MaevaError from '../lib/Error';
+import Schema from '../lib/Schema';
 
 class Foo1 extends Model {
   static schema = {
@@ -29,6 +30,25 @@ class Foo3 extends Model {
       type: Boolean,
       required: true,
     }
+  };
+}
+
+class Foo4 extends Model {
+  static schema = {
+    field: new Schema({
+      foo: String,
+    }),
+  };
+}
+
+class Foo5 extends Model {
+  static schema = {
+    field: new Schema({
+      foo: {
+        type: String,
+        required: true,
+      },
+    }),
   };
 }
 
@@ -64,7 +84,6 @@ describe('Create document', () => {
     let doc;
     before(async () => {
       doc = await Foo2.create({});
-      console.log({doc});
     });
     it('should be an object', () => {
       should(doc).be.an.Object();
@@ -86,6 +105,33 @@ describe('Create document', () => {
         should(error).have.property('code')
           .which.eql(MaevaError.MISSING_REQUIRED_FIELD);
       }
+    });
+  });
+  describe('Embedded documents', () => {
+    describe('Valid document', () => {
+      let doc;
+      before(async () => {
+        doc = await Foo4.create({field: {foo: 1}});
+      });
+      it('should have embedded document', () => {
+        should(doc).have.property('field').which.is.an.Object();
+        should(doc.field).have.property('foo').which.eql('1');
+      });
+    });
+    describe('Invalid document (missing required)', () => {
+      let doc;
+      before(async () => {
+        doc = await Foo5.create({field: {bar: 1}});
+      });
+      it('should not have embedded document', () => {
+        should(doc).not.have.property('field').which.is.an.Object();
+      });
+      it('should have warnings', () => {
+        should(doc).have.property('$warnings').which.is.an.Array()
+          .and.have.length(1);
+        should(doc.$warnings[0]).be.an.instanceOf(Error);
+        should(doc.$warnings[0].message).be.eql('Unknown field: bar');
+      });
     });
   });
 });
