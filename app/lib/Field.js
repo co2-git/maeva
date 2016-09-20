@@ -1,8 +1,8 @@
-import Type from './Type';
+import * as Type from './Type';
+import * as Schema from './Schema';
 import MaevaError from './Error';
 
 export default class Field {
-  required = false;
   constructor(field) {
     Object.assign(this, field);
     Object.defineProperties(this, {
@@ -14,12 +14,21 @@ export default class Field {
   }
   associate() {
     try {
+      if (typeof Schema === 'function' && this.type instanceof Schema) {
+        return Schema;
+      }
       return Type.associate(this.type);
     } catch (error) {
       throw MaevaError.rethrow(
         error,
         'Could not associate field type',
-        {field: this, code: MaevaError.FAILED_ASSOCIATING__FIELD_TYPE},
+        {
+          field: this,
+          code: MaevaError.FAILED_ASSOCIATING__FIELD_TYPE,
+          foo: 1,
+          errorMessage: error.message,
+          errorStack: error.stack.split(/\n/),
+        },
       );
     }
   }

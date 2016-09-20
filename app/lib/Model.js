@@ -3,6 +3,9 @@ import _ from 'lodash';
 import Schema from './Schema';
 import Connection from './Connection';
 import MaevaError from './Error';
+import create from './Model/static/create';
+import type {ARGS as CREATE_ARGS} from './Model/static/create';
+import set from './Model/set';
 
 export default class Model {
   static getInfo(options = {}) {
@@ -41,50 +44,10 @@ export default class Model {
     return false;
   }
   static convert(value: any): Model|any {
-    switch (typeof value) {
-    case 'undefined': return value;
-    case 'number': return value;
-    case 'object': {
-      if (value === null) {
-        return value;
-      }
-      break;
-    }
-    default: return value;
-    }
+    return value;
   }
-  static create(document: ?Object|Object[], options: Object = {}) {
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        let docs;
-        if (Array.isArray(document)) {
-          docs = document.map(doc => new this(doc, options));
-        } else {
-          docs = [new this(document, options)];
-        }
-        await Promise.all(docs.map(doc => doc.save({
-          dontSend: true,
-        })));
-        const results = await docs[0].$conn.operations.insert({
-          model: this,
-          collection: this.getCollectionName(),
-          documents: docs,
-        });
-        const documents = results.map(
-          result => new this(result, {fromDB: true, conn: docs[0].$conn})
-        );
-        docs[0].$conn.emit('created', this, documents);
-        Connection.events.emit('created', this, documents);
-        if (Array.isArray(document)) {
-          resolve(documents);
-        } else {
-          resolve(documents[0]);
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-    return promise;
+  static create(...args: CREATE_ARGS) {
+    return create.apply(this, args);
   }
   static insert(...args) {
     return this.create(...args);
@@ -304,29 +267,25 @@ export default class Model {
     }
     this.$old = this.toJSON();
   }
-  set(field, value): Model {
-    if (typeof field === 'object') {
-      for (const key in field) {
-        this.set(key, field[key]);
+  set(field, value) {
+    try {
+      // You can pass `this.set('foo', 1)` or `this.set({foo: 1})`
+      // Next block deals with the latter
+      if (typeof field === 'object') {
+        for (const key in field) {
+          const converted = set(key, field[key], this.$schema);
+          this[key] = converted;
+          this.$changed[key] = converted;
+        }
+        return this;
       }
+      const converted = set(field, value, this.$schema);
+      this[field] = converted;
+      this.$changed[field] = converted;
+    } catch (error) {
+      this.$warnings.push(error);
       return this;
     }
-    const schema = this.$schema[field];
-    if (!schema) {
-      this.$warnings.push(`Unknown field: ${field}`);
-      return this;
-    }
-    const converted = schema.convert(value);
-    if (!schema.validate(converted)) {
-      this.$warnings.push(`Unvalid value for field ${field}`);
-      return this;
-    }
-
-    this[field] = converted;
-
-    this.$changed[field] = converted;
-
-    return this;
   }
   async connect() {
     if (!this.$conn) {

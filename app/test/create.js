@@ -1,5 +1,7 @@
+/* global describe it before */
 import should from 'should';
 import maeva, {Model} from '..';
+import mock from '../lib/mock';
 import MaevaError from '../lib/Error';
 
 class Foo1 extends Model {
@@ -32,7 +34,7 @@ class Foo3 extends Model {
 
 describe('Create document', () => {
   before(async () => {
-    await maeva.connect(maeva.test(), 'test1');
+    await maeva.connect(mock(), 'test1');
   });
   describe('Valid insertion', () => {
     let doc;
@@ -62,6 +64,7 @@ describe('Create document', () => {
     let doc;
     before(async () => {
       doc = await Foo2.create({});
+      console.log({doc});
     });
     it('should be an object', () => {
       should(doc).be.an.Object();

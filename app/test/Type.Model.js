@@ -1,3 +1,4 @@
+/* global describe it */
 import should from 'should';
 import Model from '../lib/Model';
 import validaters from '../test-utils/validaters';

@@ -1,5 +1,7 @@
+/* global describe it before */
 import should from 'should';
-import maeva, * as other from '..';
+import maeva from '..';
+import mock from '../lib/mock';
 import {EventEmitter} from 'events';
 
 describe('Connect', () => {
@@ -22,7 +24,7 @@ describe('Connect', () => {
   describe('Connect to test driver', () => {
     let conn;
     before(async () => {
-      conn = await maeva.connect(maeva.test());
+      conn = await maeva.connect(mock());
     });
     describe('connection', () => {
       it('should be a Connection', () => {
@@ -46,8 +48,8 @@ describe('Connect', () => {
       it('should have operation update', () => {
         should(conn.operations).have.property('update').which.is.a.Function();
       });
-      it('should have operation delete', () => {
-        should(conn.operations).have.property('delete').which.is.a.Function();
+      it('should have operation remove', () => {
+        should(conn.operations).have.property('remove').which.is.a.Function();
       });
       describe.skip('Ready function', () => {
         it('should be ready now', () => 1);
@@ -65,7 +67,7 @@ describe('Connect', () => {
   describe('Connect to another test driver', () => {
     let conn;
     before(async () => {
-      conn = await maeva.connect(maeva.test());
+      conn = await maeva.connect(mock());
     });
     describe('connection', () => {
       it('should be a Connection', () => {

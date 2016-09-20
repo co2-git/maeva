@@ -42,14 +42,14 @@ You can set any of these native types as your field type:
 
 ## Objects
 
-Objects are seen as embedded documents and are declared via `Shape`:
+Objects are seen as embedded documents and are declared as `Schema`:
 
 ```js
 import {Model, Type} from 'maeva';
 
 class Foo extends Model {
   static schema = {
-    subdocument: Type.Shape({foo: String}),
+    subdocument: new Schema({foo: String}),
   };
 }
 

@@ -1,26 +1,58 @@
+/* global describe it before */
 import should from 'should';
 import Schema from '../lib/Schema';
-import Type from '../lib/Type';
-
-function describeField(label, field, expected) {
-  describe(label, () => {
-    it('should be an Object', () => {
-      should(field).be.an.Object();
-    });
-    it(`should have type ${expected.type.name}`, () => {
-      should(field).have.property('type')
-        .which.eql(expected.type);
-    });
-  });
-}
 
 describe('Schema', () => {
-  const schema = new Schema({
-    short: String,
-    long: {type: String},
+  describe('Short notation', () => {
+    let schema;
+    before(() => {
+      schema = new Schema({foo: String});
+    });
+    it('should display type', () => {
+      should(schema).have.property('foo').which.is.an.Object();
+      should(schema.foo).have.property('type').which.eql(String);
+    });
   });
-  [
-    ['short notation', schema.short, {type: String}],
-    ['long notation', schema.long, {type: String}],
-  ].forEach(fields => describeField(...fields));
+  describe('Long notation', () => {
+    let schema;
+    before(() => {
+      schema = new Schema({foo: {type: String}});
+    });
+    it('should display type', () => {
+      should(schema).have.property('foo').which.is.an.Object();
+      should(schema.foo).have.property('type').which.eql(String);
+    });
+  });
+  describe('Embedded schema (short notation)', () => {
+    let schema;
+    before(() => {
+      schema = new Schema({foo: new Schema({
+        foo: String,
+        bar: Number,
+      })});
+    });
+    it('should display type', () => {
+      should(schema).have.property('foo').which.is.an.Object();
+      should(schema.foo).have.property('type').which.is.a.Function();
+    });
+  });
+  describe('Embedded schema (long notation)', () => {
+    let schema;
+    before(() => {
+      schema = new Schema({
+        foo: {
+          type: new Schema({
+            foo: String,
+            bar: Number,
+          }),
+          required: true,
+        },
+      });
+    });
+    it('should display type', () => {
+      should(schema).have.property('foo').which.is.an.Object();
+      should(schema.foo).have.property('type').which.is.a.Function();
+      should(schema.foo).have.property('required').which.is.true();
+    });
+  });
 });

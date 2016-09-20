@@ -1,6 +1,5 @@
 // @flow
 import MaevaError from '../Error';
-import Model from '../Model';
 import _Number from './Number';
 import _String from './String';
 import _Boolean from './Boolean';

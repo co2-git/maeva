@@ -1,3 +1,4 @@
+/* global describe it */
 import should from 'should';
 import _Date from '../lib/Type/Date';
 import validaters from '../test-utils/validaters';
