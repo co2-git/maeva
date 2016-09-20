@@ -7,6 +7,7 @@ import create from './Model/static/create';
 import type {ARGS as CREATE_ARGS} from './Model/static/create';
 import save from './Model/save';
 import type {ARGS as SAVE_ARGS} from './Model/save';
+import ensureRequired from './Model/ensureRequired';
 import set from './Model/set';
 
 export default class Model {
@@ -326,15 +327,7 @@ export default class Model {
     }
   }
   ensureRequired() {
-    for (const field in this.$schema) {
-      if (!(field in this) && this.$schema[field].required) {
-        throw new MaevaError('Missing required field', {
-          model: this.constructor.getInfo(),
-          field,
-          code: MaevaError.MISSING_REQUIRED_FIELD,
-        });
-      }
-    }
+    return ensureRequired.apply(this);
   }
   runValidators() {
     // ...
