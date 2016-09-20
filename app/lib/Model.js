@@ -5,6 +5,8 @@ import Connection from './Connection';
 import MaevaError from './Error';
 import create from './Model/static/create';
 import type {ARGS as CREATE_ARGS} from './Model/static/create';
+import save from './Model/save';
+import type {ARGS as SAVE_ARGS} from './Model/save';
 import set from './Model/set';
 
 export default class Model {
@@ -17,6 +19,7 @@ export default class Model {
     };
   }
   static version = 0;
+  static schema = {};
   static getSchema(): Schema {
     try {
       return new Schema(this.schema);
@@ -305,46 +308,8 @@ export default class Model {
     }
     await this.$conn.ready();
   }
-  save(options = {}) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.connect();
-        this.applyDefault();
-        this.ensureRequired();
-        this.runValidators();
-        if (options.dontSend) {
-          resolve();
-          return;
-        }
-        if (this.$fromDB) {
-          let get = {};
-          // is database using unique id or primary keys?
-          if (this.$conn.id) {
-            const id = this.$conn.id.name;
-            get = {[id]: this[id]};
-          } else {
-            // otherwise use untouched object
-            get = this.$old;
-          }
-          await this.$conn.operations.update({
-            model: this,
-            collection: this.constructor.getCollectionName(),
-            get,
-            set: this.$changed,
-          });
-        } else {
-          await this.$conn.operations.insert({
-            model: this,
-            collection: this.constructor.getCollectionName(),
-            documents: this.toJSON(),
-          });
-        }
-        resolve();
-        this.$changed = {};
-      } catch (error) {
-        reject(error);
-      }
-    });
+  save(...args: SAVE_ARGS) {
+    return save.apply(this, args);
   }
   toJSON() {
     return {...this};

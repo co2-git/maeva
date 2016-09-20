@@ -7,7 +7,7 @@ export type ARGS = [DOCUMENT, ?Object];
 
 export default function create(
   document: DOCUMENT,
-  options: Object = {}
+  options: ?Object = {}
 ): Promise<Model|Model[]> {
   return new Promise(async (resolve, reject) => {
     try {
