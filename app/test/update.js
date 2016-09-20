@@ -1,21 +1,23 @@
-/* global describe it before */
+/* global describe it before after */
 import should from 'should';
 import maeva, {Model} from '..';
-import mock from '../lib/Mock';
+import mock, {db} from '../lib/Mock';
 
-class Foo extends Model {
+class Update extends Model {
   static schema = {field: Number};
 }
+
+const updates = [
+  {field: 1},
+  {field: 2},
+  {field: 3},
+  {field: 4},
+];
 
 describe('Update', () => {
   before(async () => {
     await maeva.connect(mock());
-    await Foo.create([
-      {field: 1},
-      {field: 2},
-      {field: 3},
-      {field: 4},
-    ]);
+    await Update.create(updates);
   });
   describe('Unit', () => {
     it('should be a function', () => {
@@ -26,7 +28,7 @@ describe('Update', () => {
     let updated;
     before(async () => {
       try {
-        updated = await Foo.update({field: 1}, {field: 10});
+        updated = await Update.update({field: 1}, {field: 10});
       } catch (error) {
         console.log(error.stack);
       }
@@ -40,14 +42,20 @@ describe('Update', () => {
     let updated;
     before(async () => {
       try {
-        updated = await Foo.update({}, {field: 10});
+        updated = await Update.update({}, {field: 10});
       } catch (error) {
         console.log(error.stack);
       }
     });
-    it('should return a list of 1 updated result', async () => {
-      should(updated).be.an.Array().and.have.length(1);
+    it(`should return a list of ${updates.length} updated result`, async () => {
+      should(updated).be.an.Array().and.have.length(updates.length);
       should(updated[0]).have.property('field').which.eql(10);
     });
+    it('should have updated all resuls', () => {
+      updated.forEach(doc => should(doc.field).eql(10));
+    });
+  });
+  after(() => {
+    delete db.updates;
   });
 });

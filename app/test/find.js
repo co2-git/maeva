@@ -1,6 +1,7 @@
+/* global describe it before after */
 import should from 'should';
 import maeva, {Model} from '..';
-import mock from '../lib/Mock';
+import mock, {db} from '../lib/Mock';
 
 class Foo extends Model {
   static schema = {
@@ -29,5 +30,8 @@ describe('Find', () => {
       const found = await Foo.find();
       should(found).be.an.Array().and.have.length(2);
     });
+  });
+  after(() => {
+    delete db.foos;
   });
 });

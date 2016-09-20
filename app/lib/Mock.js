@@ -7,7 +7,7 @@ import type {
   REMOVER,
 } from './flow';
 
-const db = {};
+export const db = {};
 
 export default
 function test(): (conn: Connection) => Promise<void> {
@@ -73,6 +73,11 @@ function test(): (conn: Connection) => Promise<void> {
           try {
             if (!db[remover.collection]) {
               db[remover.collection] = [];
+            }
+            if (_.isEmpty(remover.get)) {
+              let matches = db[remover.collection];
+              db[remover.collection] = [];
+              return resolveRemove(matches.length);
             }
             let matches = _.find(db[remover.collection], remover.get) || [];
             if (!_.isArray(matches)) {

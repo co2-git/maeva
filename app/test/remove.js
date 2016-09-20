@@ -1,16 +1,16 @@
-/* global describe it before */
+/* global describe it before after */
 import should from 'should';
 import maeva, {Model} from '..';
-import mock from '../lib/Mock';
+import mock, {db} from '../lib/Mock';
 
-class Foo extends Model {
+class Test extends Model {
   static schema = {field: Number};
 }
 
 describe('Remove', () => {
   before(async () => {
     await maeva.connect(mock());
-    await Foo.create([
+    await Test.create([
       {field: 1},
       {field: 2},
       {field: 3},
@@ -26,7 +26,7 @@ describe('Remove', () => {
     let removed;
     before(async () => {
       try {
-        removed = await Foo.remove({field: 1});
+        removed = await Test.remove({field: 1});
       } catch (error) {
         console.log(error.stack);
       }
@@ -35,7 +35,7 @@ describe('Remove', () => {
       should(removed).be.eql(1);
     });
     it('should have removed document', async () => {
-      const found = await Foo.findOne({field: 1});
+      const found = await Test.findOne({field: 1});
       should(found).be.undefined();
     });
   });
@@ -43,7 +43,7 @@ describe('Remove', () => {
     let removed;
     before(async () => {
       try {
-        removed = await Foo.remove();
+        removed = await Test.remove();
       } catch (error) {
         console.log(error.stack);
       }
@@ -52,8 +52,11 @@ describe('Remove', () => {
       should(removed).be.eql(3);
     });
     it('should have removed document', async () => {
-      const found = await Foo.find();
+      const found = await Test.find();
       should(found).have.length(0);
     });
+  });
+  after(() => {
+    delete db.tests;
   });
 });

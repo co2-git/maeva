@@ -169,7 +169,6 @@ export default class Model {
     return new Promise(async (resolve, reject) => {
       try {
         const docs = await this.find(query, options);
-        console.log({docs: {...docs}});
         docs.forEach(doc => doc.set(modifier));
         await Promise.all(docs.map(doc => doc.save()));
         docs[0].$conn.emit('updated', this, docs);
@@ -284,6 +283,7 @@ export default class Model {
       this.$changed[field] = converted;
     } catch (error) {
       this.$warnings.push(error);
+    } finally {
       return this;
     }
   }

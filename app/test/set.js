@@ -2,6 +2,11 @@
 import should from 'should';
 import set from '../lib/Model/set';
 import Schema from '../lib/Schema';
+import Model from '../lib/Model';
+
+class Foo extends Model {
+  static schema = {foo: String};
+}
 
 describe('Set', () => {
   let simpleSchema, embeddedSchema;
@@ -40,6 +45,28 @@ describe('Set', () => {
         it('should convert types', () => {
           should(set('foo', 1, simpleSchema)).eql('1');
         });
+      });
+    });
+  });
+  describe('Model.set', () => {
+    describe('Unit', () => {
+      it('should be a function', () => {
+        should(new Model().set).be.a.Function();
+      });
+      it('should return model', () => {
+        should(new Foo().set('foo', 1)).be.an.instanceOf(Foo);
+      });
+    });
+    describe('Set an Object', () => {
+      let foo;
+      before(() => {
+        foo = new Foo().set({foo: 1});
+      });
+      it('should set Object', () => {
+        should(foo).have.property('foo').which.eql('1');
+      });
+      it('should be a chainable instance of model', () => {
+        should(foo).be.an.instanceOf(Foo);
       });
     });
   });
