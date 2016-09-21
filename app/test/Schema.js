@@ -1,6 +1,7 @@
 /* global describe it before */
 import should from 'should';
 import Schema from '../lib/Schema';
+import Field from '../lib/Field';
 
 describe('Schema', () => {
   describe('Short notation', () => {
@@ -10,6 +11,7 @@ describe('Schema', () => {
     });
     it('should display type', () => {
       should(schema).have.property('foo').which.is.an.Object();
+      should(schema.foo).be.an.instanceof(Field);
       should(schema.foo).have.property('type').which.eql(String);
     });
   });

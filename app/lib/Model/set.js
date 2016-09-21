@@ -1,28 +1,59 @@
 // @flow
 import Field from '../Field';
 import Schema from '../Schema';
+import MaevaError from '../Error';
+import maeva from '../..';
 
-type FIELD = string | Object;
-
-export default function set(field: FIELD, value: any, schema: Schema): any {
-  const structure: Field = schema[field];
-  if (!structure) {
-    throw new Error(`Unknown field: ${field}`);
-  }
-  if (structure.$type instanceof Schema) {
-    const embedded = {};
-    for (const embeddedField in value) {
-      embedded[embeddedField] = set(
-        embeddedField,
-        value[embeddedField],
-        schema,
-      );
+export default function set(field: string, value: any, schema: Schema): any {
+  try {
+    let structure: Field = schema[field];
+    if (!structure) {
+      throw new MaevaError(MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA, {
+        field, value, schema, structure,
+        code: MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
+      });
     }
-    return embedded;
+    if (!(structure instanceof Field)) {
+      throw new MaevaError(MaevaError.EXPECTED_A_FIELD, {
+        field, value, schema, structure,
+        code: MaevaError.EXPECTED_A_FIELD,
+      });
+    }
+    if (structure.$type.name === 'EmbeddedMaevaDocument') {
+      const embedded = {};
+      for (const embeddedField in value) {
+        try {
+          embedded[embeddedField] = set(
+            embeddedField,
+            value[embeddedField],
+            schema[field].type.schema,
+          );
+        } catch (error) {
+          maeva.events.emit('warning', error);
+        }
+      }
+      return embedded;
+    }
+    if (typeof structure.convert !== 'function') {
+      throw new MaevaError(MaevaError.FIELD_HAS_NO_CONVERTER, {
+        field, value, schema, structure,
+      });
+    }
+    if (typeof structure.validate !== 'function') {
+      throw new MaevaError(MaevaError.FIELD_HAS_NO_VALIDATOR, {
+        field, value, schema, structure,
+      });
+    }
+    const converted = structure.convert(value);
+    if (!structure.validate(converted)) {
+      throw new Error(MaevaError.FAILED_CONVERTING_FIELD_VALUE, {
+        field, value, schema, structure,
+      });
+    }
+    return converted;
+  } catch (error) {
+    throw MaevaError.rethrow(error, 'Could not set field', {
+      field, value, schema,
+    });
   }
-  const converted = structure.convert(value);
-  if (!structure.validate(converted)) {
-    throw new Error(`Unvalid value for field ${field}`);
-  }
-  return converted;
 }

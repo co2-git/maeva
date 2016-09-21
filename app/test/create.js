@@ -119,18 +119,30 @@ describe('Create document', () => {
       });
     });
     describe('Invalid document (missing required)', () => {
-      let doc;
+      let doc, warning;
       before(async () => {
+        maeva.events.once('warning', (error) => {
+          warning = error;
+        });
         doc = await Foo5.create({field: {bar: 1}});
       });
-      it('should not have embedded document', () => {
-        should(doc).not.have.property('field').which.is.an.Object();
+      it('should have empty embedded document', () => {
+        should(doc).have.property('field').which.is.an.Object();
+        should(Object.keys(doc.field)).have.length(0);
       });
       it('should have warnings', () => {
-        should(doc).have.property('$warnings').which.is.an.Array()
-          .and.have.length(1);
-        should(doc.$warnings[0]).be.an.instanceOf(Error);
-        should(doc.$warnings[0].message).be.eql('Unknown field: bar');
+        should(warning).be.an.instanceOf(Error);
+      });
+    });
+    describe('Partial document', () => {
+      let doc;
+      before(async () => {
+        doc = await Foo4.create({field: {foo: 1, bar: 1}});
+      });
+      it('should have embedded document', () => {
+        should(doc).have.property('field').which.is.an.Object();
+        should(doc.field).have.property('foo').which.eql('1');
+        should(doc.field).not.have.property('bar');
       });
     });
   });

@@ -4,7 +4,7 @@ import Field from './Field';
 import MaevaError from './Error';
 import set from './Model/set';
 
-function validate(object, schema) {
+function validate(object: Object, schema: Schema) {
   for (const field in object) {
     set(field, object[field], schema);
   }
@@ -22,38 +22,42 @@ export default class Schema {
   static validate(value: any): boolean {
     return value instanceof this;
   }
-  static convert(value) {
+  static convert(value: any): Schema|any {
     return value && typeof value === 'object' ? new this(value) : value;
   }
-  constructor(schema) {
+  constructor(schema: Object) {
     for (const field in schema) {
       try {
         let structure;
         if (_.isFunction(schema[field])) {
           structure = new Field({type: schema[field]});
         } else if (schema[field] instanceof Schema) {
-          const fn = (value) => value;
-          fn.validate = (value: any) => {
+          const EmbeddedMaevaDocument = (value) => value;
+          EmbeddedMaevaDocument.schema = schema[field];
+          EmbeddedMaevaDocument.validate = (value: any) => {
             validate(value, schema[field]);
             return true;
           };
-          fn.convert = (value: any) => convert(value, schema[field]);
-          structure = new Field({type: fn});
+          EmbeddedMaevaDocument.convert =
+            (value: any) => convert(value, schema[field]);
+          structure = new Field({type: EmbeddedMaevaDocument});
         } else if (schema[field].type instanceof Schema) {
-          const fn = (value) => value;
-          fn.validate = (value: any) => {
+          const EmbeddedMaevaDocument = (value) => value;
+          EmbeddedMaevaDocument.schema = schema[field].type;
+          EmbeddedMaevaDocument.validate = (value: any) => {
             validate(value, schema[field].type);
             return true;
           };
-          fn.convert = (value: any) => convert(value, schema[field].type);
+          EmbeddedMaevaDocument.convert =
+            (value: any) => convert(value, schema[field].type);
           structure = new Field({
             ...schema[field],
-            type: fn,
+            type: EmbeddedMaevaDocument,
           });
         } else if (typeof schema[field].type === 'function') {
-          structure = schema[field];
+          structure = new Field(schema[field]);
         } else {
-          throw new MaevaError('Could not determine field type', {
+          throw new MaevaError(MaevaError.INVALID_FIELD_SYNTAX, {
             field: {[field]: schema[field]},
           });
         }

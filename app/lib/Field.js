@@ -24,7 +24,7 @@ export default class Field {
         'Could not associate field type',
         {
           field: this,
-          code: MaevaError.FAILED_ASSOCIATING__FIELD_TYPE,
+          code: MaevaError.FAILED_ASSOCIATING_FIELD_TYPE,
           foo: 1,
           errorMessage: error.message,
           errorStack: error.stack.split(/\n/),

@@ -31,7 +31,7 @@ describe('Remove', () => {
         console.log(error.stack);
       }
     });
-    it('should return a list of 1 removed result', async () => {
+    it('should return the number of removed results (1)', async () => {
       should(removed).be.eql(1);
     });
     it('should have removed document', async () => {
