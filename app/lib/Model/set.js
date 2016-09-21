@@ -3,6 +3,7 @@ import Field from '../Field';
 import Schema from '../Schema';
 import MaevaError from '../Error';
 import maeva from '../..';
+import printSchema from '../utils/printSchema';
 
 export default function set(field: string, value: any, schema: Schema): any {
   try {
@@ -19,14 +20,14 @@ export default function set(field: string, value: any, schema: Schema): any {
         code: MaevaError.EXPECTED_A_FIELD,
       });
     }
-    if (structure.$type.name === 'EmbeddedMaevaDocument') {
+    if (structure.type.embeddedMaevaSchema) {
       const embedded = {};
       for (const embeddedField in value) {
         try {
           embedded[embeddedField] = set(
             embeddedField,
             value[embeddedField],
-            schema[field].type.schema,
+            schema[field].type.embeddedMaevaSchema,
           );
         } catch (error) {
           maeva.events.emit('warning', error);
@@ -53,7 +54,7 @@ export default function set(field: string, value: any, schema: Schema): any {
     return converted;
   } catch (error) {
     throw MaevaError.rethrow(error, 'Could not set field', {
-      field, value, schema,
+      field, value, schema: printSchema(schema),
     });
   }
 }

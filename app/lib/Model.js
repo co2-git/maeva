@@ -15,6 +15,11 @@ import type {
   ARGS as MAKESTATEMENT_ARGS,
   RETURN as MAKESTATEMENT_RETURN,
 } from './Model/static/makeStatement';
+import printSchema from './utils/printSchema';
+import type {
+  ARGS as PRINTSCHEMA_ARGS,
+  RETURN as PRINTSCHEMA_RETURN,
+} from './utils/printSchema';
 import save from './Model/save';
 import type {ARGS as SAVE_ARGS} from './Model/save';
 import ensureRequired from './Model/ensureRequired';
@@ -50,22 +55,8 @@ export default class Model {
       );
     }
   }
-  static printSchema(_schema: Object): Object {
-    const schema = {};
-    for (const field in _schema) {
-      if (_schema[field].type.name === '_EmbeddedMaevaDocument') {
-        schema[field] = {
-          ..._schema[field],
-          type: this.printSchema(_schema[field].type.schema),
-        };
-      } else {
-        schema[field] = {
-          ..._schema[field],
-          type: _schema[field].type.name,
-        };
-      }
-    }
-    return schema;
+  static printSchema(...args: PRINTSCHEMA_ARGS): PRINTSCHEMA_RETURN {
+    return printSchema.apply(null, args);
   }
   static getCollectionName() {
     if (this._collectionName) {

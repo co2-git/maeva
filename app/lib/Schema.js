@@ -32,27 +32,27 @@ export default class Schema {
         if (_.isFunction(schema[field])) {
           structure = new Field({type: schema[field]});
         } else if (schema[field] instanceof Schema) {
-          const EmbeddedMaevaDocument = (value) => value;
-          EmbeddedMaevaDocument.schema = schema[field];
-          EmbeddedMaevaDocument.validate = (value: any) => {
+          const embedded = (value) => value;
+          embedded.embeddedMaevaSchema = schema[field];
+          embedded.validate = (value: any) => {
             validate(value, schema[field]);
             return true;
           };
-          EmbeddedMaevaDocument.convert =
+          embedded.convert =
             (value: any) => convert(value, schema[field]);
-          structure = new Field({type: EmbeddedMaevaDocument});
+          structure = new Field({type: embedded});
         } else if (schema[field].type instanceof Schema) {
-          const EmbeddedMaevaDocument = (value) => value;
-          EmbeddedMaevaDocument.schema = schema[field].type;
-          EmbeddedMaevaDocument.validate = (value: any) => {
+          const embedded = (value) => value;
+          embedded.embeddedMaevaSchema = schema[field].type;
+          embedded.validate = (value: any) => {
             validate(value, schema[field].type);
             return true;
           };
-          EmbeddedMaevaDocument.convert =
+          embedded.convert =
             (value: any) => convert(value, schema[field].type);
           structure = new Field({
             ...schema[field],
-            type: EmbeddedMaevaDocument,
+            type: embedded,
           });
         } else if (typeof schema[field].type === 'function') {
           structure = new Field(schema[field]);
