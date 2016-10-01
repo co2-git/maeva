@@ -1,4 +1,6 @@
+// @flow
 import _ from 'lodash';
+import uuid from 'uuid';
 import Connection from './Connection';
 import type {
   FINDER,
@@ -6,6 +8,7 @@ import type {
   UPDATER,
   REMOVER,
 } from './flow';
+import _String from './Type/String';
 
 export const db = {};
 
@@ -13,39 +16,98 @@ export default
 function test(): (conn: Connection) => Promise<void> {
   return (conn: Connection): Promise<*> => new Promise((resolve, reject) => {
     try {
-      conn.operations = {
-        find: (finder: FINDER) => new Promise((resolveFind, rejectFind) => {
-          try {
-            let results = null;
-            if (!_.isEmpty(finder.query)) {
-              results = _.find(db[finder.collection], finder.query);
-            } else {
-              results = db[finder.collection];
-            }
-            if (_.isObject(results) && !_.isArray(results)) {
-              results = [results];
-            }
+      const find: Function = (finder: FINDER) =>
+      new Promise(async (resolveFind, rejectFind) => {
+        try {
+          let results = null;
+          if (!_.isEmpty(finder.query)) {
+            results = _.find(db[finder.collection], finder.query);
+          } else {
+            results = db[finder.collection];
+          }
+          if (_.isObject(results) && !_.isArray(results)) {
+            results = [results];
+          }
+          if (finder.options.populate) {
+            const populatable = finder.model.getPopulatableFields();
+            const promises = results.map(result => Promise.all(
+              populatable.map(model => model.findById(result[model.field]))
+            ));
+            const populated = await Promise.all(promises);
+            console.log({populated});
+          } else {
             resolveFind(results);
-          } catch (error) {
-            rejectFind(error);
           }
-        }),
-        insert: (inserter: INSERTER) =>
-        new Promise((resolveInsert, rejectInsert) => {
-          try {
-            if (!db[inserter.collection]) {
-              db[inserter.collection] = [];
-            }
-            if (Array.isArray(inserter.documents)) {
-              db[inserter.collection].push(...inserter.documents);
-            } else {
-              db[inserter.collection].push(inserter.documents);
-            }
-            resolveInsert(inserter.documents);
-          } catch (error) {
-            rejectInsert(error);
+        } catch (error) {
+          rejectFind(error);
+        }
+      });
+
+      const findOne: Function = (finder: FINDER) =>
+      new Promise(async (resolveFind, rejectFind) => {
+        try {
+          let results = null;
+          if (!_.isEmpty(finder.query)) {
+            results = _.find(db[finder.collection], finder.query);
+          } else {
+            results = db[finder.collection];
           }
-        }),
+          if (_.isObject(results) && !_.isArray(results)) {
+            results = [results];
+          }
+          resolveFind(results);
+        } catch (error) {
+          rejectFind(error);
+        }
+      });
+
+      const findById: Function = (finder: FINDER) =>
+      new Promise(async (resolveFind, rejectFind) => {
+        try {
+          let results = null;
+          if (!_.isEmpty(finder.query)) {
+            results = _.find(db[finder.collection], {id: finder.query});
+          } else {
+            results = db[finder.collection];
+          }
+          if (_.isObject(results) && !_.isArray(results)) {
+            results = [results];
+          }
+          resolveFind(results);
+        } catch (error) {
+          rejectFind(error);
+        }
+      });
+
+      const insert = (inserter: INSERTER): Promise<Object|Object[]> =>
+      new Promise((resolveInsert, rejectInsert) => {
+        try {
+          if (!db[inserter.collection]) {
+            db[inserter.collection] = [];
+          }
+          if (Array.isArray(inserter.documents)) {
+            inserter.documents = inserter.documents.map(doc => ({
+              ...doc,
+              id: uuid.v4(),
+            }));
+            db[inserter.collection].push(...inserter.documents);
+          } else {
+            if (conn.id) {
+              inserter.documents.id = uuid.v4();
+            }
+            db[inserter.collection].push(inserter.documents);
+          }
+          resolveInsert(inserter.documents);
+        } catch (error) {
+          rejectInsert(error);
+        }
+      });
+
+      conn.operations = {
+        find,
+        findOne,
+        findById,
+        insert,
         update: (updater: UPDATER) =>
         new Promise((resolveUpdate, rejectUpdate) => {
           try {
@@ -95,8 +157,10 @@ function test(): (conn: Connection) => Promise<void> {
       conn.disconnectDriver = () => new Promise((resolveDisconnect) => {
         resolveDisconnect();
       });
-      conn.id = false;
-      conn.schema = {};
+      conn.id = {name: 'id', type: _String};
+      conn.schema = {
+        id: _String,
+      };
       resolve();
     } catch (error) {
       reject(error);

@@ -51,6 +51,11 @@ export default function set(field: string, value: any, schema: Schema): any {
         field, value, schema, structure,
       });
     }
+    if (structure.validator) {
+      if (!structure.validator(converted)) {
+        throw new MaevaError();
+      }
+    }
     return converted;
   } catch (error) {
     throw MaevaError.rethrow(error, 'Could not set field', {

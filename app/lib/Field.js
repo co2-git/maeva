@@ -4,7 +4,13 @@ import MaevaError from './Error';
 
 export default class Field {
   constructor(field) {
-    Object.assign(this, field);
+    for (const attribute in field) {
+      if (attribute === 'validate') {
+        Object.assign(this, {validator: field.validate});
+      } else {
+        Object.assign(this, {[attribute]: field[attribute]});
+      }
+    }
     Object.defineProperties(this, {
       $type: {
         enumerable: false,

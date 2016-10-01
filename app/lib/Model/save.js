@@ -4,9 +4,9 @@ export type ARGS = Array<?Object>;
 export default function save(options: ?Object = {}): Promise<> {
   return new Promise(async (resolve, reject) => {
     try {
-      await this.connect();
       this.applyDefault();
       this.ensureRequired();
+      this.applyIds();
       this.runValidators();
       if (options.dontSend) {
         resolve();

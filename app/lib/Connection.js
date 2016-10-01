@@ -1,7 +1,10 @@
 // @flow
 import 'babel-polyfill';
-import {EventEmitter} from 'events';
-import type {STATUS} from '../../flow';
+import EventEmitter from 'events';
+import type {
+  STATUS,
+  OPERATIONS,
+} from '../../flow';
 
 class Connection extends EventEmitter {
 
@@ -15,8 +18,9 @@ class Connection extends EventEmitter {
 
   static connect(driver: Function, name: ?string): Promise<Connection> {
     return new Promise(async (resolve, reject) => {
+      let connection: ?Connection;
       try {
-        const connection: Connection = new Connection();
+        connection = new Connection();
         if (name) {
           connection.name = name;
         }
@@ -30,9 +34,33 @@ class Connection extends EventEmitter {
         this.events.emit('connected', connection);
         resolve(connection);
       } catch (error) {
-        connection.status = 'failed';
-        connection.emit('error', error);
+        if (connection instanceof this) {
+          connection.status = 'failed';
+          connection.emit('error', error);
+        }
         this.events.emit('error', error);
+        reject(error);
+      }
+    });
+  }
+
+  static findConnection(): Promise<Connection> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let $conn;
+        const availableConnections = Connection.connections.filter(
+          conn => conn.status === 'connected'
+        );
+        if (availableConnections.length) {
+          $conn = availableConnections[0];
+        } else {
+          $conn = await new Promise((resolveConnected) => {
+            Connection.events.on('connected', resolveConnected);
+          });
+        }
+        await $conn.ready();
+        resolve($conn);
+      } catch (error) {
         reject(error);
       }
     });
@@ -46,23 +74,17 @@ class Connection extends EventEmitter {
     ));
   }
 
-  // ---------------------------------------------------------------------------
-
-  // Instance properties
-
-  // ---------------------------------------------------------------------------
-
+  // Default properties
   index: number = 0;
-  operations: {[action: string]: Promise<*>} = {};
   status: STATUS = 'idle';
   name: ?string;
 
-  // ---------------------------------------------------------------------------
+  // Properties merged with vendor client
+  operations: OPERATIONS;
+  disconnectDriver: () => Promise<void>;
 
-  // Instance methods
-
-  // ---------------------------------------------------------------------------
-
+  // Call this function to make sure connection is ready
+  // It returns a promise that resolves when connection is ready
   ready(): Promise<void> {
     return new Promise((resolve, reject) => {
       switch (this.status) {
@@ -81,8 +103,6 @@ class Connection extends EventEmitter {
       }
     });
   }
-
-  // ---------------------------------------------------------------------------
 
   disconnect(): Promise<void> {
     return new Promise(async (resolve, reject) => {

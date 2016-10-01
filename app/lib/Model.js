@@ -1,8 +1,17 @@
 // @flow
+// 3rd party libraries
 import _ from 'lodash';
+// Libraries
 import Schema from './Schema';
 import Connection from './Connection';
 import MaevaError from './Error';
+// Utils
+import printSchema from './utils/printSchema';
+import type {
+  ARGS as PRINTSCHEMA_ARGS,
+  RETURN as PRINTSCHEMA_RETURN,
+} from './utils/printSchema';
+// Model static methods
 import create from './Model/static/create';
 import type {ARGS as CREATE_ARGS} from './Model/static/create';
 import remove from './Model/static/remove';
@@ -15,18 +24,24 @@ import type {
   ARGS as MAKESTATEMENT_ARGS,
   RETURN as MAKESTATEMENT_RETURN,
 } from './Model/static/makeStatement';
-import printSchema from './utils/printSchema';
+import find from './Model/static/find';
 import type {
-  ARGS as PRINTSCHEMA_ARGS,
-  RETURN as PRINTSCHEMA_RETURN,
-} from './utils/printSchema';
+  ARGS as FIND_ARGS,
+  RETURN as FIND_RETURN,
+} from './Model/static/find';
+import getPopulatableFields from './Model/static/getPopulatableFields';
+// Model methods
 import save from './Model/save';
 import type {ARGS as SAVE_ARGS} from './Model/save';
 import ensureRequired from './Model/ensureRequired';
+import applyIds from './Model/applyIds';
 import set from './Model/set';
+import runValidators from './Model/runValidators';
+
 import type {MODEL_CONSTRUCTOR_OPTIONS} from './flow';
 
 export default class Model {
+  static isMaevaModel = true;
   static getInfo(options = {}) {
     let schema = false;
     if (!options.skipSchema) {
@@ -58,6 +73,9 @@ export default class Model {
   static printSchema(...args: PRINTSCHEMA_ARGS): PRINTSCHEMA_RETURN {
     return printSchema.apply(null, args);
   }
+  static getPopulatableFields(...args: SAVE_ARGS) {
+    return getPopulatableFields.apply(this, args);
+  }
   static getCollectionName() {
     if (this._collectionName) {
       return this._collectionName;
@@ -88,30 +106,8 @@ export default class Model {
   static makeStatement(...args: MAKESTATEMENT_ARGS): MAKESTATEMENT_RETURN {
     return makeStatement.apply(this, args);
   }
-  static find(query: Object = {}, options: Object = {}) {
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        const {model, statement} = await this.makeStatement(query);
-        const found = await model.$conn.operations.find({
-          model: this,
-          collection: this.getCollectionName(),
-          query: statement,
-          options,
-        });
-        if (!Array.isArray(found)) {
-          return resolve([]);
-        }
-        const documents = found.map(doc => new this(doc, {
-          fromDB: true,
-          conn: model.$conn,
-        }));
-        resolve(documents);
-      } catch (error) {
-        console.log(error.stack);
-        reject(error);
-      }
-    });
-    return promise;
+  static find(...args: FIND_ARGS): FIND_RETURN {
+    return find.apply(this, args);
   }
   static findOne(query: Object = {}, options: Object = {}) {
     const promise = new Promise(async (resolve, reject) => {
@@ -221,7 +217,7 @@ export default class Model {
   ) {
     const modelSchema = this.constructor.getSchema();
     let schema;
-    if (options.fromDB && options.conn) {
+    if (options.conn) {
       const vendorSchema = new Schema(options.conn.schema);
       schema = {...modelSchema, ...vendorSchema};
     } else {
@@ -268,9 +264,7 @@ export default class Model {
       // Next block deals with the latter
       if (typeof field === 'object') {
         for (const key in field) {
-          const converted = set(key, field[key], this.$schema);
-          Object.assign(this, {[key]: converted});
-          this.$changed[key] = converted;
+          this.set(key, field[key]);
         }
         return this;
       }
@@ -285,24 +279,6 @@ export default class Model {
     } finally {
       return this;
     }
-  }
-  async connect() {
-    if (!this.$conn) {
-      const availableConnections = Connection.connections.filter(
-        conn => conn.status === 'connected'
-      );
-      if (availableConnections.length) {
-        this.$conn = availableConnections[0];
-      } else {
-        await new Promise((resolveConnected) => {
-          Connection.events.on('connected', (conn) => {
-            this.$conn = conn;
-            resolveConnected();
-          });
-        });
-      }
-    }
-    await this.$conn.ready();
   }
   save(...args: SAVE_ARGS) {
     return save.apply(this, args);
@@ -325,6 +301,9 @@ export default class Model {
     return ensureRequired.apply(this);
   }
   runValidators() {
-    // ...
+    return runValidators.apply(this);
+  }
+  applyIds() {
+    return applyIds.apply(this);
   }
 }

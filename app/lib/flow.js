@@ -1,4 +1,5 @@
 import Connection from './Connection';
+import Model from './Model';
 
 export
 type FINDER = {
@@ -30,4 +31,13 @@ export
 type MODEL_CONSTRUCTOR_OPTIONS = {
   fromDB?: boolean,
   conn: Connection,
+};
+
+// operations a vendor client should provide
+export
+type OPERATIONS = {
+  find: (finder: FINDER) => Promise<Model|Model[]>,
+  findOne: (finder: FINDER) => Promise<Model|Model[]>,
+  findById: (finder: FINDER) => Promise<Model|Model[]>,
+  insert: (inserter: INSERTER) => Promise<Model|Model[]>,
 };

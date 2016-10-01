@@ -11,16 +11,23 @@ export default function create(
 ): Promise<Model|Model[]> {
   return new Promise(async (resolve, reject) => {
     try {
+      const conn = await Connection.findConnection();
       let docs;
       if (Array.isArray(document)) {
-        docs = document.map(doc => new this(doc, options));
+        docs = document.map(doc => new this(doc, {
+          ...options,
+          conn,
+        }));
       } else {
-        docs = [new this(document, options)];
+        docs = [new this(document, {
+          ...options,
+          conn,
+        })];
       }
       await Promise.all(docs.map(doc => doc.save({
         dontSend: true,
       })));
-      const results = await docs[0].$conn.operations.insert({
+      const results = await conn.operations.insert({
         model: this,
         collection: this.getCollectionName(),
         documents: docs,
@@ -32,7 +39,7 @@ export default function create(
           }
         }
       });
-      docs[0].$conn.emit('created', this, docs);
+      conn.emit('created', this, docs);
       Connection.events.emit('created', this, docs);
       if (Array.isArray(document)) {
         resolve(docs);

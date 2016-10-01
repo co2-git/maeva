@@ -1,4 +1,4 @@
-/* global describe it before */
+/* global describe it before after */
 import should from 'should';
 import maeva, {Model} from '..';
 import mock from '../lib/mock';
@@ -52,8 +52,20 @@ class Foo5 extends Model {
   };
 }
 
+class Foo6 extends Model {
+  static schema = {
+    foo1: Foo1,
+  };
+}
+
+function throwWarning() {
+  // console.log('WARNING!');
+  // console.log('>>> ', warning.stack.replace(/\n/g, `\n>>> `));
+}
+
 describe('Create document', () => {
   before(async () => {
+    maeva.events.on('warning', throwWarning);
     await maeva.connect(mock(), 'test1');
   });
   describe('Valid insertion', () => {
@@ -145,5 +157,18 @@ describe('Create document', () => {
         should(doc.field).not.have.property('bar');
       });
     });
+  });
+  describe('Document with association', () => {
+    let doc1, doc2;
+    before(async () => {
+      doc1 = await Foo1.create({field: 'hello'});
+      doc2 = await Foo6.create({foo1: doc1});
+    });
+    it('should have only id instead of all document', () => {
+      should(doc2).have.property('foo1').which.eql(doc1.id);
+    });
+  });
+  after(() => {
+    maeva.events.removeListener('warning', throwWarning);
   });
 });
