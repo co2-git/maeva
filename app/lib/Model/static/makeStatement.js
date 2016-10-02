@@ -1,6 +1,7 @@
 // @flow
 import Model from '../../Model';
 import Connection from '../../Connection';
+import MaevaError from '../../Error';
 import set from '../set';
 
 export
@@ -19,12 +20,23 @@ export default function makeStatement(query: Object = {}): RETURN {
       const model = new this({}, {conn});
       const statement = {};
       for (const field in query) {
-        statement[field] = set(field, query[field], model.$schema);
-        if (!statement[field].$_maevaFieldSchema) {
-          Object.defineProperty(statement[field], '$_maevaFieldSchema', {
-            enumerable: false,
-            value: model.$schema[field],
-          });
+        try {
+          statement[field] = set(field, query[field], model.$schema);
+          if (!statement[field].$_maevaFieldSchema) {
+            Object.defineProperty(statement[field], '$_maevaFieldSchema', {
+              enumerable: false,
+              value: model.$schema[field],
+            });
+          }
+        } catch (error) {
+          throw MaevaError.rethrow(
+            error,
+            'Could not make statement from field',
+            {
+              field,
+              statement: statement[field],
+            }
+          );
         }
       }
       resolve({model, statement, conn});
