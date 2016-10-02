@@ -23,10 +23,14 @@ export default function makeStatement(query: Object = {}): RETURN {
         try {
           statement[field] = set(field, query[field], model.$schema);
           if (!statement[field].$_maevaFieldSchema) {
-            Object.defineProperty(statement[field], '$_maevaFieldSchema', {
-              enumerable: false,
-              value: model.$schema[field],
-            });
+            if (typeof statement[field] === 'object') {
+              Object.defineProperty(statement[field], '$_maevaFieldSchema', {
+                enumerable: false,
+                value: model.$schema[field],
+              });
+            } else {
+              statement[field].$_maevaFieldSchema = model.$schema[field];
+            }
           }
         } catch (error) {
           throw MaevaError.rethrow(
