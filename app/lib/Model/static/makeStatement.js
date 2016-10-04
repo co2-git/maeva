@@ -19,18 +19,16 @@ export default function makeStatement(query: Object = {}): RETURN {
       const conn = await Connection.findConnection();
       const model = new this({}, {conn});
       const statement = {};
+      Object.defineProperty(statement, '$$structure', {
+        enumerable: false,
+        value: {},
+        writable: true,
+      });
       for (const field in query) {
         try {
           statement[field] = set(field, query[field], model.$schema);
-          if (!statement[field].$_maevaFieldSchema) {
-            if (typeof statement[field] === 'object') {
-              Object.defineProperty(statement[field], '$_maevaFieldSchema', {
-                enumerable: false,
-                value: model.$schema[field],
-              });
-            } else {
-              statement[field].$_maevaFieldSchema = model.$schema[field];
-            }
+          if (!statement.$$structure[field]) {
+            statement.$$structure[field] = model.$schema[field];
           }
         } catch (error) {
           throw MaevaError.rethrow(
