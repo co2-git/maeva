@@ -1,23 +1,12 @@
 // @flow
-import Model from '../../Model';
-import Connection from '../../Connection';
-import MaevaError from '../../Error';
-import set from '../set';
+import MaevaError from '../Error';
+import Schema from '../Schema';
+import set from './set';
 
-export
-type ARGS = [Object];
-export
-type RETURN = Promise<{
-  model: Model,
-  statement: Object,
-  conn: Connection,
-}>;
-
-export default function makeStatement(query: Object = {}): RETURN {
+export default
+function makeStatement(query: Object = {}, schema: Schema|Object = {}) {
   return new Promise(async (resolve, reject) => {
     try {
-      const conn = await Connection.findConnection();
-      const model = new this({}, {conn});
       const statement = {};
       Object.defineProperty(statement, '$$structure', {
         enumerable: false,
@@ -26,9 +15,9 @@ export default function makeStatement(query: Object = {}): RETURN {
       });
       for (const field in query) {
         try {
-          statement[field] = set(field, query[field], model.$schema);
+          statement[field] = set(field, query[field], schema);
           if (!statement.$$structure[field]) {
-            statement.$$structure[field] = model.$schema[field];
+            statement.$$structure[field] = schema[field];
           }
         } catch (error) {
           throw MaevaError.rethrow(
@@ -41,7 +30,7 @@ export default function makeStatement(query: Object = {}): RETURN {
           );
         }
       }
-      resolve({model, statement, conn});
+      resolve(statement);
     } catch (error) {
       reject(error);
     }

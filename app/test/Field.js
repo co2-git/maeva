@@ -16,7 +16,7 @@ function verifyField(field, type, associatedType) {
   });
 }
 
-describe.only('Field', () => {
+describe('Field', () => {
   describe('Unit', () => {
     it('should be a function', () => {
       should(Field).be.a.Function();

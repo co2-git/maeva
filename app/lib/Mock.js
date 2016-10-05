@@ -21,23 +21,32 @@ function test(): (conn: Connection) => Promise<void> {
         try {
           let results = null;
           if (!_.isEmpty(finder.query)) {
-            results = _.find(db[finder.collection], finder.query);
+            results = _.find(db[finder.collection], finder.query) || [];
           } else {
             results = db[finder.collection];
           }
           if (_.isObject(results) && !_.isArray(results)) {
             results = [results];
           }
-          if (finder.options.populate) {
+          if (finder.options.populate && results) {
             const populatable = finder.model.getPopulatableFields();
             const promises = results.map(result => Promise.all(
-              populatable.map(model => model.findById(result[model.field]))
+              populatable.map(model =>
+                new Promise(async (resolvePopulate, rejectPopulate) => {
+                  try {
+                    const associated = await model.type
+                      .findById(result[model.field]);
+                    result[model.field] = associated;
+                    resolvePopulate();
+                  } catch (error) {
+                    rejectPopulate(error);
+                  }
+                })
+              )
             ));
-            const populated = await Promise.all(promises);
-            console.log({populated});
-          } else {
-            resolveFind(results);
+            await Promise.all(promises);
           }
+          resolveFind(results);
         } catch (error) {
           rejectFind(error);
         }
@@ -46,16 +55,8 @@ function test(): (conn: Connection) => Promise<void> {
       const findOne: Function = (finder: FINDER) =>
       new Promise(async (resolveFind, rejectFind) => {
         try {
-          let results = null;
-          if (!_.isEmpty(finder.query)) {
-            results = _.find(db[finder.collection], finder.query);
-          } else {
-            results = db[finder.collection];
-          }
-          if (_.isObject(results) && !_.isArray(results)) {
-            results = [results];
-          }
-          resolveFind(results);
+          const results = await find(finder);
+          resolveFind(results[0]);
         } catch (error) {
           rejectFind(error);
         }
@@ -66,13 +67,11 @@ function test(): (conn: Connection) => Promise<void> {
         try {
           let results = null;
           if (!_.isEmpty(finder.query)) {
-            results = _.find(db[finder.collection], {id: finder.query});
+            results = _.find(db[finder.collection], {id: finder.id}) || [];
           } else {
             results = db[finder.collection];
           }
-          if (_.isObject(results) && !_.isArray(results)) {
-            results = [results];
-          }
+          results = results[0];
           resolveFind(results);
         } catch (error) {
           rejectFind(error);
@@ -103,6 +102,30 @@ function test(): (conn: Connection) => Promise<void> {
         }
       });
 
+      const remove = (remover: REMOVER) =>
+      new Promise((resolveRemove, rejectRemove) => {
+        try {
+          if (!db[remover.collection]) {
+            db[remover.collection] = [];
+          }
+          if (_.isEmpty(remover.get)) {
+            let matches = db[remover.collection];
+            db[remover.collection] = [];
+            return resolveRemove(matches.length);
+          }
+          let matches = _.find(db[remover.collection], remover.get) || [];
+          if (!_.isArray(matches)) {
+            matches = [matches];
+          }
+          db[remover.collection] = db[remover.collection].filter(
+            doc => !_.matches(remover.get)(doc)
+          );
+          resolveRemove(matches.length);
+        } catch (error) {
+          rejectRemove(error);
+        }
+      });
+
       conn.operations = {
         find,
         findOne,
@@ -130,29 +153,7 @@ function test(): (conn: Connection) => Promise<void> {
             rejectUpdate(error);
           }
         }),
-        remove: (remover: REMOVER) =>
-        new Promise((resolveRemove, rejectRemove) => {
-          try {
-            if (!db[remover.collection]) {
-              db[remover.collection] = [];
-            }
-            if (_.isEmpty(remover.get)) {
-              let matches = db[remover.collection];
-              db[remover.collection] = [];
-              return resolveRemove(matches.length);
-            }
-            let matches = _.find(db[remover.collection], remover.get) || [];
-            if (!_.isArray(matches)) {
-              matches = [matches];
-            }
-            db[remover.collection] = db[remover.collection].filter(
-              doc => !_.matches(remover.get)(doc)
-            );
-            resolveRemove(matches.length);
-          } catch (error) {
-            rejectRemove(error);
-          }
-        }),
+        remove,
       };
       conn.disconnectDriver = () => new Promise((resolveDisconnect) => {
         resolveDisconnect();

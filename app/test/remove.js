@@ -2,9 +2,11 @@
 import should from 'should';
 import maeva, {Model} from '..';
 import mock, {db} from '../lib/Mock';
+import uuid from 'uuid';
 
 class Test extends Model {
   static schema = {field: Number};
+  static collectionName = `test-${uuid.v4()}`;
 }
 
 describe('Remove', () => {

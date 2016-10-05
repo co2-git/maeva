@@ -11,6 +11,7 @@ import type {
   ARGS as PRINTSCHEMA_ARGS,
   RETURN as PRINTSCHEMA_RETURN,
 } from './utils/printSchema';
+import set from './utils/set';
 // Model static methods
 import create from './Model/static/create';
 import type {ARGS as CREATE_ARGS} from './Model/static/create';
@@ -19,23 +20,23 @@ import type {
   ARGS as REMOVE_ARGS,
   RETURN as REMOVE_RETURN,
 } from './Model/static/remove';
-import makeStatement from './Model/static/makeStatement';
+import makeStatement from './utils/makeStatement';
 import type {
   ARGS as MAKESTATEMENT_ARGS,
   RETURN as MAKESTATEMENT_RETURN,
-} from './Model/static/makeStatement';
+} from './utils/makeStatement';
 import find from './Model/static/find';
 import type {
   ARGS as FIND_ARGS,
   RETURN as FIND_RETURN,
 } from './Model/static/find';
 import getPopulatableFields from './Model/static/getPopulatableFields';
+import findOne from './Model/static/findOne';
 // Model methods
 import save from './Model/save';
 import type {ARGS as SAVE_ARGS} from './Model/save';
 import ensureRequired from './Model/ensureRequired';
 import applyIds from './Model/applyIds';
-import set from './Model/set';
 import runValidators from './Model/runValidators';
 
 import type {MODEL_CONSTRUCTOR_OPTIONS} from './flow';
@@ -103,26 +104,18 @@ export default class Model {
   static push(...args: CREATE_ARGS) {
     return this.create(...args);
   }
-  static makeStatement(...args: MAKESTATEMENT_ARGS): MAKESTATEMENT_RETURN {
-    return makeStatement.apply(this, args);
+  static async makeStatement(query: Object = {}, schema: Schema|Object = {}):
+  MAKESTATEMENT_RETURN {
+    const conn = await Connection.findConnection();
+    const model = new this({}, {conn});
+    const statement = await makeStatement(query, model.$schema);
+    return {model, statement, conn};
   }
   static find(...args: FIND_ARGS): FIND_RETURN {
     return find.apply(this, args);
   }
-  static findOne(query: Object = {}, options: Object = {}) {
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        const found = this.find(query, {
-          ...options,
-          limit: 1,
-        });
-        resolve(found[0]);
-      } catch (error) {
-        console.log(error.stack);
-        reject(error);
-      }
-    });
-    return promise;
+  static findOne(...args) {
+    return findOne.apply(this, args);
   }
   static findById(id: any, options: Object = {}) {
     const promise = new Promise(async (resolve, reject) => {
