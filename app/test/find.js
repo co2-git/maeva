@@ -76,6 +76,12 @@ describe('Find', () => {
       should(found).be.an.Array().and.have.length(3);
     });
   });
+  describe('Find one', () => {
+    it('should return 1 result', async () => {
+      const found = await Find1.findOne();
+      should(found).be.an.Object().not.be.an.Array();
+    });
+  });
   describe('Populate', () => {
     let found;
     before(async () => {
@@ -85,7 +91,18 @@ describe('Find', () => {
       should(found).have.property('find1').which.eql(find1);
     });
   });
+  describe('Not', () => {
+    let found;
+    before(async () => {
+      found = await Find1.find({number: {$not: 1}});
+      console.log({found});
+    });
+    it('should have found 2 results', () => {
+      should(found).be.an.Array().and.have.length(2);
+    });
+  });
   after(() => {
-    delete db.foos;
+    delete db.find1s;
+    delete db.find2s;
   });
 });

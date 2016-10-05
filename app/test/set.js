@@ -1,6 +1,6 @@
 /* global describe it before */
 import should from 'should';
-import set from '../lib/Model/set';
+import set from '../lib/utils/set';
 import Schema from '../lib/Schema';
 import Model from '../lib/Model';
 
@@ -67,6 +67,18 @@ describe('Set', () => {
       });
       it('should be a chainable instance of model', () => {
         should(foo).be.an.instanceOf(Foo);
+      });
+    });
+  });
+  describe('Set with meta queries', () => {
+    describe('$not', () => {
+      it('should set value', () => {
+        const setter = set(
+          'foo',
+          {$not: 1},
+          Foo.getSchema(),
+        );
+        should(setter).eql({$not: '1'});
       });
     });
   });

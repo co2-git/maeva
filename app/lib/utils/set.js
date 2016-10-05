@@ -7,19 +7,23 @@ import printSchema from '../utils/printSchema';
 
 export default function set(field: string, value: any, schema: Schema): any {
   try {
+    // get field structure from schema
     let structure: Field = schema[field];
+    // throw if field not found in schema
     if (!structure) {
       throw new MaevaError(MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA, {
         field, value, schema, structure,
         code: MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
       });
     }
+    // throw if field is not a Field
     if (!(structure instanceof Field)) {
       throw new MaevaError(MaevaError.EXPECTED_A_FIELD, {
         field, value, schema, structure,
         code: MaevaError.EXPECTED_A_FIELD,
       });
     }
+    // Deal with embedded documents
     if (structure.type.embeddedMaevaSchema) {
       const embedded = {};
       for (const embeddedField in value) {
@@ -34,6 +38,16 @@ export default function set(field: string, value: any, schema: Schema): any {
         }
       }
       return embedded;
+    }
+    // Deal with meta queries
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const [metaQuery] = Object.keys(value);
+      if (/^\$/.test(metaQuery)) {
+        switch (metaQuery) {
+        case '$not':
+          return {$not: set(field, value.$not, schema)};
+        }
+      }
     }
     if (typeof structure.convert !== 'function') {
       throw new MaevaError(MaevaError.FIELD_HAS_NO_CONVERTER, {

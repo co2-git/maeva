@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import Field from './Field';
 import MaevaError from './Error';
-import set from './Model/set';
+import set from './utils/set';
 
 function validate(object: Object, schema: Schema) {
   for (const field in object) {
