@@ -1,7 +1,7 @@
 /* global describe it before */
 import should from 'should';
 import maeva from '..';
-import mock from '../lib/mock';
+import simpledb from 'maeva-simpledb';
 import {EventEmitter} from 'events';
 
 describe('Connect', () => {
@@ -24,7 +24,7 @@ describe('Connect', () => {
   describe('Connect to test driver', () => {
     let conn;
     before(async () => {
-      conn = await maeva.connect(mock());
+      conn = await maeva.connect(simpledb());
     });
     describe('connection', () => {
       it('should be a Connection', () => {
@@ -94,7 +94,7 @@ describe('Connect', () => {
   describe('Connect to another test driver', () => {
     let conn;
     before(async () => {
-      conn = await maeva.connect(mock());
+      conn = await maeva.connect(simpledb());
     });
     describe('connection', () => {
       it('should be a Connection', () => {

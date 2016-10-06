@@ -1,7 +1,7 @@
 /* global describe it before after */
 import should from 'should';
 import maeva, {Model} from '..';
-import mock, {db} from '../lib/Mock';
+import simpledb, {db} from 'maeva-simpledb';
 
 class Update extends Model {
   static schema = {field: Number};
@@ -16,7 +16,7 @@ const updates = [
 
 describe('Update', () => {
   before(async () => {
-    await maeva.connect(mock());
+    await maeva.connect(simpledb());
     await Update.create(updates);
   });
   describe('Unit', () => {

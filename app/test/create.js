@@ -1,7 +1,7 @@
 /* global describe it before after */
 import should from 'should';
 import maeva, {Model} from '..';
-import mock from '../lib/mock';
+import simpledb from 'maeva-simpledb';
 import MaevaError from '../lib/Error';
 import Schema from '../lib/Schema';
 
@@ -66,7 +66,7 @@ function throwWarning() {
 describe('Create document', () => {
   before(async () => {
     maeva.events.on('warning', throwWarning);
-    await maeva.connect(mock(), 'test1');
+    await maeva.connect(simpledb(), 'test1');
   });
   describe('Valid insertion', () => {
     let doc;

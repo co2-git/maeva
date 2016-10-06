@@ -8,11 +8,11 @@ type RETURN = Promise<Model[]>;
 export default function find(query: Object = {}, options: Object = {}): RETURN {
   return new Promise(async (resolve, reject) => {
     try {
-      const {model, statement, conn} = await this.makeStatement(query);
+      const {model, statement: get, conn} = await this.makeStatement(query);
       const found = await conn.operations.find({
         model: this,
         collection: this.getCollectionName(),
-        query: statement,
+        get,
         options,
       });
       if (!Array.isArray(found)) {
