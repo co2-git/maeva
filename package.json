@@ -1,6 +1,6 @@
 {
   "name": "maeva",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -20,13 +20,11 @@
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "eslint": "^3.5.0",
-    "maeva-simpledb": "file:///Users/francois/Dev/maeva-simpledb",
     "mocha": "^3.0.2",
     "should": "^11.1.0",
     "uuid": "^2.0.3"
   },
   "dependencies": {
-    "lodash": "^4.15.0",
-    "maeva-simpledb": "file:///Users/francois/Dev/maeva-simpledb"
+    "lodash": "^4.15.0"
   }
 }
