@@ -32,6 +32,8 @@ import type {
 } from './Model/static/find';
 import getPopulatableFields from './Model/static/getPopulatableFields';
 import findOne from './Model/static/findOne';
+import findById from './Model/static/findById';
+import updateById from './Model/static/updateById';
 // Model methods
 import save from './Model/save';
 import type {ARGS as SAVE_ARGS} from './Model/save';
@@ -118,34 +120,7 @@ export default class Model {
     return findOne.apply(this, args);
   }
   static findById(id: any, options: Object = {}) {
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        const {model} = await this.makeStatement({});
-        if (!model.$conn.id) {
-          throw new MaevaError('Id not supported by vendor');
-        }
-        const idName = model.$conn.id.name;
-        const statementId = model.set(idName, id)[idName];
-        const found = await model.$conn.operations.findById({
-          model: this,
-          collection: this.getCollectionName(),
-          id: statementId,
-          options,
-        });
-        if (!found) {
-          return resolve();
-        }
-        const doc = new this(found, {
-          fromDB: true,
-          conn: model.$conn,
-        });
-        resolve(doc);
-      } catch (error) {
-        console.log(error.stack);
-        reject(error);
-      }
-    });
-    return promise;
+    return findById.apply(this, [id, options]);
   }
   static get(...args) {
     return this.find(...args);
@@ -181,19 +156,7 @@ export default class Model {
     });
   }
   static updateById(id, modifier, options) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const doc = await this.findById(id, options);
-        doc.set(modifier);
-        await doc.save();
-        doc.$conn.emit('updated', this, doc);
-        Connection.events.emit('updated', this, doc);
-        resolve(doc);
-      } catch (error) {
-        console.log(error.stack);
-        reject(error);
-      }
-    });
+    return updateById.apply(this, [id, modifier, options]);
   }
   static remove(...args: REMOVE_ARGS): REMOVE_RETURN {
     return remove.apply(this, args);
