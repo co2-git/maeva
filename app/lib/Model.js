@@ -228,10 +228,10 @@ export default class Model {
       Object.assign(this, {[field]: converted});
       this.$changed[field] = converted;
     } catch (error) {
-      if (field === 'owner') {
-        console.log('OWNER', error.stack);
-      }
-      Connection.events.emit('warning', error);
+      Connection.events.emit('warning', {
+        message: error.message,
+        ...error,
+      });
     } finally {
       return this;
     }
