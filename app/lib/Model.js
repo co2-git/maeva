@@ -229,7 +229,7 @@ export default class Model {
       this.$changed[field] = converted;
     } catch (error) {
       Connection.events.emit('warning', {
-        message: error.message,
+        message: error.message.split(/\n/),
         ...error,
       });
     } finally {
