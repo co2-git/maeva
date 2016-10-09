@@ -31,6 +31,7 @@ export default class MaevaError extends ExtendableError {
   static FIELD_HAS_NO_VALIDATOR = 10;
   static FAILED_CONVERTING_FIELD_VALUE = 11;
   static INVALID_FIELD_SYNTAX = 12;
+  static FIELD_VALIDATOR_FAILED = 13;
   static errorMessages = [
     '',
     'Failed building schema from object',
@@ -46,6 +47,7 @@ export default class MaevaError extends ExtendableError {
     'Field has no validator function',
     'Failed converting field value according to field type',
     'Object could not be converted to Field for invalid syntax',
+    'Field validator returned false for this field value',
   ];
   static rethrow(error: Error, message: string, options: Object = {}
   ): MaevaError {

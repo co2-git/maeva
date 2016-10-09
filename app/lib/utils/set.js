@@ -67,7 +67,9 @@ export default function set(field: string, value: any, schema: Schema): any {
     }
     if (structure.validator) {
       if (!structure.validator(converted)) {
-        throw new MaevaError();
+        throw new MaevaError(MaevaError.FIELD_VALIDATOR_FAILED, {
+          field, value, schema, structure,
+        });
       }
     }
     return converted;
