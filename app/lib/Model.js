@@ -89,6 +89,9 @@ export default class Model {
     if (model instanceof Model) {
       return true;
     }
+    if (model && _.isObject(model) && !_.isArray(model) && model.$$id) {
+      return true;
+    }
     return false;
   }
   static convert(value: any): Model|any {
