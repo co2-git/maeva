@@ -1,7 +1,7 @@
 /* global describe it */
 import should from 'should';
 import Model from '../lib/Model';
-import validaters from '../test-utils/validaters';
+import validaters from '../test-utils/validators';
 
 function validateModel(type, value, bool) {
   describe(type, () => {

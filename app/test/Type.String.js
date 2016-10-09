@@ -1,6 +1,6 @@
 import should from 'should';
 import _String from '../lib/Type/String';
-import validaters from '../test-utils/validaters';
+import validaters from '../test-utils/validators';
 
 function validateString(type, value, bool) {
   describe(type, () => {

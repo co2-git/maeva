@@ -29,8 +29,10 @@ export default class Schema {
     for (const field in schema) {
       try {
         let structure;
+        // {field: Type}
         if (_.isFunction(schema[field])) {
           structure = new Field({type: schema[field]});
+        // {field: new Schema()}
         } else if (schema[field] instanceof Schema) {
           const embedded = (value) => value;
           embedded.embeddedMaevaSchema = schema[field];
@@ -41,6 +43,7 @@ export default class Schema {
           embedded.convert =
             (value: any) => convert(value, schema[field]);
           structure = new Field({type: embedded});
+        // {field: {type: new Schema()}}
         } else if (schema[field].type instanceof Schema) {
           const embedded = (value) => value;
           embedded.embeddedMaevaSchema = schema[field].type;
@@ -54,8 +57,10 @@ export default class Schema {
             ...schema[field],
             type: embedded,
           });
+        // {field: {type: Type}}
         } else if (typeof schema[field].type === 'function') {
           structure = new Field(schema[field]);
+        // !!! invalid
         } else {
           throw new MaevaError(MaevaError.INVALID_FIELD_SYNTAX, {
             field: {[field]: schema[field]},

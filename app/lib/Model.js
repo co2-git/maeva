@@ -212,6 +212,9 @@ export default class Model {
     for (const field in document) {
       this.set(field, document[field]);
     }
+    if (this.$conn && this.$conn.id) {
+      this.$$id = this.$conn.id.name;
+    }
     this.$old = this.toJSON();
   }
   set(field: string|Object, value: any): Model {

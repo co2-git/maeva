@@ -1,6 +1,6 @@
 import should from 'should';
 import _Number from '../lib/Type/Number';
-import validaters from '../test-utils/validaters';
+import validaters from '../test-utils/validators';
 
 function validateNumber(type, value, bool) {
   describe(type, () => {
