@@ -1,4 +1,5 @@
 // @flow
+import _ from 'lodash';
 import Model from '../../Model';
 import Connection from '../../Connection';
 
@@ -30,7 +31,7 @@ export default function create(
       const results = await conn.operations.insert({
         model: this,
         collection: this.getCollectionName(),
-        documents: docs,
+        documents: docs.map(doc => _.omit(doc, ['$$id'])),
       });
       results.forEach((result: Object, index: number) => {
         for (const field in result) {
