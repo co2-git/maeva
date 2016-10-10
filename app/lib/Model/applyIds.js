@@ -3,17 +3,19 @@ import MaevaError from '../Error';
 
 export default function applyIds() {
   for (const field in this) {
-    try {
-      if (this.$schema[field].type.isMaevaModel) {
-        const {id} = this.$conn;
-        if (id) {
-          this[field] = this[field][id.name];
+    if (!/^\$/.test(field)) {
+      try {
+        if (this.$schema[field].type.isMaevaModel) {
+          const {id} = this.$conn;
+          if (id) {
+            this[field] = this[field][id.name];
+          }
         }
+      } catch (error) {
+        throw MaevaError.rethrow(error, MaevaError.COULD_NOT_APPLY_ID, {
+          field, schema: this.$schema, document: this,
+        });
       }
-    } catch (error) {
-      throw MaevaError.rethrow(error, MaevaError.FIELD_IS_UNDEFINED, {
-        field, schema: this.$schema, document: this,
-      });
     }
   }
 }
