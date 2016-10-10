@@ -235,6 +235,7 @@ export default class Model {
       this.$changed[field] = converted;
     } catch (error) {
       Connection.events.emit('warning', {
+        model: this.constructor.getInfo(),
         message: error.message.split(/\n/),
         ...error,
       });
