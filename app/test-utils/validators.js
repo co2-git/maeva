@@ -23,7 +23,7 @@ export default [
     RegExp: [false, _undefined, 'throw'],
     Any: [true, _undefined, _undefined],
     Mixed: [false, _undefined, _undefined],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['null', null, {
@@ -37,7 +37,7 @@ export default [
     RegExp: [false, null, 'throw'],
     Any: [true, null, null, null],
     Mixed: [false, null, null],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['number 0', 0, {
@@ -51,7 +51,7 @@ export default [
     RegExp: [false, new _RegExp(0), new _RegExp(0)],
     Any: [true, 0, 0, 0],
     Mixed: [false, 0, 0],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['number 1', 1, {
@@ -65,7 +65,7 @@ export default [
     RegExp: [false, new _RegExp(1), new _RegExp(1)],
     Any: [true, 1, 1],
     Mixed: [false, 1, 1],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['integer', 42, {
@@ -79,7 +79,7 @@ export default [
     RegExp: [false, new _RegExp(42), new _RegExp(42)],
     Any: [true, 42, 42, 42],
     Mixed: [false, 42, 42],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['not a number', NaN, {
@@ -93,7 +93,7 @@ export default [
     RegExp: [false, NaN, 'throw'],
     Any: [true, NaN, NaN, NaN],
     Mixed: [false, NaN, NaN],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['infinity', Infinity, {
@@ -107,7 +107,7 @@ export default [
     RegExp: [false, Infinity, 'throw'],
     Any: [true, Infinity, Infinity, Infinity],
     Mixed: [false, Infinity, Infinity],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['decimal', 1.34, {
@@ -121,7 +121,7 @@ export default [
     RegExp: [false, new _RegExp(1.34), new _RegExp(1.34)],
     Any: [true, 1.34, 1.34, 1.34],
     Mixed: [false, 1.34, 1.34],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['negative', -24, {
@@ -135,7 +135,7 @@ export default [
     RegExp: [false, new _RegExp(-24), new _RegExp(-24)],
     Any: [true, -24, -24, -24],
     Mixed: [false, -24, -24],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['empty string', '', {
@@ -149,7 +149,7 @@ export default [
     RegExp: [false, '', 'throw'],
     Any: [true, '', '', ''],
     Mixed: [false, '', ''],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['string', 'abc', {
@@ -163,7 +163,7 @@ export default [
     RegExp: [false, new _RegExp('abc'), new _RegExp('abc')],
     Any: [true, 'abc', 'abc', 'abc'],
     Mixed: [false, 'abc', 'abc'],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['numeric string', '1', {
@@ -177,7 +177,7 @@ export default [
     RegExp: [false, new _RegExp('1'), new _RegExp('1')],
     Any: [true, '1', '1', '1'],
     Mixed: [false, '1', '1'],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['numeric string 0', '0', {
@@ -191,7 +191,7 @@ export default [
     RegExp: [false, new _RegExp('0'), new _RegExp('0')],
     Any: [true, '0', '0', '0'],
     Mixed: [false, '0', '0'],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['true', true, {
@@ -205,7 +205,7 @@ export default [
     RegExp: [false, true, 'throw'],
     Any: [true, true, true, true],
     Mixed: [false, true, true],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['false', false, {
@@ -219,7 +219,7 @@ export default [
     RegExp: [false, false, 'throw'],
     Any: [true, false, false, false],
     Mixed: [false, false, false],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['date', date, {
@@ -234,7 +234,7 @@ export default [
     RegExp: [false, date, 'throw'],
     Any: [true, date, date, date],
     Mixed: [false, date, date],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['empty object', {}, {
@@ -248,7 +248,7 @@ export default [
     RegExp: [false, {}, 'throw'],
     Any: [true, {}, {}, {}],
     Mixed: [false, {}, {}],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['Object', object, {
@@ -262,7 +262,7 @@ export default [
     RegExp: [false, object, 'throw'],
     Any: [true, object, object, object],
     Mixed: [false, object, object],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['empty array', [], {
@@ -276,7 +276,7 @@ export default [
     RegExp: [false, [], 'throw'],
     Any: [true, [], []],
     Mixed: [false, [], []],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['array of numbers', [1, 2, 3], {
@@ -290,7 +290,7 @@ export default [
     RegExp: [false, [1, 2, 3], 'throw'],
     Any: [true, [1, 2, 3], [1, 2, 3], [1, 2, 3]],
     Mixed: [false, [1, 2, 3], [1, 2, 3]],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['Model', model, {
@@ -304,7 +304,7 @@ export default [
     RegExp: [false, model, 'throw'],
     Any: [true, model, model, model],
     Mixed: [false, model, model],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['Error', error, {
@@ -322,7 +322,7 @@ export default [
     RegExp: [false, error, 'throw'],
     Any: [true, error, error, error],
     Mixed: [false, error, error],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['RegExp', regex, {
@@ -336,7 +336,7 @@ export default [
     RegExp: [true, regex, new _RegExp(regex)],
     Any: [true, regex, regex, regex],
     Mixed: [false, regex, regex],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['Valid mixed', 'http://google.com', {
@@ -351,7 +351,7 @@ export default [
       new _RegExp('http://google.com')],
     Any: [true, 'http://google.com', 'http://google.com'],
     Mixed: [true, 'http://google.com', 'http://google.com'],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['Invalid mixed', 'hello', {
@@ -365,7 +365,7 @@ export default [
     RegExp: [false, new _RegExp('hello'), new _RegExp('hello')],
     Any: [true, 'hello', 'hello'],
     Mixed: [false, 'hello', 'hello'],
-    Embed: [false, {}, {}],
+    Embed: [false, {}, 'throw'],
   }],
 
   ['Valid embedded', {number: 100}, {
@@ -393,7 +393,7 @@ export default [
     RegExp: [false, {number: {}}, 'throw'],
     Any: [true, {number: {}}, {number: {}}],
     Mixed: [false, {number: {}}, {number: {}}],
-    Embed: [false, {number: NaN}, {number: NaN}],
+    Embed: [false, {number: NaN}, 'throw'],
   }],
 
   ['Semi-valid embedded', {number: '1'}, {

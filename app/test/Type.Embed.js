@@ -1,6 +1,5 @@
 /* global describe it */
 import should from 'should';
-import _ from 'lodash';
 import embed from '../lib/Type/Embed';
 import Schema from '../lib/Schema';
 import validaters from '../test-utils/validators';
@@ -27,6 +26,18 @@ function convertEmbed(type, value, expected) {
   });
 }
 
+function setEmbed(type, value, expected) {
+  describe(`Set ${type} to Embed`, () => {
+    it('should be the expected value', () => {
+      if (expected === 'throw') {
+        should(() => embedded.set(value)).throw();
+      } else {
+        should(embedded.set(value)).be.eql(expected);
+      }
+    });
+  });
+}
+
 const arrayValidaters = validaters.map(validater => [
   validater[0],
   validater[1],
@@ -39,11 +50,20 @@ const arrayConverters = validaters.map(validater => [
   validater[2].Embed[1],
 ]);
 
+const arraySetters = validaters.map(validater => [
+  validater[0],
+  validater[1],
+  validater[2].Embed[2],
+]);
+
 describe('Embed type', () => {
   describe('Validate', () => {
     arrayValidaters.forEach((validater) => validateEmbed(...validater));
   });
   describe('Convert', () => {
     arrayConverters.forEach((converter) => convertEmbed(...converter));
+  });
+  describe('Set', () => {
+    arraySetters.forEach((setter) => setEmbed(...setter));
   });
 });
