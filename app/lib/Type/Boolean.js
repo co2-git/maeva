@@ -1,5 +1,8 @@
 // @flow
-export default class _Boolean {
+
+import {Set} from './set';
+
+export default class _Boolean extends Set {
   static validate(value: any): boolean {
     return typeof value === 'boolean';
   }

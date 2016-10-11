@@ -33,6 +33,8 @@ export default class MaevaError extends ExtendableError {
   static INVALID_FIELD_SYNTAX = 12;
   static FIELD_VALIDATOR_FAILED = 13;
   static COULD_NOT_APPLY_ID = 14;
+  static FAILED_VALIDATING_FIELD_VALUE = 15;
+  static FAILED_SETTING_VALUE_TO_TYPE = 16;
   static errorMessages = [
     '',
     'Failed building schema from object',
@@ -50,8 +52,10 @@ export default class MaevaError extends ExtendableError {
     'Object could not be converted to Field for invalid syntax',
     'Field validator returned false for this field value',
     'Could not apply connector id',
+    'Failed validating field value',
+    'Failed setting value to type',
   ];
-  static rethrow(error: Error, message: string, options: Object = {}
+  static rethrow(error: Error, message: string|number, options: Object = {}
   ): MaevaError {
     return new MaevaError(message, {...options, error});
   }

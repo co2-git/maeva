@@ -1,3 +1,4 @@
+/* global describe it */
 import should from 'should';
 import _Number from '../lib/Type/Number';
 import validaters from '../test-utils/validators';
@@ -22,6 +23,18 @@ function convertNumber(type, value, expected) {
   });
 }
 
+function setNumber(type, value, expected) {
+  describe(`Set ${type} to Number`, () => {
+    it('should be the expected value', () => {
+      if (expected === 'throw') {
+        should(() => _Number.set(value)).throw();
+      } else {
+        should(_Number.set(value)).be.eql(expected);
+      }
+    });
+  });
+}
+
 const arrayValidaters = validaters.map(validater => [
   validater[0],
   validater[1],
@@ -34,11 +47,20 @@ const arrayConverters = validaters.map(validater => [
   validater[2].Number[1],
 ]);
 
+const arraySetters = validaters.map(validater => [
+  validater[0],
+  validater[1],
+  validater[2].Number[2],
+]);
+
 describe('Number type', () => {
   describe('Validate', () => {
     arrayValidaters.forEach((validater) => validateNumber(...validater));
   });
   describe('Convert', () => {
     arrayConverters.forEach((converter) => convertNumber(...converter));
+  });
+  describe('Set', () => {
+    arraySetters.forEach((setter) => setNumber(...setter));
   });
 });

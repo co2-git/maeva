@@ -1,5 +1,8 @@
 // @flow
-export default class _Date {
+
+import {Set} from './set';
+
+export default class _Date extends Set {
   static validate(value: any): boolean {
     return value instanceof Date && value.toString() !== 'Invalid Date';
   }

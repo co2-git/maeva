@@ -85,14 +85,8 @@ export default class Model {
     }
     return `${this.name.toLowerCase()}s`;
   }
-  static validate(model: any): boolean {
-    if (model instanceof Model) {
-      return true;
-    }
-    if (model && _.isObject(model) && !_.isArray(model) && model.$$id) {
-      return true;
-    }
-    return false;
+  static validate(): boolean {
+    return true;
   }
   static convert(value: any): Model|any {
     return value;

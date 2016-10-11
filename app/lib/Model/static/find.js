@@ -1,4 +1,5 @@
 // @flow
+
 import Model from '../../Model';
 export
 type ARGS = Array<[?Object, ?Object]>;
@@ -8,6 +9,7 @@ type RETURN = Promise<Model[]>;
 export default function find(query: Object = {}, options: Object = {}): RETURN {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log({find: {query, options}});
       const {model, statement: get, conn} = await this.makeStatement(query);
       const found = await conn.operations.find({
         model: this,

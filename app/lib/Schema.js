@@ -1,79 +1,91 @@
 // @flow
 import _ from 'lodash';
+import maeva from './Connection';
 import Field from './Field';
+import {Embed as embed} from './Type';
 import MaevaError from './Error';
-import set from './utils/set';
-
-function validate(object: Object, schema: Schema) {
-  for (const field in object) {
-    set(field, object[field], schema);
-  }
-}
-
-function convert(object, schema) {
-  const converted = {};
-  for (const field in object) {
-    converted[field] = set(field, object[field], schema);
-  }
-  return converted;
-}
+import isObject from './utils/isObject';
 
 export default class Schema {
-  static validate(value: any): boolean {
-    return value instanceof this;
-  }
-  static convert(value: any): Schema|any {
-    return value && typeof value === 'object' ? new this(value) : value;
-  }
-  constructor(schema: Object) {
+  constructor(schema: Object = {}) {
     for (const field in schema) {
       try {
-        let structure;
+        let structure = schema[field];
         // {field: Type}
         if (_.isFunction(schema[field])) {
-          structure = new Field({type: schema[field]});
-        // {field: new Schema()}
-        } else if (schema[field] instanceof Schema) {
-          const embedded = (value) => value;
-          embedded.embeddedMaevaSchema = schema[field];
-          embedded.validate = (value: any) => {
-            validate(value, schema[field]);
-            return true;
-          };
-          embedded.convert =
-            (value: any) => convert(value, schema[field]);
-          structure = new Field({type: embedded});
-        // {field: {type: new Schema()}}
-        } else if (schema[field].type instanceof Schema) {
-          const embedded = (value) => value;
-          embedded.embeddedMaevaSchema = schema[field].type;
-          embedded.validate = (value: any) => {
-            validate(value, schema[field].type);
-            return true;
-          };
-          embedded.convert =
-            (value: any) => convert(value, schema[field].type);
-          structure = new Field({
+          structure = {type: schema[field]};
+        // {field: new Schema}
+        } else if (schema[field] instanceof this) {
+          structure = {type: embed(schema[field])};
+        // {field: {type: new Schema}}
+        } else if (schema[field].type instanceof this) {
+          structure = {
             ...schema[field],
-            type: embedded,
-          });
-        // {field: {type: Type}}
-        } else if (typeof schema[field].type === 'function') {
-          structure = new Field(schema[field]);
-        // !!! invalid
-        } else {
-          throw new MaevaError(MaevaError.INVALID_FIELD_SYNTAX, {
-            field: {[field]: schema[field]},
-          });
+            type: embed(schema[field].type),
+          };
         }
-        Object.assign(this, {[field]: structure});
+        Object.assign(this, {[field]: new Field(structure)});
       } catch (error) {
         throw MaevaError.rethrow(
           error,
-          'Could not build schema field',
-          {field, code: MaevaError.FAILED_BUILDING_SCHEMA_FIELD},
+          MaevaError.FAILED_BUILDING_SCHEMA_FIELD,
+          {schema, field},
         );
       }
     }
+  }
+  validate(document: Object = {}): boolean {
+    if (!isObject(document)) {
+      return false;
+    }
+    const fields = {};
+    for (const field in document) {
+      try {
+        if (!(field in this)) {
+          maeva.events.emit('warning', new MaevaError(
+            MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
+            {document, field, schema: this}
+          ));
+          fields[field] = {
+            valid: false,
+            reason: MaevaError.errorMessages[
+              MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA
+            ],
+          };
+        } else {
+          fields[field] = {
+            valid: this[field].validate(document[field]),
+          };
+        }
+      } catch (error) {
+        throw MaevaError.rethrow(
+          error,
+          MaevaError.FAILED_BUILDING_SCHEMA_FIELD,
+          {document, field, schema: this},
+        );
+      }
+    }
+    const valid = [];
+    for (const field in fields) {
+      valid.push(fields[field].valid);
+    }
+    if (valid.length !== Object.keys(this).length) {
+      return false;
+    }
+    return valid.every(field => field);
+  }
+  convert(document: Object = {}): Object {
+    const converted = {};
+    for (const field in document) {
+      if (!(field in this)) {
+        maeva.events.emit('warning', new MaevaError(
+          MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
+          {document, field, schema: this}
+        ));
+      } else {
+        converted[field] = this[field].convert(document[field]);
+      }
+    }
+    return converted;
   }
 }
