@@ -23,6 +23,14 @@ function convertModel(type, value, expected) {
   });
 }
 
+function setModel(type, value, expected) {
+  describe(`Set ${type} to Model`, () => {
+    it('should be the expected value', () => {
+      should(Model.set(value)).be.eql(expected);
+    });
+  });
+}
+
 const arrayValidaters = validaters.map(validater => [
   validater[0],
   validater[1],
@@ -35,11 +43,20 @@ const arrayConverters = validaters.map(validater => [
   validater[2].Model[1],
 ]);
 
+const arraySetters = validaters.map(validater => [
+  validater[0],
+  validater[1],
+  validater[2].Model[2],
+]);
+
 describe('Model type', () => {
   describe('Validate', () => {
     arrayValidaters.forEach((validater) => validateModel(...validater));
   });
   describe('Convert', () => {
     arrayConverters.forEach((converter) => convertModel(...converter));
+  });
+  describe('Set', () => {
+    arraySetters.forEach((setter) => setModel(...setter));
   });
 });

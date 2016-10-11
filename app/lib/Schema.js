@@ -15,10 +15,17 @@ export default class Schema {
         if (_.isFunction(schema[field])) {
           structure = {type: schema[field]};
         // {field: new Schema}
-        } else if (schema[field] instanceof this) {
+        } else if (
+          isObject(schema[field]) &&
+          schema[field] instanceof this.constructor
+        ) {
           structure = {type: embed(schema[field])};
         // {field: {type: new Schema}}
-        } else if (schema[field].type instanceof this) {
+        } else if (
+          schema[field].type &&
+          !_.isFunction(schema[field].type) &&
+          schema[field].type instanceof this.constructor
+        ) {
           structure = {
             ...schema[field],
             type: embed(schema[field].type),

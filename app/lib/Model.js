@@ -12,6 +12,8 @@ import type {
   RETURN as PRINTSCHEMA_RETURN,
 } from './utils/printSchema';
 import set from './utils/set';
+// Model extends
+import ModelType from './Model/extend/Type';
 // Model static methods
 import create from './Model/static/create';
 import type {ARGS as CREATE_ARGS} from './Model/static/create';
@@ -43,7 +45,7 @@ import runValidators from './Model/runValidators';
 
 import type {MODEL_CONSTRUCTOR_OPTIONS} from './flow';
 
-export default class Model {
+export default class Model extends ModelType {
   static isMaevaModel = true;
   static getInfo(options = {}) {
     let schema = false;
@@ -84,12 +86,6 @@ export default class Model {
       return this._collectionName;
     }
     return `${this.name.toLowerCase()}s`;
-  }
-  static validate(): boolean {
-    return true;
-  }
-  static convert(value: any): Model|any {
-    return value;
   }
   static create(...args: CREATE_ARGS) {
     return create.apply(this, args);
@@ -168,6 +164,7 @@ export default class Model {
     document: ?Object = {},
     options: MODEL_CONSTRUCTOR_OPTIONS|Object = {}
   ) {
+    super();
     const modelSchema = this.constructor.getSchema();
     let schema;
     if (options.conn) {

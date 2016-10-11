@@ -44,6 +44,18 @@ function convertMixed(type, value, expected) {
   });
 }
 
+function setMixed(type, value, expected) {
+  describe(`Set ${type} to Mixed`, () => {
+    it('should be the expected value', () => {
+      if (expected === 'throw') {
+        should(() => mixed.set(value)).throw();
+      } else {
+        should(mixed.set(value)).be.eql(expected);
+      }
+    });
+  });
+}
+
 const arrayValidaters = validaters.map(validater => [
   validater[0],
   validater[1],
@@ -56,11 +68,20 @@ const arrayConverters = validaters.map(validater => [
   validater[2].Mixed[1],
 ]);
 
+const arraySetters = validaters.map(validater => [
+  validater[0],
+  validater[1],
+  validater[2].Mixed[2],
+]);
+
 describe('Mixed type', () => {
   describe('Validate', () => {
     arrayValidaters.forEach((validater) => validateMixed(...validater));
   });
   describe('Convert', () => {
     arrayConverters.forEach((converter) => convertMixed(...converter));
+  });
+  describe('Set', () => {
+    arraySetters.forEach((setter) => setMixed(...setter));
   });
 });
