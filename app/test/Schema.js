@@ -77,7 +77,9 @@ describe('Schema', () => {
       describe('Short notation', () => {
         it('should convert to Type.Array', () => {
           const schema = new Schema({arrayOfStrings: Array.of(String)});
-          should(schema.arrayOfStrings.type).be.a.Function();
+          should(schema.arrayOfStrings.type)
+            .be.a.Function()
+            .and.have.property('isMaevaArray').which.is.true();
         });
       });
       describe('Long notation', () => {
@@ -85,7 +87,9 @@ describe('Schema', () => {
           const schema = new Schema({arrayOfStrings: {
             type: Array.of(String),
           }});
-          should(schema.arrayOfStrings.type).be.a.Function();
+          should(schema.arrayOfStrings.type)
+            .be.a.Function()
+            .and.have.property('isMaevaArray').which.is.true();
         });
       });
     });
@@ -93,7 +97,9 @@ describe('Schema', () => {
       describe('Short notation', () => {
         it('should convert to Type.Array', () => {
           const schema = new Schema({arrayOfStrings: Type.Array(String)});
-          should(schema.arrayOfStrings.type).be.a.Function();
+          should(schema.arrayOfStrings.type)
+            .be.a.Function()
+            .and.have.property('isMaevaArray').which.is.true();
         });
       });
       describe('Long notation', () => {
@@ -101,7 +107,9 @@ describe('Schema', () => {
           const schema = new Schema({arrayOfStrings: {
             type: Type.Array(String),
           }});
-          should(schema.arrayOfStrings.type).be.a.Function();
+          should(schema.arrayOfStrings.type)
+            .be.a.Function()
+            .and.have.property('isMaevaArray').which.is.true();
         });
       });
     });
@@ -109,7 +117,9 @@ describe('Schema', () => {
       describe('Short notation', () => {
         it('should convert to Type.Array', () => {
           const schema = new Schema({arrayOfStrings: [String]});
-          should(schema.arrayOfStrings.type).be.a.Function();
+          should(schema.arrayOfStrings.type)
+            .be.a.Function()
+            .and.have.property('isMaevaArray').which.is.true();
         });
       });
       describe('Long notation', () => {
@@ -117,7 +127,71 @@ describe('Schema', () => {
           const schema = new Schema({arrayOfStrings: {
             type: [String],
           }});
-          should(schema.arrayOfStrings.type).be.a.Function();
+          should(schema.arrayOfStrings.type)
+            .be.a.Function()
+            .and.have.property('isMaevaArray').which.is.true();
+        });
+      });
+    });
+  });
+  describe('Tuple', () => {
+    describe('Array.of syntax', () => {
+      describe('Short notation', () => {
+        it('should convert to Type.Tuple', () => {
+          const schema = new Schema({tuples: Array.of(String, Number)});
+          should(schema.tuples.type)
+            .be.a.Function()
+            .and.have.property('isMaevaTuple').which.is.true();
+        });
+      });
+      describe('Long notation', () => {
+        it('should convert to Type.Tuple', () => {
+          const schema = new Schema({tuples: {
+            type: Array.of(String, Number),
+          }});
+          should(schema.tuples.type)
+            .be.a.Function()
+            .and.have.property('isMaevaTuple').which.is.true();
+        });
+      });
+    });
+    describe('Type.Tuple syntax', () => {
+      describe('Short notation', () => {
+        it('should convert to Type.Tuple', () => {
+          const schema = new Schema({tuples: Type.Tuple(String, Number)});
+          should(schema.tuples.type)
+            .be.a.Function()
+            .and.have.property('isMaevaTuple').which.is.true();
+        });
+      });
+      describe('Long notation', () => {
+        it('should convert to Type.Tuple', () => {
+          const schema = new Schema({tuples: {
+            type: Type.Tuple(String, Number),
+          }});
+          should(schema.tuples.type)
+            .be.a.Function()
+            .and.have.property('isMaevaTuple').which.is.true();
+        });
+      });
+    });
+    describe('[] syntax', () => {
+      describe('Short notation', () => {
+        it('should convert to Type.Tuple', () => {
+          const schema = new Schema({tuples: [String, Number]});
+          should(schema.tuples.type)
+            .be.a.Function()
+            .and.have.property('isMaevaTuple').which.is.true();
+        });
+      });
+      describe('Long notation', () => {
+        it('should convert to Type.Tuple', () => {
+          const schema = new Schema({tuples: {
+            type: [String, Number],
+          }});
+          should(schema.tuples.type)
+            .be.a.Function()
+            .and.have.property('isMaevaTuple').which.is.true();
         });
       });
     });

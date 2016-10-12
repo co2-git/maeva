@@ -5,6 +5,7 @@ import Field from './Field';
 import {
   Embed as embed,
   Array as array,
+  Tuple as tuple,
 } from './Type';
 import MaevaError from './Error';
 import isObject from './utils/isObject';
@@ -19,7 +20,11 @@ export default class Schema {
           structure = {type: schema[field]};
         // {field: Array(1)}
         } else if (_.isArray(schema[field])) {
-          structure = {type: array(schema[field][0])};
+          if (schema[field].length === 1) {
+            structure = {type: array(schema[field][0])};
+          } else if (schema[field].length > 1) {
+            structure = {type: tuple(...schema[field])};
+          }
         // {field: new Schema}
         } else if (
           isObject(schema[field]) &&
@@ -42,10 +47,17 @@ export default class Schema {
           !_.isFunction(schema[field].type) &&
           _.isArray(schema[field].type)
         ) {
-          structure = {
-            ...schema[field],
-            type: array(schema[field].type[0]),
-          };
+          if (schema[field].type.length === 1) {
+            structure = {
+              ...schema[field],
+              type: array(schema[field].type[0]),
+            };
+          } else if (schema[field].type.length > 1) {
+            structure = {
+              ...schema[field],
+              type: tuple(...schema[field].type),
+            };
+          }
         }
         Object.assign(this, {[field]: new Field(structure)});
       } catch (error) {

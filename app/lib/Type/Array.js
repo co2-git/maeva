@@ -11,6 +11,7 @@ export default function _Array(_type: Function|Schema) {
     _type instanceof Schema ? embed(_type) : _type
   );
   const fn = () => type;
+  fn.isMaevaArray = true;
   fn.validate = (value: any): boolean =>
     _.isArray(value) && value.every(type.validate);
   fn.convert = (value: any): any => {

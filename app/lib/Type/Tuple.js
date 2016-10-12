@@ -11,6 +11,7 @@ export default function Tuple(..._types: Array<Function|Schema>): Function {
     _type instanceof Schema ? embed(_type) : _type
   ));
   const fn = () => types;
+  fn.isMaevaTuple = true;
   fn.validate = (value: any): boolean => {
     if (!_.isArray(value)) {
       return false;
