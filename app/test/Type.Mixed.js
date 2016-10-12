@@ -11,6 +11,9 @@ class Email {
   static convert(value) {
     return value;
   }
+  static set(value) {
+    return value;
+  }
 }
 
 class URL {
@@ -18,6 +21,9 @@ class URL {
     return _.isString(value) && /^https?:\/\/.+$/.test(value);
   }
   static convert(value) {
+    return value;
+  }
+  static set(value) {
     return value;
   }
 }

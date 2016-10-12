@@ -2,7 +2,10 @@
 import _ from 'lodash';
 import maeva from './Connection';
 import Field from './Field';
-import {Embed as embed} from './Type';
+import {
+  Embed as embed,
+  Array as array,
+} from './Type';
 import MaevaError from './Error';
 import isObject from './utils/isObject';
 
@@ -14,6 +17,9 @@ export default class Schema {
         // {field: Type}
         if (_.isFunction(schema[field])) {
           structure = {type: schema[field]};
+        // {field: Array(1)}
+        } else if (_.isArray(schema[field])) {
+          structure = {type: array(schema[field])};
         // {field: new Schema}
         } else if (
           isObject(schema[field]) &&
@@ -29,6 +35,16 @@ export default class Schema {
           structure = {
             ...schema[field],
             type: embed(schema[field].type),
+          };
+        // {field: {type: Array(1)}}
+        } else if (
+          schema[field].type &&
+          !_.isFunction(schema[field].type) &&
+          _.isArray(schema[field].type)
+        ) {
+          structure = {
+            ...schema[field],
+            type: array(schema[field].type),
           };
         }
         Object.assign(this, {[field]: new Field(structure)});
@@ -61,7 +77,7 @@ export default class Schema {
           };
         } else {
           fields[field] = {
-            valid: this[field].validate(document[field]),
+            valid: this.get(field).validate(document[field]),
           };
         }
       } catch (error) {
@@ -90,9 +106,17 @@ export default class Schema {
           {document, field, schema: this}
         ));
       } else {
-        converted[field] = this[field].convert(document[field]);
+        converted[field] = this.get(field).convert(document[field]);
       }
     }
     return converted;
+  }
+  get(field: string): Field {
+    if (!(field in this)) {
+      throw new MaevaError(MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA, {
+        field, schema: this,
+      });
+    }
+    return this[field];
   }
 }

@@ -4,6 +4,8 @@ import _Number from './Number';
 import _String from './String';
 import _Boolean from './Boolean';
 import _Date from './Date';
+import _Error from './Error';
+import _RegExp from './RegExp';
 
 export default function associate(type: Function): Function {
   switch (type) {
@@ -11,8 +13,10 @@ export default function associate(type: Function): Function {
   case String: return _String;
   case Boolean: return _Boolean;
   case Date: return _Date;
+  case RegExp: return _RegExp;
+  case Error: return _Error;
   default: {
-    if (!type.validate || !type.convert) {
+    if (!type.validate || !type.convert || !type.set) {
       let typeName;
       if (typeof type === 'function') {
         typeName = type.name;

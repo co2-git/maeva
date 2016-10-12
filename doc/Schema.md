@@ -95,8 +95,26 @@ new Schema({
 
 ### Array
 
+You have three ways to declare an array of type:
+
 ```javascript
 new Schema({
+  scores: Array.of(Number),
+  // or
+  scores: Type.Array(Number),
+  // or
   scores: [Number],
+});
+```
+
+### Tuple
+
+You have three ways to declare a tuple:
+
+```javascript
+new Schema({
+  field: Type.Tuple(Number, String),
+  field: [Number, String],
+  field: Array.of(Number, String)
 });
 ```

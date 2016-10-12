@@ -9,3 +9,4 @@ export {default as Error} from './Type/Error';
 export {default as Any} from './Type/Any';
 export {default as Mixed} from './Type/Mixed';
 export {default as Embed} from './Type/Embed';
+export {default as Array} from './Type/Array';

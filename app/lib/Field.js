@@ -44,4 +44,7 @@ export default class Field {
   validate(value) {
     return this.$type.validate(value);
   }
+  set(value) {
+    return this.$type.set(value);
+  }
 }
