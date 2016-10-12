@@ -6,7 +6,7 @@ import {set} from './set';
 import associate from './associate';
 import embed from './embed';
 
-export default function Array(_type: Function|Schema) {
+export default function _Array(_type: Function|Schema) {
   const type = associate(
     _type instanceof Schema ? embed(_type) : _type
   );

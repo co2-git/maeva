@@ -25,6 +25,7 @@ export default [
     Any: [true, _undefined, _undefined],
     Mixed: [false, _undefined, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, _undefined, 'throw'],
   }],
 
   ['null', null, {
@@ -39,6 +40,7 @@ export default [
     Any: [true, null, null, null],
     Mixed: [false, null, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, null, 'throw'],
   }],
 
   ['number 0', 0, {
@@ -53,6 +55,7 @@ export default [
     Any: [true, 0, 0, 0],
     Mixed: [false, 0, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, 0, 'throw'],
   }],
 
   ['number 1', 1, {
@@ -67,6 +70,7 @@ export default [
     Any: [true, 1, 1],
     Mixed: [false, 1, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, 1, 'throw'],
   }],
 
   ['integer', 42, {
@@ -81,6 +85,7 @@ export default [
     Any: [true, 42, 42, 42],
     Mixed: [false, 42, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, 42, 'throw'],
   }],
 
   ['not a number', NaN, {
@@ -95,6 +100,7 @@ export default [
     Any: [true, NaN, NaN, NaN],
     Mixed: [false, NaN, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, NaN, 'throw'],
   }],
 
   ['infinity', Infinity, {
@@ -109,6 +115,7 @@ export default [
     Any: [true, Infinity, Infinity, Infinity],
     Mixed: [false, Infinity, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, Infinity, 'throw'],
   }],
 
   ['decimal', 1.34, {
@@ -123,6 +130,7 @@ export default [
     Any: [true, 1.34, 1.34, 1.34],
     Mixed: [false, 1.34, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, 1.34, 'throw'],
   }],
 
   ['negative', -24, {
@@ -137,6 +145,7 @@ export default [
     Any: [true, -24, -24, -24],
     Mixed: [false, -24, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, -24, 'throw'],
   }],
 
   ['empty string', '', {
@@ -151,6 +160,7 @@ export default [
     Any: [true, '', '', ''],
     Mixed: [false, '', 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, '', 'throw'],
   }],
 
   ['string', 'abc', {
@@ -165,6 +175,7 @@ export default [
     Any: [true, 'abc', 'abc', 'abc'],
     Mixed: [false, 'abc', 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, 'abc', 'throw'],
   }],
 
   ['numeric string', '1', {
@@ -179,6 +190,7 @@ export default [
     Any: [true, '1', '1', '1'],
     Mixed: [false, '1', 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, '1', 'throw'],
   }],
 
   ['numeric string 0', '0', {
@@ -193,6 +205,7 @@ export default [
     Any: [true, '0', '0', '0'],
     Mixed: [false, '0', 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, '0', 'throw'],
   }],
 
   ['true', true, {
@@ -207,6 +220,7 @@ export default [
     Any: [true, true, true, true],
     Mixed: [false, true, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, true, 'throw'],
   }],
 
   ['false', false, {
@@ -221,6 +235,7 @@ export default [
     Any: [true, false, false, false],
     Mixed: [false, false, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, false, 'throw'],
   }],
 
   ['date', date, {
@@ -236,6 +251,7 @@ export default [
     Any: [true, date, date, date],
     Mixed: [false, date, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, date, 'throw'],
   }],
 
   ['empty object', {}, {
@@ -250,6 +266,7 @@ export default [
     Any: [true, {}, {}, {}],
     Mixed: [false, {}, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, {}, 'throw'],
   }],
 
   ['Object', object, {
@@ -264,6 +281,7 @@ export default [
     Any: [true, object, object, object],
     Mixed: [false, object, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, object, 'throw'],
   }],
 
   ['empty array', [], {
@@ -278,6 +296,7 @@ export default [
     Any: [true, [], []],
     Mixed: [false, [], 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, [], 'throw'],
   }],
 
   ['array of numbers', arrayOfNumbers, {
@@ -292,6 +311,7 @@ export default [
     Any: [true, arrayOfNumbers, arrayOfNumbers],
     Mixed: [false, arrayOfNumbers, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, arrayOfNumbers, 'throw'],
   }],
 
   ['array of strings', ['a', 'b', 'c'], {
@@ -306,6 +326,7 @@ export default [
     Any: [true, ['a', 'b', 'c'], ['a', 'b', 'c']],
     Mixed: [false, ['a', 'b', 'c'], 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, ['a', 'b', 'c'], 'throw'],
   }],
 
   ['array of a string then a number', ['a', 1], {
@@ -320,6 +341,7 @@ export default [
     Any: [true, ['a', 1], ['a', 1]],
     Mixed: [false, ['a', 1], 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [true, ['a', 1], ['a', 1]],
   }],
 
   ['Model', model, {
@@ -334,6 +356,7 @@ export default [
     Any: [true, model, model, model],
     Mixed: [false, model, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, model, 'throw'],
   }],
 
   ['Error', error, {
@@ -352,6 +375,7 @@ export default [
     Any: [true, error, error, error],
     Mixed: [false, error, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, error, 'throw'],
   }],
 
   ['RegExp', regex, {
@@ -366,6 +390,7 @@ export default [
     Any: [true, regex, regex, regex],
     Mixed: [false, regex, 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, regex, 'throw'],
   }],
 
   ['Valid mixed', 'http://google.com', {
@@ -381,6 +406,7 @@ export default [
     Any: [true, 'http://google.com', 'http://google.com'],
     Mixed: [true, 'http://google.com', 'http://google.com'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, 'http://google.com', 'throw'],
   }],
 
   ['Invalid mixed', 'hello', {
@@ -395,6 +421,7 @@ export default [
     Any: [true, 'hello', 'hello'],
     Mixed: [false, 'hello', 'throw'],
     Embed: [false, {}, 'throw'],
+    Tuple: [false, 'hello', 'throw'],
   }],
 
   ['Valid embedded', {number: 100}, {
@@ -409,6 +436,7 @@ export default [
     Any: [true, {number: 100}, {number: 100}],
     Mixed: [false, {number: 100}, 'throw'],
     Embed: [true, {number: 100}, {number: 100}],
+    Tuple: [false, {number: 100}, 'throw'],
   }],
 
   ['Invalid embedded', {number: {}}, {
@@ -423,6 +451,7 @@ export default [
     Any: [true, {number: {}}, {number: {}}],
     Mixed: [false, {number: {}}, 'throw'],
     Embed: [false, {number: NaN}, 'throw'],
+    Tuple: [false, {number: {}}, 'throw'],
   }],
 
   ['Semi-valid embedded', {number: '1'}, {
@@ -437,5 +466,6 @@ export default [
     Any: [true, {number: '1'}, {number: '1'}],
     Mixed: [false, {number: '1'}, 'throw'],
     Embed: [false, {number: 1}, {number: 1}],
+    Tuple: [false, {number: '1'}, 'throw'],
   }],
 ];
