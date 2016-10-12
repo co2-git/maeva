@@ -2,6 +2,7 @@
 import should from 'should';
 import Schema from '../lib/Schema';
 import Field from '../lib/Field';
+import * as Type from '../lib/Type';
 
 describe('Schema', () => {
   describe('Short notation', () => {
@@ -69,6 +70,56 @@ describe('Schema', () => {
       should(schema).have.property('foo').which.is.an.Object();
       should(schema.foo).have.property('type').which.is.a.Function();
       should(schema.foo).have.property('required').which.is.true();
+    });
+  });
+  describe('Array', () => {
+    describe('Array.of syntax', () => {
+      describe('Short notation', () => {
+        it('should convert to Type.Array', () => {
+          const schema = new Schema({arrayOfStrings: Array.of(String)});
+          should(schema.arrayOfStrings.type).be.a.Function();
+        });
+      });
+      describe('Long notation', () => {
+        it('should convert to Type.Array', () => {
+          const schema = new Schema({arrayOfStrings: {
+            type: Array.of(String),
+          }});
+          should(schema.arrayOfStrings.type).be.a.Function();
+        });
+      });
+    });
+    describe('Type.Array syntax', () => {
+      describe('Short notation', () => {
+        it('should convert to Type.Array', () => {
+          const schema = new Schema({arrayOfStrings: Type.Array(String)});
+          should(schema.arrayOfStrings.type).be.a.Function();
+        });
+      });
+      describe('Long notation', () => {
+        it('should convert to Type.Array', () => {
+          const schema = new Schema({arrayOfStrings: {
+            type: Type.Array(String),
+          }});
+          should(schema.arrayOfStrings.type).be.a.Function();
+        });
+      });
+    });
+    describe('[] syntax', () => {
+      describe('Short notation', () => {
+        it('should convert to Type.Array', () => {
+          const schema = new Schema({arrayOfStrings: [String]});
+          should(schema.arrayOfStrings.type).be.a.Function();
+        });
+      });
+      describe('Long notation', () => {
+        it('should convert to Type.Array', () => {
+          const schema = new Schema({arrayOfStrings: {
+            type: [String],
+          }});
+          should(schema.arrayOfStrings.type).be.a.Function();
+        });
+      });
     });
   });
 });

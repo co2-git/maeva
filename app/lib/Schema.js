@@ -19,7 +19,7 @@ export default class Schema {
           structure = {type: schema[field]};
         // {field: Array(1)}
         } else if (_.isArray(schema[field])) {
-          structure = {type: array(schema[field])};
+          structure = {type: array(schema[field][0])};
         // {field: new Schema}
         } else if (
           isObject(schema[field]) &&
@@ -44,7 +44,7 @@ export default class Schema {
         ) {
           structure = {
             ...schema[field],
-            type: array(schema[field].type),
+            type: array(schema[field].type[0]),
           };
         }
         Object.assign(this, {[field]: new Field(structure)});
