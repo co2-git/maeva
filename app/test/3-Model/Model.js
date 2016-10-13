@@ -19,6 +19,14 @@ class Test extends Model {
       },
     }),
     numbers: [Number],
+    required: {
+      type: Date,
+      required: false,
+    },
+    validateMe: {
+      type: Number,
+      validate: (num) => num > 10,
+    },
   };
 }
 
@@ -26,7 +34,7 @@ const original = {
   string: 1,
 };
 
-describe.only('Model', () => {
+describe('Model', () => {
   let model;
   before(() => {
     model = new Test(original);
@@ -93,17 +101,31 @@ describe.only('Model', () => {
       });
     });
   });
-  describe('Make', () => {
-    let made;
-    before(() => {
-      made = model.make();
-    });
-    it('should return self', () => {
-      should(made).be.an.instanceOf(Model);
-    });
+  describe('Apply default', () => {
     it('should have set default values', () => {
+      model.applyDefault();
       should(model.number).eql(0);
       should(model.embedDefault.message).eql('hello');
+    });
+  });
+  describe('Required', () => {
+    it('should throw if required are missing', () => {
+      Test.schema.required.required = true;
+      should(() => model.ensureRequired()).throw();
+    });
+    it('should not throw if all required are present', () => {
+      model.set('required', new Date());
+      should(() => model.ensureRequired()).not.throw();
+    });
+  });
+  describe('Validators', () => {
+    it('should throw if validator fails', () => {
+      model.set('validateMe', 5);
+      should(() => model.runValidators()).throw();
+    });
+    it('should not throw if validator passes', () => {
+      model.set('validateMe', 15);
+      should(() => model.runValidators()).not.throw();
     });
   });
 });

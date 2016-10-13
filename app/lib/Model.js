@@ -2,10 +2,6 @@
 
 import _ from 'lodash';
 import ModelStatement from './Model/extend/Statement';
-import save from './Model/save';
-import ensureRequired from './Model/ensureRequired';
-import applyIds from './Model/applyIds';
-import runValidators from './Model/runValidators';
 import Schema from './Schema';
 import Connection from './Connection';
 import MaevaError from './Error';
@@ -68,6 +64,9 @@ export default class Model extends ModelStatement {
     }
     this.$old = this.toJSON();
   }
+  get(field: string): any {
+    return _.get(this.toJSON(), field);
+  }
   set(fieldName: string|Object, value: any): Model {
     // You can pass `this.set('foo', 1)` or `this.set({foo: 1})`
     // Next block deals with the latter
@@ -104,6 +103,8 @@ export default class Model extends ModelStatement {
   }
   make() {
     this.applyDefault();
+    this.ensureRequired();
+    this.runValidators();
     return this;
   }
   save(options: {}) {
@@ -126,12 +127,41 @@ export default class Model extends ModelStatement {
     return this;
   }
   ensureRequired() {
-    return ensureRequired.apply(this);
+    const required = this.constructor._getRequired();
+    const doc = this.toJSON();
+    for (const field in required) {
+      const currentValue = _.get(doc, field);
+      if (typeof currentValue === 'undefined' || currentValue === null) {
+        throw new MaevaError(MaevaError.MISSING_REQUIRED_FIELD, {
+          model: this.constructor._getInfo(),
+          field: required[field],
+          document: this.toJSON(),
+        });
+      }
+    }
+    return this;
   }
   runValidators() {
-    return runValidators.apply(this);
+    const validators = this.constructor._getValidators();
+    for (const field in validators) {
+      const isValid = validators[field].validator(this.get(field));
+      if (!isValid) {
+        throw new MaevaError(MaevaError.FIELD_VALIDATOR_FAILED, {
+          model: this.constructor._getInfo(),
+          field: validators[field],
+          document: this.toJSON(),
+        });
+      }
+    }
+    return this;
   }
-  applyIds() {
-    return applyIds.apply(this);
+  save(options: Object = {}) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.make();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 }
