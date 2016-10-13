@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash';
 import ModelStatement from './Model/extend/Statement';
 import save from './Model/save';
 import ensureRequired from './Model/ensureRequired';
@@ -18,6 +19,7 @@ export default class Model extends ModelStatement {
   $original: Model|Object;
   $changed: Object;
   $old: Model|Object;
+
   constructor(
     document: ?Object = {},
     options: MODEL_CONSTRUCTOR_OPTIONS|Object = {}
@@ -75,28 +77,34 @@ export default class Model extends ModelStatement {
       }
       return this;
     }
+    let field;
     try {
-      const field = this.$schema.get(fieldName);
+      field = this.$schema.get(fieldName);
       if (!field) {
         throw new MaevaError(MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA, {
           field,
           schema: this.$schema,
-          model: this.constructor.getInfo(),
+          model: this.constructor._getInfo(),
           document: this.toJSON(),
         });
       }
       const converted = field.set(value);
-      Object.assign(this, {[field]: converted});
-      this.$changed[field] = converted;
+      _.set(this, fieldName, converted);
+      _.set(this.$changed, fieldName, converted);
     } catch (error) {
       Connection.events.emit('warning', {
-        model: this.constructor.getInfo(),
+        model: this.constructor._getInfo(),
         message: error.message.split(/\n/),
+        field: field ? {[fieldName]: field} : fieldName,
         ...error,
       });
     } finally {
       return this;
     }
+  }
+  make() {
+    this.applyDefault();
+    return this;
   }
   save(options: {}) {
     return save.apply(this, [options]);
@@ -105,15 +113,17 @@ export default class Model extends ModelStatement {
     return {...this};
   }
   applyDefault() {
-    for (const field in this.$schema) {
-      if (!(field in this) && ('default' in this.$schema.get(field))) {
-        if (typeof this.$schema.get(field).default === 'function') {
-          this[field] = this.$schema.get(field).default(this);
-        } else {
-          this[field] = this.$schema.get(field).default;
-        }
+    const defaults = this.constructor._getDefault();
+    const doc = this.toJSON();
+    for (const field in defaults) {
+      const currentValue = _.get(doc, field);
+      if (typeof currentValue === 'undefined' || currentValue === null) {
+        const defaultValue = typeof defaults[field].default === 'function'
+          ? defaults[field].default(this) : defaults[field].default;
+        this.set(field, defaultValue);
       }
     }
+    return this;
   }
   ensureRequired() {
     return ensureRequired.apply(this);
