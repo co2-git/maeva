@@ -1,7 +1,7 @@
 /* global describe it */
 import should from 'should';
-import _Error from '../lib/Type/Error';
-import validaters from '../test-utils/validators';
+import _Error from '../../lib/Type/Error';
+import validaters from '../../test-utils/validators';
 
 function validateError(type, value, bool) {
   describe(type, () => {

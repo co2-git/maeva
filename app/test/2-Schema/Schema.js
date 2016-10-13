@@ -1,9 +1,9 @@
 /* global describe it before */
 import should from 'should';
-import Schema from '../lib/Schema';
-import Field from '../lib/Field';
-import Model from '../lib/Model';
-import * as Type from '../lib/Type';
+import Schema from '../../lib/Schema';
+import Field from '../../lib/Field';
+import Model from '../../lib/Model';
+import * as Type from '../../lib/Type';
 
 const {Tuple: tuple} = Type;
 
@@ -20,6 +20,65 @@ class ModelC extends Model {
 }
 
 describe('Schema', () => {
+  let nested;
+  before(() => {
+    nested = new Schema({
+      flat: String,
+      flatRequired: {
+        type: String,
+        required: true,
+      },
+      flatWithDefault: {
+        type: String,
+        default: 'hello',
+      },
+      flatWithValidator: {
+        type: String,
+        validate: (str) => /^a/.test(str),
+      },
+      embedded: new Schema({
+        flat: String
+      }),
+      embeddedRequired: {
+        type: new Schema({
+          flat: String,
+        }),
+        required: true,
+      },
+      requiredInEmbedded: new Schema({
+        flat: {
+          type: String,
+          required: true,
+        }
+      }),
+      nestedEmbedded: new Schema({
+        embedded: new Schema({
+          flat: String
+        })
+      }),
+      superNestedEmbedded: new Schema({
+        nestedEmbedded: new Schema({
+          embedded: new Schema({
+            flat: String
+          })
+        })
+      }),
+      inArray: [String],
+      inArrayRequired: {
+        type: [String],
+        required: true,
+      },
+      embeddedArray: new Schema({
+        array: [String],
+      }),
+      embeddedRequiredArray: new Schema({
+        array: {
+          type: [String],
+          required: true,
+        },
+      }),
+    });
+  });
   describe('Short notation', () => {
     describe('Short notation with function', () => {
       let schema;
@@ -211,18 +270,66 @@ describe('Schema', () => {
       });
     });
   });
-  describe.only('Flattem', () => {
-    let schema;
-    before(() => {
-      schema = new Schema({
-        flat: String,
-        embedded: new Schema({flat: String}),
-        nestedEmbedded: new Schema({embedded: new Schema({flat: String})}),
-        inArray: [String],
-      });
-    });
+  describe('Flatten', () => {
     it('should flatten schema', () => {
-      console.log(schema.flatten());
+      const flatten = nested.flatten();
+      should(flatten).have.property('flat')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('embedded')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('embedded.flat')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('nestedEmbedded')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('nestedEmbedded.embedded')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('nestedEmbedded.embedded.flat')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('superNestedEmbedded')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('superNestedEmbedded.nestedEmbedded')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property(
+        'superNestedEmbedded.nestedEmbedded.embedded')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property(
+        'superNestedEmbedded.nestedEmbedded.embedded.flat')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('inArray')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('embeddedArray')
+        .which.is.an.instanceOf(Field);
+      should(flatten).have.property('embeddedArray.array')
+        .which.is.an.instanceOf(Field);
+    });
+  });
+  describe('Get required fields', () => {
+    it('should get required field', () => {
+      const required = nested.getRequired();
+      should(required).have.property('flatRequired')
+        .which.is.an.instanceOf(Field);
+      should(required).have.property('embeddedRequired')
+        .which.is.an.instanceOf(Field);
+      should(required).have.property('requiredInEmbedded.flat')
+        .which.is.an.instanceOf(Field);
+      should(required).have.property('inArrayRequired')
+        .which.is.an.instanceOf(Field);
+      should(required).have.property('embeddedRequiredArray.array')
+        .which.is.an.instanceOf(Field);
+    });
+  });
+  describe('Get default fields', () => {
+    it('should get default field', () => {
+      const _default = nested.getDefault();
+      should(_default).have.property('flatWithDefault')
+        .which.is.an.instanceOf(Field);
+    });
+  });
+  describe('Get fields with custom validators', () => {
+    it('should get fields with custom validators', () => {
+      const validators = nested.getValidators();
+      should(validators).have.property('flatWithValidator')
+        .which.is.an.instanceOf(Field);
     });
   });
   describe('Links', () => {

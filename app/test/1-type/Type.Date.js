@@ -1,7 +1,7 @@
 /* global describe it */
 import should from 'should';
-import _Date from '../lib/Type/Date';
-import validaters from '../test-utils/validators';
+import _Date from '../../lib/Type/Date';
+import validaters from '../../test-utils/validators';
 
 function validateDate(type, value, bool) {
   describe(type, () => {

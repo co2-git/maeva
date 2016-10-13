@@ -1,6 +1,7 @@
 /* global describe it before */
+import 'babel-polyfill';
 import should from 'should';
-import MaevaError, {makeMessage} from '../lib/Error';
+import MaevaError from '../../lib/Error';
 
 describe('Mungo Error', () => {
   describe('Unit', () => {

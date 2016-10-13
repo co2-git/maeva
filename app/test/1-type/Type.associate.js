@@ -1,6 +1,6 @@
 /* global describe it */
 import should from 'should';
-import * as Type from '../lib/Type';
+import * as Type from '../../lib/Type';
 
 class Custom {
   static validate() {

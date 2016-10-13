@@ -1,8 +1,8 @@
 /* global describe it */
 import should from 'should';
 import _ from 'lodash';
-import mixedTypes from '../lib/Type/Mixed';
-import validaters from '../test-utils/validators';
+import mixedTypes from '../../lib/Type/Mixed';
+import validaters from '../../test-utils/validators';
 
 class Email {
   static validate(value) {

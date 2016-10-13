@@ -24,17 +24,10 @@ export default class ModelSchema extends ModelType {
       );
     }
   }
-  static printSchema() {
+  static printSchema(): Object {
     return this.getSchema().toJSON();
   }
-  static getPopulatableFields() {
-    const populatable = [];
-    const schema = this.getSchema();
-    for (const field in schema) {
-      if (schema.get(field).type.isMaevaModel) {
-        populatable.push({...schema.get(field), field});
-      }
-    }
-    return populatable;
+  static getLinks(): {[dotNotation: string]: ModelSchema} {
+    return this.getSchema().getLinks();
   }
 }

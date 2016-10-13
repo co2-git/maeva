@@ -1,6 +1,5 @@
 // @flow
 import _ from 'lodash';
-import flatten from 'flat';
 import maeva from './Connection';
 import Field from './Field';
 import {
@@ -72,6 +71,8 @@ export default class Schema {
           this.$links[field] = this.get(field).$type;
         }
       } catch (error) {
+        // console.log('!!!!!!!!!');
+        // console.log(error.stack);
         throw MaevaError.rethrow(
           error,
           MaevaError.FAILED_BUILDING_SCHEMA_FIELD,
@@ -135,21 +136,84 @@ export default class Schema {
     return converted;
   }
   get(field: string): Field {
-    if (!(field in this)) {
+    const flattenSchema = this.flatten();
+    if (!(field in flattenSchema)) {
       throw new MaevaError(MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA, {
-        field, schema: this,
+        field, schema: this.toJSON(),
       });
     }
-    return this[field];
+    return flattenSchema[field];
   }
   toJSON(): Object {
     const schema = {};
     for (const field in this) {
-      schema[field] = this.get(field).toJSON();
+      schema[field] = this[field].toJSON();
     }
     return schema;
   }
   flatten(): {[dotNotation: string]: Field} {
-    return flatten(this.toJSON());
+    function _flattenEmbedded(fieldName, schema)
+    : {[dotNotation: string]: Field} {
+      const flat = {};
+      for (const embeddedFieldName in schema) {
+        flat[`${fieldName}.${embeddedFieldName}`] =
+          schema[embeddedFieldName];
+        if (schema[embeddedFieldName].type.isEmbeddedSchema) {
+          Object.assign(flat, _flattenEmbedded(
+            `${fieldName}.${embeddedFieldName}`,
+            schema[embeddedFieldName].type.embeddedSchema,
+          ));
+        }
+      }
+      return flat;
+    }
+    function _flatten(schema: Schema): {[dotNotation: string]: Field} {
+      const flat = {};
+      for (const fieldName in schema) {
+        const field = schema[fieldName];
+        flat[fieldName] = field;
+        if (field.type.isEmbeddedSchema) {
+          Object.assign(flat, _flattenEmbedded(
+            fieldName,
+            field.type.embeddedSchema,
+          ));
+        }
+      }
+      return flat;
+    }
+    return _flatten(this);
+  }
+  getLinks(): {[dotNotation: string]: Model} {
+    return this.$links;
+  }
+  getRequired(): {[dotNotation: string]: Model} {
+    const flat = this.flatten();
+    const required = {};
+    for (const field in flat) {
+      if (flat[field].isRequired()) {
+        required[field] = flat[field];
+      }
+    }
+    return required;
+  }
+  getDefault(): {[dotNotation: string]: Model} {
+    const flat = this.flatten();
+    const _default = {};
+    for (const field in flat) {
+      if (flat[field].hasDefault()) {
+        _default[field] = flat[field];
+      }
+    }
+    return _default;
+  }
+  getValidators(): {[dotNotation: string]: Model} {
+    const flat = this.flatten();
+    const validators = {};
+    for (const field in flat) {
+      if (flat[field].hasValidator()) {
+        validators[field] = flat[field];
+      }
+    }
+    return validators;
   }
 }

@@ -1,7 +1,7 @@
 /* global describe it */
 import should from 'should';
-import tupleOf from '../lib/Type/Tuple';
-import validaters from '../test-utils/validators';
+import tupleOf from '../../lib/Type/Tuple';
+import validaters from '../../test-utils/validators';
 
 const tuple = tupleOf(String, Number);
 

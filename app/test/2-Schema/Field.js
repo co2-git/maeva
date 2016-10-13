@@ -1,11 +1,11 @@
 /* global describe it */
 import should from 'should';
-import Field from '../lib/Field';
+import Field from '../../lib/Field';
 import {
   string,
   number,
-} from '../test-utils/schema';
-import {Type, Model} from '..';
+} from '../../test-utils/schema';
+import {Type, Model} from '../..';
 
 const {Embed: embed} = Type;
 

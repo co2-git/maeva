@@ -1,7 +1,7 @@
 /* global describe it */
 import should from 'should';
-import _Boolean from '../lib/Type/Boolean';
-import validaters from '../test-utils/validators';
+import _Boolean from '../../lib/Type/Boolean';
+import validaters from '../../test-utils/validators';
 
 function validateBoolean(type, value, bool) {
   describe(type, () => {

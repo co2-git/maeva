@@ -1,7 +1,7 @@
 /* global describe it */
 import should from 'should';
-import _RegExp from '../lib/Type/RegExp';
-import validaters from '../test-utils/validators';
+import _RegExp from '../../lib/Type/RegExp';
+import validaters from '../../test-utils/validators';
 
 function validateRegExp(type, value, bool) {
   describe(type, () => {

@@ -1,9 +1,15 @@
+// @flow
+
 import * as Type from './Type';
 import * as Schema from './Schema';
 import MaevaError from './Error';
 
 export default class Field {
-  constructor(field) {
+  validator: ?Function;
+  $type: Function;
+  type: Function;
+  required: ?Boolean;
+  constructor(field: Object) {
     for (const attribute in field) {
       if (attribute === 'validate') {
         Object.assign(this, {validator: field.validate});
@@ -38,13 +44,13 @@ export default class Field {
       );
     }
   }
-  convert(value): any {
+  convert(value: any): any {
     return this.$type.convert(value);
   }
-  validate(value): boolean {
+  validate(value: any): boolean {
     return this.$type.validate(value);
   }
-  set(value): any {
+  set(value: any): any {
     return this.$type.set(value);
   }
   toJSON(): Object {
@@ -62,5 +68,14 @@ export default class Field {
       json.arrayOf = this.type.type.name;
     }
     return json;
+  }
+  isRequired(): boolean {
+    return this.required === true;
+  }
+  hasDefault(): boolean {
+    return ('default' in this);
+  }
+  hasValidator(): boolean {
+    return ('validator' in this);
   }
 }

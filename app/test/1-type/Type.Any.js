@@ -1,7 +1,7 @@
 /* global describe it */
 import should from 'should';
-import Any from '../lib/Type/Any';
-import validaters from '../test-utils/validators';
+import Any from '../../lib/Type/Any';
+import validaters from '../../test-utils/validators';
 
 function validateAny(type, value, bool) {
   describe(type, () => {

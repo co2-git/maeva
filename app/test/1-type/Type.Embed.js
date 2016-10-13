@@ -1,8 +1,8 @@
 /* global describe it */
 import should from 'should';
-import embed from '../lib/Type/Embed';
-import Schema from '../lib/Schema';
-import validaters from '../test-utils/validators';
+import embed from '../../lib/Type/Embed';
+import Schema from '../../lib/Schema';
+import validaters from '../../test-utils/validators';
 
 const embedded = embed(new Schema({number: Number}));
 

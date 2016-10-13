@@ -1,11 +1,11 @@
 /* global describe it */
 import should from 'should';
-import maeva from '..';
-import * as other from '..';
-import Connection from '../lib/Connection';
-import Model from '../lib/Model';
-import Schema from '../lib/Schema';
-import * as Type from '../lib/Type';
+import maeva from '../..';
+import * as other from '../..';
+import Connection from '../../lib/Connection';
+import Model from '../../lib/Model';
+import Schema from '../../lib/Schema';
+import * as Type from '../../lib/Type';
 
 describe('Module', () => {
   describe('Default', () => {
