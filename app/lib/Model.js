@@ -156,9 +156,34 @@ export default class Model extends ModelStatement {
     return this;
   }
   save(options: Object = {}) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         this.make();
+        if (this.$fromDB) {
+          let get = {};
+          // is database using unique id or primary keys?
+          if (this.$conn.id) {
+            const id = this.$conn.id.name;
+            get = {[id]: this[id]};
+          } else {
+            // otherwise use untouched object
+            get = this.$old;
+          }
+          await this.$conn.operations.update({
+            model: this,
+            collection: this.constructor.getCollectionName(),
+            get,
+            set: this.$changed,
+          });
+        } else {
+          await this.$conn.operations.insert({
+            model: this,
+            collection: this.constructor.getCollectionName(),
+            documents: this.toJSON(),
+          });
+        }
+        resolve();
+        this.$changed = {};
       } catch (error) {
         reject(error);
       }
