@@ -23,7 +23,7 @@ export default class Model extends ModelStatement {
     options: MODEL_CONSTRUCTOR_OPTIONS|Object = {}
   ) {
     super();
-    const modelSchema = this.constructor.getSchema();
+    const modelSchema = this.constructor._getSchema();
     let schema;
     if (options.conn) {
       const vendorSchema = new Schema(options.conn.schema);

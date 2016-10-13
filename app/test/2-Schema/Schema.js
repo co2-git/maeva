@@ -5,17 +5,9 @@ import Field from '../../lib/Field';
 import Model from '../../lib/Model';
 import * as Type from '../../lib/Type';
 
-const {Tuple: tuple} = Type;
+const {Tuple: tuple, Embed: embed} = Type;
 
 class ModelA extends Model {
-  static schema = {foo: String};
-}
-
-class ModelB extends Model {
-  static schema = {foo: String};
-}
-
-class ModelC extends Model {
   static schema = {foo: String};
 }
 
@@ -333,20 +325,22 @@ describe('Schema', () => {
     });
   });
   describe('Links', () => {
-    let schema;
-    before(() => {
-      schema = new Schema({
-        flatLink: ModelA,
-        embeddedLink: new Schema({link: ModelB}),
-        linkInArray: [ModelC],
-      });
+    it('should get fields linked to models', () => {
+      const schema = new Schema({modelA: ModelA});
+      const links = schema.getLinks();
+      should(links).have.property('modelA')
+        .which.have.property('isMaevaModel')
+        .which.is.true();
     });
-    it('should show all links', () => {
-      console.log(schema);
-      console.log();
-      console.log();
-      console.log();
-      console.log(schema.$links);
+  });
+  describe('Embedded', () => {
+    it('should get fields with embedded schemas', () => {
+      const schema = new Schema({embed: embed({foo: String})});
+      const embedded = schema.getEmbedded();
+      should(embedded).have.property('embed')
+        .which.have.property('type')
+        .which.have.property('isEmbeddedSchema')
+        .which.is.true();
     });
   });
 });

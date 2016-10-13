@@ -78,4 +78,10 @@ export default class Field {
   hasValidator(): boolean {
     return ('validator' in this);
   }
+  isLink(): boolean {
+    return this.type.isMaevaModel;
+  }
+  isEmbedded(): boolean {
+    return this.type.isEmbeddedSchema;
+  }
 }

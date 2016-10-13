@@ -184,9 +184,16 @@ export default class Schema {
     return _flatten(this);
   }
   getLinks(): {[dotNotation: string]: Model} {
-    return this.$links;
+    const flat = this.flatten();
+    const links = {};
+    for (const field in flat) {
+      if (flat[field].isLink()) {
+        links[field] = flat[field].type;
+      }
+    }
+    return links;
   }
-  getRequired(): {[dotNotation: string]: Model} {
+  getRequired(): {[dotNotation: string]: Field} {
     const flat = this.flatten();
     const required = {};
     for (const field in flat) {
@@ -196,7 +203,7 @@ export default class Schema {
     }
     return required;
   }
-  getDefault(): {[dotNotation: string]: Model} {
+  getDefault(): {[dotNotation: string]: Field} {
     const flat = this.flatten();
     const _default = {};
     for (const field in flat) {
@@ -206,7 +213,7 @@ export default class Schema {
     }
     return _default;
   }
-  getValidators(): {[dotNotation: string]: Model} {
+  getValidators(): {[dotNotation: string]: Field} {
     const flat = this.flatten();
     const validators = {};
     for (const field in flat) {
@@ -215,5 +222,15 @@ export default class Schema {
       }
     }
     return validators;
+  }
+  getEmbedded(): {[dotNotation: string]: Field} {
+    const flat = this.flatten();
+    const embedded = {};
+    for (const field in flat) {
+      if (flat[field].isEmbedded()) {
+        embedded[field] = flat[field];
+      }
+    }
+    return embedded;
   }
 }

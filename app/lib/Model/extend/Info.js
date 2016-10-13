@@ -6,21 +6,17 @@ import ModelSchema from './Schema';
 export default class ModelInfo extends ModelSchema {
   static isMaevaModel = true;
   static version = 0;
-  static getCollectionName() {
-    if (this._collectionName) {
-      return this._collectionName;
-    }
-    return `${this.name.toLowerCase()}s`;
+  static _getCollectionName() {
+    return this.collectionName || `${this.name.toLowerCase()}s`;
   }
-  static getInfo(options = {}) {
+  static _getInfo(options = {}) {
     let schema = false;
     if (!options.skipSchema) {
-      schema = this.printSchema(this.getSchema());
+      schema = this._printSchema();
     }
     return {
-      ..._.pick(this, ['name']),
-      collectionName: this.getCollectionName(),
-      version: this.version,
+      ..._.pick(this, ['name', 'version']),
+      collectionName: this._getCollectionName(),
       schema,
     };
   }
