@@ -1,5 +1,6 @@
 // @flow
 import _ from 'lodash';
+import flatten from 'flat';
 import maeva from './Connection';
 import Field from './Field';
 import {
@@ -8,10 +9,17 @@ import {
   Tuple as tuple,
 } from './Type';
 import MaevaError from './Error';
+import Model from './Model';
 import isObject from './utils/isObject';
 
 export default class Schema {
+  $links: {[fieldDotName: string]: Model};
   constructor(schema: Object = {}) {
+    Object.defineProperty(this, '$links', {
+      enumerable: false,
+      value: {},
+      writable: true,
+    });
     for (const field in schema) {
       try {
         let structure = schema[field];
@@ -60,6 +68,9 @@ export default class Schema {
           }
         }
         Object.assign(this, {[field]: new Field(structure)});
+        if (this.get(field).$type.isMaevaModel) {
+          this.$links[field] = this.get(field).$type;
+        }
       } catch (error) {
         throw MaevaError.rethrow(
           error,
@@ -130,5 +141,15 @@ export default class Schema {
       });
     }
     return this[field];
+  }
+  toJSON(): Object {
+    const schema = {};
+    for (const field in this) {
+      schema[field] = this.get(field).toJSON();
+    }
+    return schema;
+  }
+  flatten(): {[dotNotation: string]: Field} {
+    return flatten(this.toJSON());
   }
 }

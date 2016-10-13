@@ -43,3 +43,18 @@ Any class/function that has a `validate`, a `convert` and a `set` function.
 # Any type
 
 You could set a field to accept any type. In this case, you would use `Type.Any`.
+
+```javascript
+Type.Any.validate(a); // whatever a's type is, this will always return true
+```
+
+# Mixed type
+
+Sometimes you just want to accept some types. Use `Type.Mixed` then.
+
+```javascript
+const mixed = Type.Mixed(String, Number);
+mixed.validate('hello'); // true
+mixed.validate(42); // true
+mixed.validate(true); // false
+```

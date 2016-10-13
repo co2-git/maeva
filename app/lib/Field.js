@@ -38,13 +38,29 @@ export default class Field {
       );
     }
   }
-  convert(value) {
+  convert(value): any {
     return this.$type.convert(value);
   }
-  validate(value) {
+  validate(value): boolean {
     return this.$type.validate(value);
   }
-  set(value) {
+  set(value): any {
     return this.$type.set(value);
+  }
+  toJSON(): Object {
+    const json = {
+      ...this,
+      type: this.type.name,
+    };
+    if (typeof json.default === 'function') {
+      json.default = json.default.toString();
+    }
+    if (json.type === 'maevaEmbeddedSchema') {
+      json.embeddedSchema = this.type.embeddedSchema.toJSON();
+    }
+    if (json.type === 'maevaArray') {
+      json.arrayOf = this.type.type.name;
+    }
+    return json;
   }
 }

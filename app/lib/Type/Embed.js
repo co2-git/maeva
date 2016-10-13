@@ -3,10 +3,13 @@
 import Schema from '../Schema';
 import {set} from './set';
 
-export default function Embed(schema: Schema) {
-  const fn = () => schema;
-  fn.validate = ::schema.validate;
-  fn.convert = ::schema.convert;
-  fn.set = (value: any): any => set(value, fn);
-  return fn;
+export default function Embed(_schema: Schema|Object) {
+  const schema = _schema instanceof Schema ? _schema : new Schema(_schema);
+  const maevaEmbeddedSchema = () => schema;
+  maevaEmbeddedSchema.embeddedSchema = schema;
+  maevaEmbeddedSchema.validate = ::schema.validate;
+  maevaEmbeddedSchema.convert = ::schema.convert;
+  maevaEmbeddedSchema.set = (value: any): any =>
+    set(value, maevaEmbeddedSchema);
+  return maevaEmbeddedSchema;
 }

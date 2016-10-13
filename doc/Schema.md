@@ -45,7 +45,7 @@ Some types have special syntax:
 
 ### Embedded schemas
 
-You have two ways of declaring embedded schemas:
+You have three ways of declaring embedded schemas:
 
 ```javascript
 import {Type, Schema} from 'maeva';
@@ -66,6 +66,18 @@ new Schema({
   user: new Schema({
     name: String,
     email: new Schema({
+      main: String,
+      active: Boolean,
+    }),
+  }),
+});
+
+// Or this one
+
+new Schema({
+  user: Type.Embed({
+    name: String,
+    email: Type.Embed({
       main: String,
       active: Boolean,
     }),

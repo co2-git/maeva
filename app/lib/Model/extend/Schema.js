@@ -24,29 +24,15 @@ export default class ModelSchema extends ModelType {
       );
     }
   }
-  static printSchema(_schema: Object) {
-    const schema = {};
-    for (const field in _schema) {
-      if (_schema[field].type.name === '_EmbeddedMaevaDocument') {
-        schema[field] = {
-          ..._schema[field],
-          type: this.printSchema(_schema[field].type.schema),
-        };
-      } else {
-        schema[field] = {
-          ..._schema[field],
-          type: _schema[field].type.name,
-        };
-      }
-    }
-    return schema;
+  static printSchema() {
+    return this.getSchema().toJSON();
   }
   static getPopulatableFields() {
     const populatable = [];
     const schema = this.getSchema();
     for (const field in schema) {
-      if (schema[field].type.isMaevaModel) {
-        populatable.push({...schema[field], field});
+      if (schema.get(field).type.isMaevaModel) {
+        populatable.push({...schema.get(field), field});
       }
     }
     return populatable;

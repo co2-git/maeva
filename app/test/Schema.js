@@ -2,7 +2,22 @@
 import should from 'should';
 import Schema from '../lib/Schema';
 import Field from '../lib/Field';
+import Model from '../lib/Model';
 import * as Type from '../lib/Type';
+
+const {Tuple: tuple} = Type;
+
+class ModelA extends Model {
+  static schema = {foo: String};
+}
+
+class ModelB extends Model {
+  static schema = {foo: String};
+}
+
+class ModelC extends Model {
+  static schema = {foo: String};
+}
 
 describe('Schema', () => {
   describe('Short notation', () => {
@@ -158,7 +173,7 @@ describe('Schema', () => {
     describe('Type.Tuple syntax', () => {
       describe('Short notation', () => {
         it('should convert to Type.Tuple', () => {
-          const schema = new Schema({tuples: Type.Tuple(String, Number)});
+          const schema = new Schema({tuples: tuple(String, Number)});
           should(schema.tuples.type)
             .be.a.Function()
             .and.have.property('isMaevaTuple').which.is.true();
@@ -167,7 +182,7 @@ describe('Schema', () => {
       describe('Long notation', () => {
         it('should convert to Type.Tuple', () => {
           const schema = new Schema({tuples: {
-            type: Type.Tuple(String, Number),
+            type: tuple(String, Number),
           }});
           should(schema.tuples.type)
             .be.a.Function()
@@ -194,6 +209,37 @@ describe('Schema', () => {
             .and.have.property('isMaevaTuple').which.is.true();
         });
       });
+    });
+  });
+  describe.only('Flattem', () => {
+    let schema;
+    before(() => {
+      schema = new Schema({
+        flat: String,
+        embedded: new Schema({flat: String}),
+        nestedEmbedded: new Schema({embedded: new Schema({flat: String})}),
+        inArray: [String],
+      });
+    });
+    it('should flatten schema', () => {
+      console.log(schema.flatten());
+    });
+  });
+  describe('Links', () => {
+    let schema;
+    before(() => {
+      schema = new Schema({
+        flatLink: ModelA,
+        embeddedLink: new Schema({link: ModelB}),
+        linkInArray: [ModelC],
+      });
+    });
+    it('should show all links', () => {
+      console.log(schema);
+      console.log();
+      console.log();
+      console.log();
+      console.log(schema.$links);
     });
   });
 });
