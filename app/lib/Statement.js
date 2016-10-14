@@ -45,6 +45,8 @@ export default class Statement {
                   schema,
                 )[field])
               };
+            } else if (_.includes(['$has'], metaQuery)) {
+              statement[field] = query[field];
             }
           } else {
             Object.assign(statement, {

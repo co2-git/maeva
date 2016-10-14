@@ -9,12 +9,13 @@ class Foo extends Model {
   static schema = {
     string: String,
     embed: new Schema({number: Number}),
+    numbers: [Number],
   };
 }
 
 const schema = Foo._getSchema();
 
-describe.only('Get statement', () => {
+describe('Get statement', () => {
   describe('Simple query', () => {
     it('should return statement with converted values', () => {
       const statement = Statement.get(
@@ -196,6 +197,33 @@ describe.only('Get statement', () => {
         );
         should(statement).eql({
           string: /a/,
+        });
+      });
+    });
+    describe('Has', () => {
+      it('should return statement', () => {
+        const statement = Statement.get(
+          {
+            $or: [
+              {numbers: {$has: 1}},
+              {numbers: {$has: [1, 2]}},
+              {numbers: {$has: {$either: [1, 2]}}},
+              {numbers: {$has: {$exactly: [1, 2]}}},
+              {numbers: {$has: {$not: 1}}},
+              {numbers: {$has: {$neither: [1, 2]}}},
+            ]
+          },
+          schema
+        );
+        should(statement).eql({
+          $or: [
+            {numbers: {$has: 1}},
+            {numbers: {$has: [1, 2]}},
+            {numbers: {$has: {$either: [1, 2]}}},
+            {numbers: {$has: {$exactly: [1, 2]}}},
+            {numbers: {$has: {$not: 1}}},
+            {numbers: {$has: {$neither: [1, 2]}}},
+          ]
         });
       });
     });
