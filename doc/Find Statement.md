@@ -21,7 +21,25 @@ class Foo extends Model {
 Model.find({foo: '1'}); // '1' will be converted to 1
 ```
 
-# NOT
+# Logical gates
+
+## AND
+
+```javascript
+Model.find({foo: 1, bar: 2}); // WHERE FOO = 1 AND BAR = 2
+```
+
+# OR
+
+```javascript
+// on a single field
+Model.find({foo: {$in: [1, 2]}}); // WHERE FOO = 1 OR FOO = 2
+
+// compound fields (notice the find statement is an array now)
+Model.find({$or: [{foo: 1}, {bar: 2}]}) // WHERE FOO = 1 OR AND BAR = 2
+```
+
+## NOT
 
 You can specify not queries:
 
@@ -29,29 +47,18 @@ You can specify not queries:
 Model.find({foo: {$not: 1}}); // WHERE FOO != 1
 ```
 
-You can also decide to have a not block:
+## NEITHER
 
 ```javascript
+// Notice the use of an object
 Model.find({$not: {foo: 1, bar: 2}}); // WHERE FOO != 1 AND BAR != 2
 ```
 
-Or a not either:
+## EITHER NOT
 
 ```javascript
+// Notice the use of an array
 Model.find({$not: [{foo: 1}, {bar: 2}]}); // WHERE FOO != 1 OR BAR != 2
-```
-
-# OR
-
-Simply use array to declare an either statement:
-
-```javascript
-// on a field
-Model.find({foo: [1, 2]}); // WHERE FOO = 1 OR FOO = 2
-
-// compound or (notice the find statement is an array now)
-Model.find([{foo: 1, bar: 4}, {foo: 2, bar: -1}]);
-// WHERE (FOO = 1 AND BAR = 4) OR (FOO = 2 AND BAR = -1)
 ```
 
 # Value comparison
@@ -77,6 +84,9 @@ Model.find({number: {$gt: 10}, date: {$gt: new Date()}});
 
 // Greater than
 Model.find({number: {$gte: 10}, date: {$gte: new Date()}});
+
+// Between (inclusive)
+Model.find({number: {$between: [10, 100]}});
 ```
 
 # Match
