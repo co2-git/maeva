@@ -1,13 +1,17 @@
 /* global describe it before after */
 import should from 'should';
+import ModelStatement from '../../lib/Model/extend/Statement';
 
-describe.skip('Model statement', () => {
+describe('Model statement', () => {
   before(async () => {
     // ...
   });
-  describe('label', () => {
-    it('should be something', () => {
-       // ...
+  describe('Unit', () => {
+    it('should have a connect method', () => {
+      should(ModelStatement).have.property('connect').which.is.a.Function();
+    });
+    it('should have a find method', () => {
+      should(ModelStatement).have.property('find').which.is.a.Function();
     });
   });
   after(async () => {

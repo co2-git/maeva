@@ -1,10 +1,21 @@
 // @flow
 
 import ModelInfo from './Info';
-import Schema from '../../Schema';
+// import Schema from '../../Schema';
 import Connection from '../../Connection';
+import find from '../static/find';
 
 export default class ModelStatement extends ModelInfo {
+  static connect() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const conn = await Connection.findConnection();
+        resolve(conn);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
   // static async makeStatement(query: Object = {}, schema: Schema|Object = {}):
   // MAKESTATEMENT_RETURN {
   //   const conn = await Connection.findConnection();
@@ -24,9 +35,9 @@ export default class ModelStatement extends ModelInfo {
   // static push(...args: CREATE_ARGS) {
   //   return this.create(...args);
   // }
-  // static find(...args: FIND_ARGS): FIND_RETURN {
-  //   return find.apply(this, args);
-  // }
+  static find(...args) {
+    return find.apply(this, args);
+  }
   // static findOne(...args) {
   //   return findOne.apply(this, args);
   // }
