@@ -119,7 +119,7 @@ class Foo extends Model {
 }
 ```
 
-# Associate
+# Link models
 
 You can associate a type to another model.
 
