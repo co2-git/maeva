@@ -12,7 +12,7 @@ export default function findById(id: any, options: Object = {}) {
       const statementId = model.set(idName, id)[idName];
       const found = await model.$conn.operations.findById({
         model: this,
-        collection: this.getCollectionName(),
+        collection: this._getCollectionName(),
         id: statementId,
         options,
       });

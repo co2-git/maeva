@@ -12,7 +12,7 @@ function findOne(query: Object = {}, options: Object = {}): RETURN {
       const {model, statement, conn} = await this.makeStatement(query);
       const found = await conn.operations.findOne({
         model: this,
-        collection: this.getCollectionName(),
+        collection: this._getCollectionName(),
         query: statement,
         options,
       });

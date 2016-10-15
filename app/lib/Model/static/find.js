@@ -1,28 +1,32 @@
 // @flow
 
 import Model from '../../Model';
-export
-type ARGS = Array<[?Object, ?Object]>;
-export
-type RETURN = Promise<Model[]>;
+import Schema from '../../Schema';
+import Statement from '../../Statement';
+import Connection from '../../Connection';
 
-export default function find(query: Object = {}, options: Object = {}): RETURN {
+export default
+function find(query: Object = {}, options: Object = {}): Promise<Model[]> {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log({find: {query, options}});
-      const {model, statement: get, conn} = await this.makeStatement(query);
+      const conn = await Connection.findConnection();
+      const get = Statement.get(query, new Schema({
+        ...conn.schema,
+        ...this._getSchema(),
+      }));
       const found = await conn.operations.find({
         model: this,
-        collection: this.getCollectionName(),
+        collection: this._getCollectionName(),
         get,
         options,
       });
+      console.log({found});
       if (!Array.isArray(found)) {
         return resolve([]);
       }
       const documents = found.map(doc => new this(doc, {
         fromDB: true,
-        conn: model.$conn,
+        conn: conn,
       }));
       resolve(documents);
     } catch (error) {

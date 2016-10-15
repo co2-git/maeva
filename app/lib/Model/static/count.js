@@ -1,14 +1,12 @@
 // @flow
 
+import Model from '../../Model';
+import Schema from '../../Schema';
 import Statement from '../../Statement';
 import Connection from '../../Connection';
-import Schema from '../../Schema';
 
-export default function remove(
-  query: ?Object = {},
-  modifier: Object,
-  options: Object = {}
-): Promise<number> {
+export default
+function count(query: Object = {}, options: Object = {}): Promise<Model[]> {
   return new Promise(async (resolve, reject) => {
     try {
       const conn = await Connection.findConnection();
@@ -16,13 +14,13 @@ export default function remove(
         ...conn.schema,
         ...this._getSchema(),
       }));
-      const removed = await conn.operations.remove({
+      const number = await conn.operations.count({
         model: this,
         collection: this._getCollectionName(),
         get,
         options,
       });
-      resolve(removed);
+      resolve(number);
     } catch (error) {
       console.log(error.stack);
       reject(error);

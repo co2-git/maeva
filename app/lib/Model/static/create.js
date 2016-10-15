@@ -4,7 +4,6 @@ import Model from '../../Model';
 import Connection from '../../Connection';
 
 type DOCUMENT = ?Object|Object[];
-export type ARGS = [DOCUMENT, ?Object];
 
 export default function create(
   document: DOCUMENT,
@@ -25,13 +24,11 @@ export default function create(
           conn,
         })];
       }
-      await Promise.all(docs.map(doc => doc.save({
-        dontSend: true,
-      })));
+      await Promise.all(docs.map(doc => doc.make()));
       const results = await conn.operations.insert({
         model: this,
-        collection: this.getCollectionName(),
-        documents: docs.map(doc => _.omit(doc, ['$$id'])),
+        collection: this._getCollectionName(),
+        documents: docs,
       });
       results.forEach((result: Object, index: number) => {
         for (const field in result) {

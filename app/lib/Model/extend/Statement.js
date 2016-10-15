@@ -1,57 +1,41 @@
 // @flow
 
 import ModelInfo from './Info';
-// import Schema from '../../Schema';
-import Connection from '../../Connection';
+import count from '../static/count';
 import find from '../static/find';
+import create from '../static/create';
+import remove from '../static/remove';
 
 export default class ModelStatement extends ModelInfo {
-  static connect() {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const conn = await Connection.findConnection();
-        resolve(conn);
-      } catch (error) {
-        reject(error);
-      }
-    });
+  static create(...args) {
+    return create.apply(this, args);
   }
-  // static async makeStatement(query: Object = {}, schema: Schema|Object = {}):
-  // MAKESTATEMENT_RETURN {
-  //   const conn = await Connection.findConnection();
-  //   const model = new this({}, {conn});
-  //   const statement = await makeStatement(query, model.$schema);
-  //   return {model, statement, conn};
-  // }
-  // static create(...args: CREATE_ARGS) {
-  //   return create.apply(this, args);
-  // }
-  // static insert(...args: CREATE_ARGS) {
-  //   return this.create(...args);
-  // }
-  // static add(...args: CREATE_ARGS) {
-  //   return this.create(...args);
-  // }
-  // static push(...args: CREATE_ARGS) {
-  //   return this.create(...args);
-  // }
+  static insert(...args) {
+    return this.create(...args);
+  }
+  static add(...args) {
+    return this.create(...args);
+  }
+  static push(...args) {
+    return this.create(...args);
+  }
+  static count(...args) {
+    return count.apply(this, args);
+  }
   static find(...args) {
     return find.apply(this, args);
+  }
+  static get(...args) {
+    return this.find(...args);
+  }
+  static fetch(...args) {
+    return this.find(...args);
   }
   // static findOne(...args) {
   //   return findOne.apply(this, args);
   // }
   // static findById(id: any, options: Object = {}) {
   //   return findById.apply(this, [id, options]);
-  // }
-  // static get(...args) {
-  //   return this.find(...args);
-  // }
-  // static fetch(...args) {
-  //   return this.find(...args);
-  // }
-  // static select(...args) {
-  //   return this.find(...args);
   // }
   // static getById(...args) {
   //   return this.findById(...args);
@@ -80,13 +64,13 @@ export default class ModelStatement extends ModelInfo {
   // static updateById(id, modifier, options) {
   //   return updateById.apply(this, [id, modifier, options]);
   // }
-  // static remove(...args: REMOVE_ARGS): REMOVE_RETURN {
-  //   return remove.apply(this, args);
-  // }
-  // static delete(...args) {
-  //   return this.remove(...args);
-  // }
-  // static pull(...args) {
-  //   return this.remove(...args);
-  // }
+  static remove(...args) {
+    return remove.apply(this, args);
+  }
+  static delete(...args) {
+    return this.remove(...args);
+  }
+  static pull(...args) {
+    return this.remove(...args);
+  }
 }

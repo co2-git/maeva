@@ -171,14 +171,14 @@ export default class Model extends ModelStatement {
           }
           await this.$conn.operations.update({
             model: this,
-            collection: this.constructor.getCollectionName(),
+            collection: this.constructor._getCollectionName(),
             get,
             set: this.$changed,
           });
         } else {
           await this.$conn.operations.insert({
             model: this,
-            collection: this.constructor.getCollectionName(),
+            collection: this.constructor._getCollectionName(),
             documents: this.toJSON(),
           });
         }
