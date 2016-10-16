@@ -107,9 +107,6 @@ export default class Model extends ModelStatement {
     this.runValidators();
     return this;
   }
-  save(options: {}) {
-    return save.apply(this, [options]);
-  }
   toJSON() {
     return {...this};
   }
@@ -134,7 +131,7 @@ export default class Model extends ModelStatement {
       if (typeof currentValue === 'undefined' || currentValue === null) {
         throw new MaevaError(MaevaError.MISSING_REQUIRED_FIELD, {
           model: this.constructor._getInfo(),
-          field: required[field],
+          field: {[field]: required[field]},
           document: this.toJSON(),
         });
       }
@@ -155,7 +152,7 @@ export default class Model extends ModelStatement {
     }
     return this;
   }
-  save(options: Object = {}) {
+  save() {
     return new Promise(async (resolve, reject) => {
       try {
         this.make();

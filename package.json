@@ -1,6 +1,6 @@
 {
   "name": "maeva",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -25,7 +25,6 @@
     "uuid": "^2.0.3"
   },
   "dependencies": {
-    "flat": "^2.0.1",
     "lodash": "^4.15.0"
   }
 }

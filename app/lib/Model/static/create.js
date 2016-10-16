@@ -1,5 +1,4 @@
 // @flow
-import _ from 'lodash';
 import Model from '../../Model';
 import Connection from '../../Connection';
 
@@ -11,7 +10,12 @@ export default function create(
 ): Promise<Model|Model[]> {
   return new Promise(async (resolve, reject) => {
     try {
-      const conn = await Connection.findConnection();
+      let conn;
+      if (options.conn) {
+        conn = options.conn;
+      } else {
+        conn = await Connection.findConnection();
+      }
       let docs;
       if (Array.isArray(document)) {
         docs = document.map(doc => new this(doc, {

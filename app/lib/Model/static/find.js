@@ -9,7 +9,12 @@ export default
 function find(query: Object = {}, options: Object = {}): Promise<Model[]> {
   return new Promise(async (resolve, reject) => {
     try {
-      const conn = await Connection.findConnection();
+      let conn;
+      if (options.conn) {
+        conn = options.conn;
+      } else {
+        conn = await Connection.findConnection();
+      }
       const get = Statement.get(query, new Schema({
         ...conn.schema,
         ...this._getSchema(),
@@ -20,7 +25,6 @@ function find(query: Object = {}, options: Object = {}): Promise<Model[]> {
         get,
         options,
       });
-      console.log({found});
       if (!Array.isArray(found)) {
         return resolve([]);
       }

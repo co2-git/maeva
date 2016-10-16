@@ -6,12 +6,16 @@ import Schema from '../../Schema';
 
 export default function remove(
   query: ?Object = {},
-  modifier: Object,
   options: Object = {}
 ): Promise<number> {
   return new Promise(async (resolve, reject) => {
     try {
-      const conn = await Connection.findConnection();
+      let conn;
+      if (options.conn) {
+        conn = options.conn;
+      } else {
+        conn = await Connection.findConnection();
+      }
       const get = Statement.get(query, new Schema({
         ...conn.schema,
         ...this._getSchema(),
@@ -22,7 +26,7 @@ export default function remove(
         get,
         options,
       });
-      resolve(removed);
+      resolve(removed.result);
     } catch (error) {
       console.log(error.stack);
       reject(error);
