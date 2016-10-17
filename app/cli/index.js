@@ -1,7 +1,6 @@
 #! /usr/bin/env node
 
 import path from 'path';
-import _ from 'lodash';
 import maeva from '..';
 import packageJSON from '../../package.json';
 
@@ -11,35 +10,44 @@ const usage = `${disclaimer}
 
 # Usage
 
+maeva [options] Model/action [query]
+
+options --key=value
+query key=value
+
 maeva
 
-    connector=mongodb             # Match a module named "maeva-mongodb".
+    --connector=mongodb             # Match a module named "maeva-mongodb".
 
-    url=29122                     # You can omit protocol (mongodb://).
-                                  # You can pass directly a number
-                                    if it is a port number in localhost
+    --url=29122                     # You can omit protocol (mongodb://).
+                                    # You can pass directly a number
+                                      if it is a port number in localhost
 
-    MyModel                       # Will import "./MyModel.js".
-                                    You can also use "./MyModel.js" directly.
+    MyModel/find                    # Will import "./MyModel.js".
+                                      You can also use "./MyModel.js" directly.
+                                    # Find is the mehod used here.
 
-    find                          # the name of the action to perform
-      name:"john"                 # key:values separated by :
-                                    mean they are query arguments
+    name=John                       # Where name is "John"
 
 
 # Query arguments
 
-  field:value                     # WHERE field = value
-  field>value                     # WHERE field > value
-  field>=value                    # WHERE field >= value
-  field<value                     # WHERE field < value
-  field<=value                    # WHERE field <= value
-  field!value                     # WHERE field != value
-  field:[1, 2]                    # WHERE field = 1 OR field = 2
-  field![1,2]                     # WHERE field != 1 AND field=2
-  field!![1,2]                    # WHERE field !=1 OR field!=2
-  %%foo:1,bar:2%foo:2,bar:3%%     # WHERE (foo = 1 AND bar = 2) OR
-                                      (foo = 2 and bar = 3)
+We will do basic parsing.
+
+  name=John                         # {"name": "Johm"}
+  score=100                         # {"score": 100}
+  connected=true                    # {"connected": true}
+  score='{"$gt":100}'               # {"score": {"$gt": 100}}
+
+# Grouped arguments
+
+  Model/find \$or='[{"score": 100, "team": "red"}, {"score": 10, "new": true}]'
+
+# Options
+
+  connector                          Connector's name
+  url                                Database server's url
+  path                               Path to models
 `;
 
 function cli({model, action, query, options}) {
@@ -89,11 +97,7 @@ function cli({model, action, query, options}) {
       let res;
 
       switch (action) {
-      case 'find':
-      case 'count':
-      case 'create':
-      case 'insert':
-      case 'remove':
+      default:
         res = await Model[action](query, {conn});
         break;
       }
@@ -112,20 +116,31 @@ const options = {};
 const query = {};
 
 args.forEach(arg => {
-  if (_.includes([
-    'count',
-    'find',
-    'create',
-    'insert',
-    'remove',
-  ], arg)) {
-    action = arg;
-  } else if (/\=/.test(arg)) {
-    const [key, ...value] = arg.split(/\=/);
-    options[key] = value.join('=');
-  } else if (/:/.test(arg)) {
-    const [key, ...value] = arg.split(/:/);
-    query[key] = JSON.parse(value.join(':'));
+  if (/\=/.test(arg)) {
+    const [key, ...values] = arg.split(/\=/);
+    let value = values.join('=').trim();
+    if (value === 'true') {
+      value = true;
+    } else if (value === 'false') {
+      value = false;
+    } else if (value === 'null') {
+      value = null;
+    } else if (/^(-|\.|\d)+(\.|\d)?$/.test(value)) {
+      value = Number(value);
+    } else if (/^\/.+\/(i)?$/.test(value)) {
+      value = new RegExp(value);
+    } else if (/^\{.+\}$/.test(value) || /^\[.+\]$/.test(value)) {
+      value = JSON.parse(value);
+    }
+    if (/^\-\-/.test(key)) {
+      options[key.replace(/^\-\-/, '')] = value;
+    } else {
+      query[key] = value;
+    }
+  } else if (/^.+\/.+$/.test(arg)) {
+    const [_model, _action] = arg.split(/\//);
+    model = _model;
+    action = _action;
   } else {
     model = arg;
   }
