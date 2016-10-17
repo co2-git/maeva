@@ -4,7 +4,7 @@ import _ from 'lodash';
 import Schema from '../Schema';
 import {set} from './set';
 import associate from './associate';
-import embed from './embed';
+import embed from './Embed';
 
 export default function _Array(_type: Function|Schema) {
   const type = associate(
