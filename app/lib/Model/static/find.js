@@ -30,7 +30,7 @@ function find(query: Object = {}, options: Object = {}): Promise<Model[]> {
       }
       const documents = found.map(doc => new this(doc, {
         fromDB: true,
-        conn: conn,
+        conn,
       }));
       resolve(documents);
     } catch (error) {

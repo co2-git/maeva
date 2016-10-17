@@ -78,6 +78,10 @@ class Connection extends EventEmitter {
   index: number = 0;
   status: STATUS = 'idle';
   name: ?string;
+  _id: ?{
+    name: string,
+    type: Function,
+  };
 
   // Properties merged with vendor client
   operations: OPERATIONS;

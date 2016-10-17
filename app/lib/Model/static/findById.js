@@ -1,19 +1,27 @@
 // @flow
-import MaevaError from '../../Error';
 
-export default function findById(id: any, options: Object = {}) {
+import MaevaError from '../../Error';
+import Schema from '../../Schema';
+import Connection from '../../Connection';
+import Statement from '../../Statement';
+
+type OPTIONS = {
+  conn?: Connection,
+};
+
+export default function findById(id: any, options: OPTIONS = {}) {
   return new Promise(async (resolve, reject) => {
     try {
-      const {model} = await this.makeStatement({});
-      if (!model.$conn.id) {
-        throw new MaevaError('Id not supported by vendor');
+      let conn;
+      if (options.conn) {
+        conn = options.conn;
+      } else {
+        conn = await Connection.findConnection();
       }
-      const idName = model.$conn.id.name;
-      const statementId = model.set(idName, id)[idName];
-      const found = await model.$conn.operations.findById({
+      const found = await conn.operations.findById({
         model: this,
         collection: this._getCollectionName(),
-        id: statementId,
+        id,
         options,
       });
       if (!found) {
@@ -21,7 +29,7 @@ export default function findById(id: any, options: Object = {}) {
       }
       const doc = new this(found, {
         fromDB: true,
-        conn: model.$conn,
+        conn,
       });
       resolve(doc);
     } catch (error) {

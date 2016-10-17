@@ -3,6 +3,8 @@
 import ModelInfo from './Info';
 import count from '../static/count';
 import find from '../static/find';
+import findOne from '../static/findOne';
+import findById from '../static/findById';
 import create from '../static/create';
 import remove from '../static/remove';
 
@@ -16,9 +18,9 @@ export default class ModelStatement extends ModelInfo {
   static add(...args) {
     return this.create(...args);
   }
-  static push(...args) {
-    return this.create(...args);
-  }
+  // static push(...args) {
+  //   return this.create(...args);
+  // }
   static count(...args) {
     return count.apply(this, args);
   }
@@ -28,24 +30,21 @@ export default class ModelStatement extends ModelInfo {
   static get(...args) {
     return this.find(...args);
   }
-  static fetch(...args) {
-    return this.find(...args);
+  // static fetch(...args) {
+  //   return this.find(...args);
+  // }
+  static findOne(...args) {
+    return findOne.apply(this, args);
   }
-  // static findOne(...args) {
-  //   return findOne.apply(this, args);
-  // }
-  // static findById(id: any, options: Object = {}) {
-  //   return findById.apply(this, [id, options]);
-  // }
-  // static getById(...args) {
-  //   return this.findById(...args);
-  // }
-  // static fetchById(...args) {
-  //   return this.findById(...args);
-  // }
-  // static selectById(...args) {
-  //   return this.findById(...args);
-  // }
+  static getOne(...args) {
+    return this.findOne(...args);
+  }
+  static findById(id: any, options: Object = {}) {
+    return findById.apply(this, [id, options]);
+  }
+  static getById(...args) {
+    return this.findById(...args);
+  }
   // static update(query, modifier, options = {}) {
   //   return new Promise(async (resolve, reject) => {
   //     try {
@@ -70,7 +69,7 @@ export default class ModelStatement extends ModelInfo {
   static delete(...args) {
     return this.remove(...args);
   }
-  static pull(...args) {
-    return this.remove(...args);
-  }
+  // static pull(...args) {
+  //   return this.remove(...args);
+  // }
 }
