@@ -71,8 +71,6 @@ export default class Schema {
           this.$links[field] = this.get(field).$type;
         }
       } catch (error) {
-        // console.log('!!!!!!!!!');
-        // console.log(error.stack);
         throw MaevaError.rethrow(
           error,
           MaevaError.FAILED_BUILDING_SCHEMA_FIELD,
@@ -81,8 +79,26 @@ export default class Schema {
       }
     }
   }
-  validate(document: Object = {}): boolean {
+  validate(document: Object): boolean {
     if (!isObject(document)) {
+      return false;
+    }
+    // tackle native
+    if (
+      document instanceof Date ||
+      document instanceof RegExp ||
+      document instanceof Error
+    ) {
+      maeva.events.emit('warning', new MaevaError(
+        MaevaError.JAVASCRIPT_NATIVE_OBJECTS_ARE_NOT_SCHEMAS,
+        {
+          ['new Schema().validate()']: {
+            document,
+            schema: this.toJSON(),
+            type: document.constructor.name,
+          }
+        }
+      ));
       return false;
     }
     const fields = {};
@@ -116,21 +132,47 @@ export default class Schema {
     for (const field in fields) {
       valid.push(fields[field].valid);
     }
+    // ignore missing fields that are not required
+    for (const field in this) {
+      if (!(field in fields)) {
+        if (this.get(field).isRequired()) {
+          maeva.events.emit('warning', new MaevaError(
+            MaevaError.MISSING_REQUIRED_FIELD,
+            {document, field, schema: this},
+          ));
+        } else {
+          valid.push(true);
+        }
+      }
+    }
     if (valid.length !== Object.keys(this).length) {
       return false;
     }
     return valid.every(field => field);
   }
-  convert(document: Object = {}): Object {
+  convert(document: Object): Object {
+    if (!isObject(document)) {
+      maeva.events.emit('warning', new MaevaError(
+        'Could not convert non-object to schema',
+        {document, schema: this.toJSON()}
+      ));
+      return document;
+    }
     const converted = {};
     for (const field in document) {
       if (!(field in this)) {
         maeva.events.emit('warning', new MaevaError(
           MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
-          {document, field, schema: this}
+          {document, field, schema: this.toJSON()}
         ));
       } else {
         converted[field] = this.get(field).convert(document[field]);
+      }
+    }
+    // apply default
+    for (const field in this) {
+      if (!(field in converted) && this.get(field).hasDefault()) {
+        converted[field] = this.get(field).convert(this.get(field).default);
       }
     }
     return converted;
@@ -147,7 +189,7 @@ export default class Schema {
   toJSON(): Object {
     const schema = {};
     for (const field in this) {
-      schema[field] = this[field].toJSON();
+      schema[field] = this.get(field).toJSON();
     }
     return schema;
   }

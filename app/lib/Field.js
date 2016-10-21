@@ -9,6 +9,7 @@ export default class Field {
   $type: Function;
   type: Function;
   required: ?Boolean;
+  default: ?any;
   constructor(field: Object) {
     for (const attribute in field) {
       if (attribute === 'validate') {

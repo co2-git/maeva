@@ -35,6 +35,7 @@ export default class MaevaError extends ExtendableError {
   static COULD_NOT_APPLY_ID = 14;
   static FAILED_VALIDATING_FIELD_VALUE = 15;
   static FAILED_SETTING_VALUE_TO_TYPE = 16;
+  static JAVASCRIPT_NATIVE_OBJECTS_ARE_NOT_SCHEMAS = 17;
   static errorMessages = [
     '',
     'Failed building schema from object',
@@ -54,6 +55,7 @@ export default class MaevaError extends ExtendableError {
     'Could not apply connector id',
     'Failed validating field value',
     'Failed setting value to type',
+    'JavaScript native objects (Date, Error, RegExp) are not schemas',
   ];
   static rethrow(error: Error, message: string|number, options: Object = {}
   ): MaevaError {

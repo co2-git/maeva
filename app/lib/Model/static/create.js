@@ -41,8 +41,8 @@ export default function create(
           }
         }
       });
-      conn.emit('created', this, docs);
-      Connection.events.emit('created', this, docs);
+      conn.emit('inserted', this, docs);
+      Connection.events.emit('inserted', this, docs);
       if (Array.isArray(document)) {
         resolve(docs);
       } else {

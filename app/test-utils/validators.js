@@ -24,7 +24,7 @@ export default [
     RegExp: [false, _undefined, 'throw'],
     Any: [true, _undefined, _undefined],
     Mixed: [false, _undefined, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, _undefined, 'throw'],
     Tuple: [false, _undefined, 'throw'],
   }],
 
@@ -39,7 +39,7 @@ export default [
     RegExp: [false, null, 'throw'],
     Any: [true, null, null, null],
     Mixed: [false, null, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, null, 'throw'],
     Tuple: [false, null, 'throw'],
   }],
 
@@ -54,7 +54,7 @@ export default [
     RegExp: [false, new _RegExp(0), new _RegExp(0)],
     Any: [true, 0, 0, 0],
     Mixed: [false, 0, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, 0, 'throw'],
     Tuple: [false, 0, 'throw'],
   }],
 
@@ -69,7 +69,7 @@ export default [
     RegExp: [false, new _RegExp(1), new _RegExp(1)],
     Any: [true, 1, 1],
     Mixed: [false, 1, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, 1, 'throw'],
     Tuple: [false, 1, 'throw'],
   }],
 
@@ -84,7 +84,7 @@ export default [
     RegExp: [false, new _RegExp(42), new _RegExp(42)],
     Any: [true, 42, 42, 42],
     Mixed: [false, 42, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, 42, 'throw'],
     Tuple: [false, 42, 'throw'],
   }],
 
@@ -99,7 +99,7 @@ export default [
     RegExp: [false, NaN, 'throw'],
     Any: [true, NaN, NaN, NaN],
     Mixed: [false, NaN, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, NaN, 'throw'],
     Tuple: [false, NaN, 'throw'],
   }],
 
@@ -114,7 +114,7 @@ export default [
     RegExp: [false, Infinity, 'throw'],
     Any: [true, Infinity, Infinity, Infinity],
     Mixed: [false, Infinity, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, Infinity, 'throw'],
     Tuple: [false, Infinity, 'throw'],
   }],
 
@@ -129,7 +129,7 @@ export default [
     RegExp: [false, new _RegExp(1.34), new _RegExp(1.34)],
     Any: [true, 1.34, 1.34, 1.34],
     Mixed: [false, 1.34, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, 1.34, 'throw'],
     Tuple: [false, 1.34, 'throw'],
   }],
 
@@ -144,7 +144,7 @@ export default [
     RegExp: [false, new _RegExp(-24), new _RegExp(-24)],
     Any: [true, -24, -24, -24],
     Mixed: [false, -24, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, -24, 'throw'],
     Tuple: [false, -24, 'throw'],
   }],
 
@@ -159,7 +159,7 @@ export default [
     RegExp: [false, '', 'throw'],
     Any: [true, '', '', ''],
     Mixed: [false, '', 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, '', 'throw'],
     Tuple: [false, '', 'throw'],
   }],
 
@@ -174,7 +174,7 @@ export default [
     RegExp: [false, new _RegExp('abc'), new _RegExp('abc')],
     Any: [true, 'abc', 'abc', 'abc'],
     Mixed: [false, 'abc', 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, 'abc', 'throw'],
     Tuple: [false, 'abc', 'throw'],
   }],
 
@@ -189,7 +189,7 @@ export default [
     RegExp: [false, new _RegExp('1'), new _RegExp('1')],
     Any: [true, '1', '1', '1'],
     Mixed: [false, '1', 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, '1', 'throw'],
     Tuple: [false, '1', 'throw'],
   }],
 
@@ -204,7 +204,7 @@ export default [
     RegExp: [false, new _RegExp('0'), new _RegExp('0')],
     Any: [true, '0', '0', '0'],
     Mixed: [false, '0', 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, '0', 'throw'],
     Tuple: [false, '0', 'throw'],
   }],
 
@@ -219,7 +219,7 @@ export default [
     RegExp: [false, true, 'throw'],
     Any: [true, true, true, true],
     Mixed: [false, true, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, true, 'throw'],
     Tuple: [false, true, 'throw'],
   }],
 
@@ -234,7 +234,7 @@ export default [
     RegExp: [false, false, 'throw'],
     Any: [true, false, false, false],
     Mixed: [false, false, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, false, 'throw'],
     Tuple: [false, false, 'throw'],
   }],
 
@@ -250,7 +250,7 @@ export default [
     RegExp: [false, date, 'throw'],
     Any: [true, date, date, date],
     Mixed: [false, date, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, {}, {}],
     Tuple: [false, date, 'throw'],
   }],
 
@@ -265,7 +265,7 @@ export default [
     RegExp: [false, {}, 'throw'],
     Any: [true, {}, {}, {}],
     Mixed: [false, {}, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [true, {}, {}],
     Tuple: [false, {}, 'throw'],
   }],
 
@@ -280,7 +280,7 @@ export default [
     RegExp: [false, object, 'throw'],
     Any: [true, object, object, object],
     Mixed: [false, object, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, {}, {}],
     Tuple: [false, object, 'throw'],
   }],
 
@@ -295,7 +295,7 @@ export default [
     RegExp: [false, [], 'throw'],
     Any: [true, [], []],
     Mixed: [false, [], 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, [], 'throw'],
     Tuple: [false, [], 'throw'],
   }],
 
@@ -310,7 +310,7 @@ export default [
     RegExp: [false, arrayOfNumbers, 'throw'],
     Any: [true, arrayOfNumbers, arrayOfNumbers],
     Mixed: [false, arrayOfNumbers, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, arrayOfNumbers, 'throw'],
     Tuple: [false, arrayOfNumbers, 'throw'],
   }],
 
@@ -325,7 +325,7 @@ export default [
     RegExp: [false, ['a', 'b', 'c'], 'throw'],
     Any: [true, ['a', 'b', 'c'], ['a', 'b', 'c']],
     Mixed: [false, ['a', 'b', 'c'], 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, ['a', 'b', 'c'], 'throw'],
     Tuple: [false, ['a', 'b', 'c'], 'throw'],
   }],
 
@@ -340,7 +340,7 @@ export default [
     RegExp: [false, ['a', 1], 'throw'],
     Any: [true, ['a', 1], ['a', 1]],
     Mixed: [false, ['a', 1], 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, ['a', 1], 'throw'],
     Tuple: [true, ['a', 1], ['a', 1]],
   }],
 
@@ -355,7 +355,7 @@ export default [
     RegExp: [false, model, 'throw'],
     Any: [true, model, model, model],
     Mixed: [false, model, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [true, {}, {}],
     Tuple: [false, model, 'throw'],
   }],
 
@@ -374,7 +374,7 @@ export default [
     RegExp: [false, error, 'throw'],
     Any: [true, error, error, error],
     Mixed: [false, error, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, {}, {}],
     Tuple: [false, error, 'throw'],
   }],
 
@@ -389,7 +389,7 @@ export default [
     RegExp: [true, regex, new _RegExp(regex)],
     Any: [true, regex, regex, regex],
     Mixed: [false, regex, 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, {}, {}],
     Tuple: [false, regex, 'throw'],
   }],
 
@@ -405,7 +405,7 @@ export default [
       new _RegExp('http://google.com')],
     Any: [true, 'http://google.com', 'http://google.com'],
     Mixed: [true, 'http://google.com', 'http://google.com'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, 'http://google.com', 'throw'],
     Tuple: [false, 'http://google.com', 'throw'],
   }],
 
@@ -420,7 +420,7 @@ export default [
     RegExp: [false, new _RegExp('hello'), new _RegExp('hello')],
     Any: [true, 'hello', 'hello'],
     Mixed: [false, 'hello', 'throw'],
-    Embed: [false, {}, 'throw'],
+    Embed: [false, 'hello', 'throw'],
     Tuple: [false, 'hello', 'throw'],
   }],
 

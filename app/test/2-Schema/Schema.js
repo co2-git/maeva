@@ -1,4 +1,5 @@
 /* global describe it before */
+
 import should from 'should';
 import Schema from '../../lib/Schema';
 import Field from '../../lib/Field';
@@ -69,6 +70,16 @@ describe('Schema', () => {
           required: true,
         },
       }),
+      embeddedWithVariousFields: new Schema({
+        field1: {
+          type: Boolean,
+          default: false,
+        },
+        field2: {
+          type: Boolean,
+          default: false,
+        },
+      })
     });
   });
   describe('Short notation', () => {
@@ -341,6 +352,62 @@ describe('Schema', () => {
         .which.have.property('type')
         .which.have.property('isEmbeddedSchema')
         .which.is.true();
+    });
+  });
+  describe('Type behavior', () => {
+    describe('Validate', () => {
+      it('should be valid when all fields are present', () => {
+        const schema = new Schema({
+          embed: nested.embeddedWithVariousFields,
+        });
+        should(schema.validate({
+          embed: {
+            field1: true,
+            field2: false,
+          }
+        })).be.true();
+      });
+      it('should not be valid if required fields are missing', () => {
+        const schema = new Schema({
+          required: {
+            type: Number,
+            required: true,
+          },
+        });
+        const document = {};
+        should(schema.validate(document)).be.false();
+      });
+      it('should be valid if non-required fields are missing', () => {
+        const schema = new Schema({
+          required: {
+            type: Number,
+            required: true,
+          },
+          notRequired: {
+            type: Number,
+            required: false,
+          }
+        });
+        const document = {required: 1};
+        should(schema.validate(document)).be.true();
+      });
+    });
+    describe('Convert', () => {
+      it('should add default values in missing fields', () => {
+        const schema = new Schema({
+          embed: nested.embeddedWithVariousFields,
+        });
+        should(schema.convert({
+          embed: {
+            field1: true,
+          }
+        })).eql({
+          embed: {
+            field1: true,
+            field2: false,
+          }
+        });
+      });
     });
   });
 });

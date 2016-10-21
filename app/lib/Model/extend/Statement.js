@@ -34,13 +34,7 @@ export default class ModelStatement extends ModelInfo {
   //   return this.find(...args);
   // }
   static findOne(...args) {
-    console.log('=======');
     return findOne.apply(this, args);
-  }
-  static beCool() {
-    return new Promise((ok, ko) => {
-      ok(123);
-    });
   }
   static getOne(...args) {
     return this.findOne(...args);
