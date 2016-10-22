@@ -7,6 +7,7 @@ import findOne from '../static/findOne';
 import findById from '../static/findById';
 import create from '../static/create';
 import remove from '../static/remove';
+import removeById from '../static/removeById';
 
 export default class ModelStatement extends ModelInfo {
   static create(...args) {
@@ -68,6 +69,12 @@ export default class ModelStatement extends ModelInfo {
   }
   static delete(...args) {
     return this.remove(...args);
+  }
+  static removeById(...args) {
+    return removeById.apply(this, args);
+  }
+  static deleteById(...args) {
+    return removeById.apply(this, args);
   }
   // static pull(...args) {
   //   return this.remove(...args);
