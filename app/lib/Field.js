@@ -62,6 +62,9 @@ export default class Field {
     if (typeof json.default === 'function') {
       json.default = json.default.toString();
     }
+    if (typeof json.validate === 'function') {
+      json.validate = json.validate.toString();
+    }
     if (json.type === 'maevaEmbeddedSchema') {
       json.embeddedSchema = this.type.embeddedSchema.toJSON();
     }

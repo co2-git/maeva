@@ -28,7 +28,8 @@ export default function create(
           conn,
         })];
       }
-      await Promise.all(docs.map(doc => doc.make()));
+      const maeva_model_create_makeDoc = (doc) => doc.make();
+      await Promise.all(docs.map(maeva_model_create_makeDoc));
       const results = await conn.operations.insert({
         model: this,
         collection: this._getCollectionName(),
