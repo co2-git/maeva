@@ -154,20 +154,17 @@ export default class Model extends ModelStatement {
   }
   runValidators(): Model {
     const validators = this.constructor._getValidators();
-    for (const fieldName in validators) {
-      const field = validators[fieldName];
-      if (field !== null && typeof field.validator === 'function') {
-        const isValid = field.validator(this.get(fieldName));
-        if (!isValid) {
-          throw new MaevaError(
-            'Field custom validator failed',
-            MaevaError.FIELD_VALIDATOR_FAILED,
-            this,
-            field,
-          );
-        }
+    _.forEach(validators, (field, fieldName) => {
+      const isValid = field.validator(this.get(fieldName));
+      if (!isValid) {
+        throw new MaevaError(
+          'Field custom validator failed',
+          MaevaError.FIELD_VALIDATOR_FAILED,
+          this,
+          field,
+        );
       }
-    }
+    });
     return this;
   }
   save(): Promise<void> {

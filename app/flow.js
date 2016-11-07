@@ -1,3 +1,5 @@
+// @flow
+
 import Connection from './lib/Connection';
 import Schema from './lib/Schema';
 import Model from './lib/Model';

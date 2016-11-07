@@ -35,10 +35,14 @@ export default class ModelStatement extends ModelInfo {
   }
   static find(
     query: $fields = {},
-    options: $options = {}): Promise<Model[]> {
+    options: ($options & $get$options) = {limit: 100, skip: 0}
+    ): Promise<Model[]> {
     return find.apply(this, [query, options]);
   }
-  static get(query: $fields = {}, options: $options = {}): Promise<Model[]> {
+  static get(
+    query: $fields = {},
+    options: ($options & $get$options) = {limit: 100, skip: 0}
+    ): Promise<Model[]> {
     return find.apply(this, [query, options]);
   }
   static findOne(query: $fields = {}, options: $options = {}): Promise<?Model> {
@@ -47,7 +51,10 @@ export default class ModelStatement extends ModelInfo {
   static getOne(query: $fields = {}, options: $options = {}): Promise<?Model> {
     return findOne.apply(this, [query, options]);
   }
-  static findById(id: $id, options: $options = {}): Promise<?Model> {
+  static findById(
+    id: $id,
+    options: $options = {}
+    ): Promise<?Model> {
     return findById.apply(this, [id, options]);
   }
   static getById(id: $id, options: $options = {}): Promise<?Model> {
