@@ -6,7 +6,7 @@ import Statement from '../../Statement';
 import Connection from '../../Connection';
 
 export default
-function find(query: Object = {}, options: Object = {}): Promise<Model[]> {
+function find(query: $fields = {}, options: $options = {}): Promise<Model[]> {
   return new Promise(async (resolve, reject) => {
     try {
       let conn;

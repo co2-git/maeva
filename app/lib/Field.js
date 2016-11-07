@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash';
 import * as Type from './Type';
 import * as Schema from './Schema';
 import MaevaError from './Error';
@@ -8,7 +9,7 @@ export default class Field {
   validator: ?Function;
   $type: Function;
   type: Function;
-  required: ?Boolean;
+  required: ?boolean;
   default: ?any;
   constructor(field: Object) {
     for (const attribute in field) {
@@ -25,23 +26,17 @@ export default class Field {
       },
     });
   }
-  associate() {
+  associate(): Function {
     try {
       if (typeof Schema === 'function' && this.type instanceof Schema) {
         return Schema;
       }
       return Type.associate(this.type);
     } catch (error) {
-      throw MaevaError.rethrow(
+      throw new MaevaError(
         error,
-        'Could not associate field type',
-        {
-          field: this,
-          code: MaevaError.FAILED_ASSOCIATING_FIELD_TYPE,
-          foo: 1,
-          errorMessage: error.message,
-          errorStack: error.stack.split(/\n/),
-        },
+        this,
+        this.associate,
       );
     }
   }
@@ -54,9 +49,9 @@ export default class Field {
   set(value: any): any {
     return this.$type.set(value);
   }
-  toJSON(): Object {
+  toJSON(): $Field$JSON {
     const json = {
-      ...this,
+      ..._.omit(this, ['$type']),
       type: this.type.name,
     };
     if (typeof json.default === 'function') {

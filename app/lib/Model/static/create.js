@@ -1,13 +1,11 @@
 // @flow
-import Model from '../../Model';
 import Connection from '../../Connection';
-
-type DOCUMENT = ?Object|Object[];
+import MaevaError from '../../Error';
 
 export default function create(
-  document: DOCUMENT,
-  options: ?Object = {}
-): Promise<Model|Model[]> {
+  document: $fields | $fields[] = {},
+  options: $options = {}
+): $Model$create {
   return new Promise(async (resolve, reject) => {
     try {
       let conn;
@@ -50,7 +48,11 @@ export default function create(
         resolve(docs[0]);
       }
     } catch (error) {
-      reject(error);
+      reject(new MaevaError(
+        'Could not create document(s)',
+        error,
+        {document, options},
+      ));
     }
   });
 }

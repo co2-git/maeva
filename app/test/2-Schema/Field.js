@@ -5,15 +5,11 @@ import {
   string,
   number,
 } from '../../test-utils/schema';
-import {Type, Model} from '../..';
+import {Type} from '../..';
 
 const {Embed: embed} = Type;
 
-class Foo extends Model {
-  static schema = {foo: Number};
-}
-
-function verifyField(field, type, associatedType) {
+function verifyField(field: Field, type: Function, associatedType: Function) {
   it('should have the right type', () => {
     should(field).have.property('type').which.eql(type);
   });

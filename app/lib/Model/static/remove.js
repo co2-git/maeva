@@ -5,8 +5,8 @@ import Connection from '../../Connection';
 import Schema from '../../Schema';
 
 export default function remove(
-  query: ?Object = {},
-  options: Object = {}
+  query: $fields = {},
+  options: $options = {}
 ): Promise<number> {
   return new Promise(async (resolve, reject) => {
     try {

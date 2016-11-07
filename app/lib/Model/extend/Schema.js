@@ -1,4 +1,14 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module maeva
+ *  @name MaevaModelSchema
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
 
 import ModelType from './Type';
 import Field from '../../Field';
@@ -12,17 +22,14 @@ export default class ModelSchema extends ModelType {
     try {
       return new Schema(this.schema);
     } catch (error) {
-      throw MaevaError.rethrow(
+      throw new MaevaError(
         error,
-        'Could not build schema',
-        {
-          model: this._getInfo({skipSchema: true}),
-          code: MaevaError.FAILED_BUILDING_SCHEMA,
-        },
+        this,
+        this._getSchema,
       );
     }
   }
-  static _printSchema(): Object {
+  static _printSchema(): $Schema$JSON {
     return this._getSchema().toJSON();
   }
   static _getLinks(): {[dotNotation: string]: Model} {

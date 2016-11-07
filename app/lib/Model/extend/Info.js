@@ -3,13 +3,20 @@
 import _ from 'lodash';
 import ModelSchema from './Schema';
 
+type $_getInfo$options = {
+  skipSchema?: boolean,
+};
+
 export default class ModelInfo extends ModelSchema {
   static isMaevaModel = true;
   static version = 0;
-  static _getCollectionName() {
-    return this.collectionName || `${this.name.toLowerCase()}s`;
+  static _getCollectionName(): string {
+    if (typeof this.collectionName === 'string') {
+      return this.collectionName;
+    }
+    return `${this.name.toLowerCase()}s`;
   }
-  static _getInfo(options = {}) {
+  static _getInfo(options: $_getInfo$options = {}): $Model$info {
     let schema = false;
     if (!options.skipSchema) {
       schema = this._printSchema();

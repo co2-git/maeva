@@ -1,18 +1,13 @@
 // @flow
 
-import MaevaError from '../../Error';
-import Schema from '../../Schema';
 import Connection from '../../Connection';
-import Statement from '../../Statement';
+import Model from '../../Model';
 
-type OPTIONS = {
-  conn?: Connection,
-};
-
-export default function findById(id: any, options: OPTIONS = {}) {
+export default
+function findById(id: any, options: $options = {}): Promise<?Model> {
   return new Promise(async (resolve, reject) => {
     try {
-      let conn;
+      let conn: Connection;
       if (options.conn) {
         conn = options.conn;
       } else {

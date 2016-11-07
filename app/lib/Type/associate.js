@@ -1,4 +1,15 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module maeva
+ *  @name MaevaTypeAssociater
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
+
 import MaevaError from '../Error';
 import _Number from './Number';
 import _String from './String';
@@ -6,6 +17,7 @@ import _Boolean from './Boolean';
 import _Date from './Date';
 import _Error from './Error';
 import _RegExp from './RegExp';
+import {Type} from '../Type';
 
 export default function associate(type: Function): Function {
   switch (type) {
@@ -17,16 +29,11 @@ export default function associate(type: Function): Function {
   case Error: return _Error;
   default: {
     if (!type.validate || !type.convert || !type.set) {
-      let typeName;
-      if (typeof type === 'function') {
-        typeName = type.name;
-      } else {
-        typeName = 'Not A Function!';
-      }
-      throw new MaevaError('Could not associate type', {
-        type: typeName,
-        code: MaevaError.FAILED_ASSOCIATING_TYPE,
-      });
+      throw new MaevaError(
+        'Could not associate type (it lacks validator, convertor or setter)',
+        MaevaError.FAILED_ASSOCIATING_TYPE,
+        new Type(type),
+      );
     }
     return type;
   }

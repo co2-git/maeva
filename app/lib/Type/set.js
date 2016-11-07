@@ -1,6 +1,7 @@
 // @flow
 
 import MaevaError from '../Error';
+import {Type} from '../Type';
 
 export class Set {
   static validate(): boolean {
@@ -19,8 +20,10 @@ export function set(value: any, type: Function): any {
   if (type.validate(converted)) {
     return converted;
   }
-  throw new MaevaError(MaevaError.FAILED_SETTING_VALUE_TO_TYPE, {
-    type: type.name,
-    value,
-  });
+  throw new MaevaError(
+    'Failed setting value to type',
+    {value},
+    new Type(type),
+    MaevaError.COULD_NOT_SET_VALUE_TO_TYPE,
+  );
 }

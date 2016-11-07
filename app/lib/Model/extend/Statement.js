@@ -10,73 +10,59 @@ import remove from '../static/remove';
 import removeById from '../static/removeById';
 
 export default class ModelStatement extends ModelInfo {
-  static create(...args) {
-    return create.apply(this, args);
+  static create(
+    document: $fields | $fields[] = {},
+    options: $options = {},
+    ): $Model$create {
+    return create.apply(this, [document, options]);
   }
-  static insert(...args) {
-    return this.create(...args);
+  static insert(
+    document: $fields | $fields[] = {},
+    options: $options = {},
+    ): $Model$create {
+    return create.apply(this, [document, options]);
   }
-  static add(...args) {
-    return this.create(...args);
+  static add(
+    document: $fields | $fields[] = {},
+    options: $options = {},
+    ): $Model$create {
+    return create.apply(this, [document, options]);
   }
-  // static push(...args) {
-  //   return this.create(...args);
-  // }
-  static count(...args) {
-    return count.apply(this, args);
+  static count(
+    query: $fields = {},
+    options: $options & $get$options = {}): Promise<number> {
+    return count.apply(this, [query, options]);
   }
-  static find(...args) {
-    return find.apply(this, args);
+  static find(
+    query: $fields = {},
+    options: $options = {}): Promise<Model[]> {
+    return find.apply(this, [query, options]);
   }
-  static get(...args) {
-    return this.find(...args);
+  static get(query: $fields = {}, options: $options = {}): Promise<Model[]> {
+    return find.apply(this, [query, options]);
   }
-  // static fetch(...args) {
-  //   return this.find(...args);
-  // }
-  static findOne(...args) {
-    return findOne.apply(this, args);
+  static findOne(query: $fields = {}, options: $options = {}): Promise<?Model> {
+    return findOne.apply(this, [query, options]);
   }
-  static getOne(...args) {
-    return this.findOne(...args);
+  static getOne(query: $fields = {}, options: $options = {}): Promise<?Model> {
+    return findOne.apply(this, [query, options]);
   }
-  static findById(id: any, options: Object = {}) {
+  static findById(id: $id, options: $options = {}): Promise<?Model> {
     return findById.apply(this, [id, options]);
   }
-  static getById(...args) {
-    return this.findById(...args);
+  static getById(id: $id, options: $options = {}): Promise<?Model> {
+    return findById.apply(this, [id, options]);
   }
-  // static update(query, modifier, options = {}) {
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       const docs = await this.find(query, options);
-  //       docs.forEach(doc => doc.set(modifier));
-  //       await Promise.all(docs.map(doc => doc.save()));
-  //       docs[0].$conn.emit('updated', this, docs);
-  //       Connection.events.emit('updated', this, docs);
-  //       resolve(docs);
-  //     } catch (error) {
-  //       console.log(error.stack);
-  //       reject(error);
-  //     }
-  //   });
-  // }
-  // static updateById(id, modifier, options) {
-  //   return updateById.apply(this, [id, modifier, options]);
-  // }
-  static remove(...args) {
-    return remove.apply(this, args);
+  static remove(query: $fields, options: $options): Promise<number> {
+    return remove.apply(this, [query, options]);
   }
-  static delete(...args) {
-    return this.remove(...args);
+  static delete(query: $fields, options: $options): Promise<number> {
+    return remove.apply(this, [query, options]);
   }
-  static removeById(...args) {
-    return removeById.apply(this, args);
+  static removeById(id: $id, options: $options): Promise<$id> {
+    return removeById.apply(this, [id, options]);
   }
-  static deleteById(...args) {
-    return removeById.apply(this, args);
+  static deleteById(id: $id, options: $options): Promise<$id> {
+    return removeById.apply(this, [id, options]);
   }
-  // static pull(...args) {
-  //   return this.remove(...args);
-  // }
 }

@@ -1,15 +1,25 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module module
+ *  @name name
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
 
-import Model from '../../Model';
 import Schema from '../../Schema';
 import Statement from '../../Statement';
 import Connection from '../../Connection';
 
-export default
-function count(query: Object = {}, options: Object = {}): Promise<Model[]> {
+export default function count(
+  query: $fields = {},
+  options: $options & $get$options = {}): Promise<number> {
   return new Promise(async (resolve, reject) => {
     try {
-      let conn;
+      let conn: ?Connection;
       if (options.conn) {
         conn = options.conn;
       } else {

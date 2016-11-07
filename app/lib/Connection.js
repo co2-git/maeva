@@ -1,10 +1,7 @@
 // @flow
 import 'babel-polyfill';
 import EventEmitter from 'events';
-import type {
-  STATUS,
-  OPERATIONS,
-} from '../../flow';
+import Schema from './Schema';
 
 class Connection extends EventEmitter {
 
@@ -76,15 +73,16 @@ class Connection extends EventEmitter {
 
   // Default properties
   index: number = 0;
-  status: STATUS = 'idle';
+  status: $Connection$status = 'idle';
   name: ?string;
   _id: ?{
     name: string,
     type: Function,
   };
+  schema: ?Schema;
 
   // Properties merged with vendor client
-  operations: OPERATIONS;
+  operations: $Connection$operations;
   disconnectDriver: () => Promise<void>;
 
   // Call this function to make sure connection is ready

@@ -1,6 +1,5 @@
 /* global describe it */
 import should from 'should';
-import _ from 'lodash';
 import arrayOf from '../../lib/Type/Array';
 import validaters from '../../test-utils/validators';
 

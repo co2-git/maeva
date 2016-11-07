@@ -1,12 +1,13 @@
 {
   "name": "maeva",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha dist/test/*",
+    "test": "npm run eslint && mocha dist/test/*",
     "babel": "babel --out-dir dist/ app/",
-    "babel:watch": "babel --watch --out-dir dist/ app/"
+    "babel:watch": "babel --watch --out-dir dist/ app/",
+    "eslint": "eslint app"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "eslint": "^3.5.0",
+    "eslint-plugin-flowtype": "^2.25.0",
     "flow-bin": "^0.33.0",
     "mocha": "^3.0.2",
     "should": "^11.1.0",

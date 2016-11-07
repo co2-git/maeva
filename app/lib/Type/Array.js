@@ -1,4 +1,14 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module maeva
+ *  @name MaevaArray
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
 
 import _ from 'lodash';
 import Schema from '../Schema';
@@ -6,11 +16,11 @@ import {set} from './set';
 import associate from './associate';
 import embed from './Embed';
 
-export default function _Array(_type: Function|Schema) {
+export default function _Array(_type: Function | Schema): Function {
   const type = associate(
     _type instanceof Schema ? embed(_type) : _type
   );
-  const maevaArray = () => type;
+  const maevaArray = (): Function => type;
   maevaArray.isMaevaArray = true;
   maevaArray.type = _type;
   maevaArray.validate = (value: any): boolean =>

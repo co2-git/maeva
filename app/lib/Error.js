@@ -1,5 +1,27 @@
-// @flow
-import _ from 'lodash';
+/**
+ *  ****************************************************************************
+ *  @module module
+ *  @name name
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
+
+import Model from './Model';
+import Schema from './Schema';
+import Field from './Field';
+import {Type} from './Type';
+
+type $message = string
+| Error
+| Model
+| Schema
+| Field
+| number
+| Type;
 
 class ExtendableError extends Error {
   constructor(message: string) {
@@ -10,81 +32,80 @@ class ExtendableError extends Error {
   }
 }
 
-function printPreviousErrors(error) {
-  const previous = [];
-  if (error) {
-    previous.push(error.message, ...printPreviousErrors(error.previous));
-  }
-  return previous;
-}
-
 export default class MaevaError extends ExtendableError {
-  static FAILED_BUILDING_SCHEMA = 1;
+  static FAILED_ASSOCIATING_TYPE = 0;
+  static COULD_NOT_SET_VALUE_TO_TYPE = 1;
   static FAILED_BUILDING_SCHEMA_FIELD = 2;
-  static MISSING_REQUIRED_FIELD = 3;
-  static FAILED_ASSOCIATING_TYPE = 4;
-  static FAILED_ASSOCIATING_FIELD_TYPE = 5;
-  static EXPECTED_A_SCHEMA = 6;
-  static COULD_NOT_FIND_FIELD_IN_SCHEMA = 7;
-  static EXPECTED_A_FIELD = 8;
-  static FIELD_HAS_NO_CONVERTER = 9;
-  static FIELD_HAS_NO_VALIDATOR = 10;
-  static FAILED_CONVERTING_FIELD_VALUE = 11;
-  static INVALID_FIELD_SYNTAX = 12;
-  static FIELD_VALIDATOR_FAILED = 13;
-  static COULD_NOT_APPLY_ID = 14;
-  static FAILED_VALIDATING_FIELD_VALUE = 15;
-  static FAILED_SETTING_VALUE_TO_TYPE = 16;
-  static JAVASCRIPT_NATIVE_OBJECTS_ARE_NOT_SCHEMAS = 17;
-  static errorMessages = [
-    '',
-    'Failed building schema from object',
-    'Failed building schema for this field',
-    'Missing required field',
-    'Failed associating given type (function)' +
-      ' with a recognized type (function)',
-    'Failed associating type for this field',
-    'Expected an instance of Schema',
-    'Could not find field in schema',
-    'Expected field definition to be an instance of Field',
-    'Field has no converter function',
-    'Field has no validator function',
-    'Failed converting field value according to field type',
-    'Object could not be converted to Field for invalid syntax',
-    'Field validator returned false for this field value',
-    'Could not apply connector id',
-    'Failed validating field value',
-    'Failed setting value to type',
-    'JavaScript native objects (Date, Error, RegExp) are not schemas',
-  ];
-  static rethrow(error: Error, message: string|number, options: Object = {}
-  ): MaevaError {
-    return new MaevaError(message, {...options, error});
-  }
+  static JAVASCRIPT_NATIVE_OBJECTS_ARE_NOT_SCHEMAS = 4;
+  static COULD_NOT_FIND_FIELD_IN_SCHEMA = 5;
+  static MISSING_REQUIRED_FIELD = 6;
+  static FIELD_VALIDATOR_FAILED = 7;
+  code: ?number;
+  error: ?Error;
+  documents: ?Model[] = [];
+  document: ?Model;
+  schema: ?Schema;
+  field: ?Field;
+  stackToArray: string[] = [];
+  options: {} = {};
+  type: ?Type;
+  constructor(...messages: $message[]) {
+    let _message = '',
+      code,
+      error,
+      stack = [],
+      document,
+      documents = [],
+      schema,
+      field,
+      type,
+      options = {};
 
-  message: string;
-  code: number | string;
-  options: Object = {};
-  previous: ?Error;
-
-  constructor(message: string|number, options: Object = {}) {
-    if (typeof message === 'number') {
-      options.code = message;
-      message = MaevaError.errorMessages[message];
+    for (const message of messages) {
+      if (typeof message === 'string') {
+        _message = message;
+      } else if (typeof message === 'number') {
+        code = message;
+      } else if (message instanceof Error) {
+        error = message;
+      } else if (message instanceof Model) {
+        document = message;
+      } else if (message instanceof Schema) {
+        schema = message;
+      } else if (message instanceof Field) {
+        field = message;
+      } else if (message instanceof Type) {
+        type = message;
+      } else if (Array.isArray(message)) {
+        documents = message;
+      } else if (typeof message === 'object') {
+        options = message;
+      }
     }
-    const messages = [
-      message,
-      '**************************************',
-      JSON.stringify(_.omit(options, ['error']), null, 2),
-      ...printPreviousErrors(options.error)
-    ];
-    super(messages.join('\n'));
-    if ('code' in options) {
-      this.code = options.code;
+    if (error && error.stack) {
+      stack = error.stack.split(/\n/);
     }
-    if ('error' in options) {
-      this.previous = options.error;
+    let errorMessage = '';
+    if (error) {
+      errorMessage += `[${error.name}] `;
     }
-    this.options = _.omit(options, ['code', 'error']);
+    if (_message) {
+      errorMessage += _message;
+    } else if (error) {
+      errorMessage += error.message;
+    }
+    if (stack[1]) {
+      errorMessage += ` ${stack[1].trim()}`;
+    }
+    super(errorMessage);
+    this.error = error;
+    this.code = code;
+    this.options = options;
+    this.type = type;
+    this.stackToArray = stack;
+    this.document = document;
+    this.documents = documents;
+    this.schema = schema;
+    this.field = field;
   }
 }

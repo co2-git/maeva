@@ -2,7 +2,7 @@
 import associate from './associate';
 import {set} from './set';
 
-export default function Mixed(...args: any[]) {
+export default function Mixed(...args: any[]): Function {
   const mixed = args.map(type => associate(type));
   const fn = () => mixed;
   fn.mixed = mixed;

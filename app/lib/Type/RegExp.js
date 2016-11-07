@@ -4,13 +4,6 @@ import _ from 'lodash';
 import {Set} from './set';
 import _Number from './Number';
 
-type REGEXP = RegExp | {
-  global: boolean,
-  ignoreCase: boolean,
-  multiline: boolean,
-  source: string,
-};
-
 export default class _RegExp extends Set {
   static validate(value: any): boolean {
     if (value instanceof RegExp) {
@@ -48,7 +41,7 @@ export default class _RegExp extends Set {
   ignoreCase: boolean;
   multiline: boolean;
   source: string;
-  constructor(regex: REGEXP) {
+  constructor(regex: $regex) {
     super();
     if ((_.isString(regex) && regex) || _Number.validate(regex)) {
       regex = new RegExp(regex.toString());

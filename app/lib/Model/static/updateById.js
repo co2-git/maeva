@@ -1,7 +1,18 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module module
+ *  @name name
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
+
 import Connection from '../../Connection';
 
-export default function updateById(id, modifier, options) {
+export default function updateById(id: any, modifier: {}, options: {}) {
   return new Promise(async (resolve, reject) => {
     try {
       const doc = await this.findById(id, options);

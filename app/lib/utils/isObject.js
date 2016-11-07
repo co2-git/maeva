@@ -1,4 +1,14 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module module
+ *  @name name
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
 
 import _ from 'lodash';
 

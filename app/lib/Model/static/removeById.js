@@ -4,8 +4,8 @@ import Connection from '../../Connection';
 
 export default function removeById(
   id: any,
-  options: Object = {}
-): Promise<number> {
+  options: $options = {}
+): Promise<any> {
   return new Promise(async (resolve, reject) => {
     try {
       let conn;
@@ -14,15 +14,14 @@ export default function removeById(
       } else {
         conn = await Connection.findConnection();
       }
-      const removed = await conn.operations.removeById({
+      await conn.operations.removeById({
         model: this,
         collection: this._getCollectionName(),
         id,
         options,
       });
-      resolve(removed.result);
+      resolve(id);
     } catch (error) {
-      console.log(error.stack);
       reject(error);
     }
   });

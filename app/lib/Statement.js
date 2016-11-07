@@ -5,7 +5,7 @@ import Schema from './Schema';
 import isObject from './utils/isObject';
 
 export default class Statement {
-  static get(query: Object = {}, schema: Schema) {
+  static get(query: $fields = {}, schema: Schema): $fields {
     const statement = {};
     for (const field in query) {
       if (/^\$/.test(field)) {

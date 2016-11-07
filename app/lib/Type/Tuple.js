@@ -6,7 +6,7 @@ import {set} from './set';
 import associate from './associate';
 import embed from './Embed';
 
-export default function Tuple(..._types: Array<Function|Schema>): Function {
+export default function Tuple(..._types: Array<Function | Schema>): Function {
   const types = _types.map(_type => associate(
     _type instanceof Schema ? embed(_type) : _type
   ));

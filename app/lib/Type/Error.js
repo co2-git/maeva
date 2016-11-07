@@ -3,12 +3,6 @@
 import _ from 'lodash';
 import {Set} from './set';
 
-type ERROR = Error | {
-  name: string,
-  message: string,
-  stack?: string,
-};
-
 export default class _Error extends Set {
   static validate(value: any): boolean {
     if (value instanceof Error) {
@@ -37,7 +31,7 @@ export default class _Error extends Set {
   name: string;
   message: string;
   stack: string;
-  constructor(error: ERROR) {
+  constructor(error: $error) {
     super();
     Object.assign(this, {
       ...error,

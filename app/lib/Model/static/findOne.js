@@ -3,13 +3,9 @@ import Schema from '../../Schema';
 import Connection from '../../Connection';
 import Statement from '../../Statement';
 import Model from '../../Model';
-export
-type ARGS = Array<[?Object, ?Object]>;
-export
-type RETURN = Promise<?Model>;
 
 export default
-function findOne(query: Object = {}, options: Object = {}): RETURN {
+function findOne(query: $fields = {}, options: $options = {}): Promise<?Model> {
   return new Promise(async (resolve, reject) => {
     try {
       let conn;

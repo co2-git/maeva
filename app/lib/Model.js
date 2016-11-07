@@ -1,4 +1,14 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module module
+ *  @name name
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
 
 import _ from 'lodash';
 import ModelStatement from './Model/extend/Statement';
@@ -6,21 +16,22 @@ import Schema from './Schema';
 import Connection from './Connection';
 import MaevaError from './Error';
 
-import type {MODEL_CONSTRUCTOR_OPTIONS} from './flow';
-
 export default class Model extends ModelStatement {
+  // static _getSchema: Function;
+
   $schema: Schema;
-  $conn: Connection;
+  $conn: ?Connection;
   $fromDB: boolean;
-  $original: Model|Object;
-  $changed: Object;
-  $old: Model|Object;
+  $original: Model | {[fieldName: string]: any};
+  $changed: {};
+  $old: Model | {[fieldName: string]: any};
 
   constructor(
-    document: ?Object = {},
-    options: MODEL_CONSTRUCTOR_OPTIONS|Object = {}
+    document: $fields = {},
+    options: $Model$options = {}
   ) {
     super();
+    // $ExpectError
     const modelSchema = this.constructor._getSchema();
     let schema;
     if (options.conn) {
@@ -67,7 +78,7 @@ export default class Model extends ModelStatement {
   get(field: string): any {
     return _.get(this.toJSON(), field);
   }
-  set(fieldName: string|Object, value: any): Model {
+  set(fieldName: string | Object, value: any): Model {
     // You can pass `this.set('foo', 1)` or `this.set({foo: 1})`
     // Next block deals with the latter
     if (typeof fieldName === 'object') {
@@ -80,12 +91,13 @@ export default class Model extends ModelStatement {
     try {
       field = this.$schema.get(fieldName);
       if (!field) {
-        throw new MaevaError(MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA, {
-          field,
-          schema: this.$schema,
-          model: this.constructor._getInfo(),
-          document: this.toJSON(),
-        });
+        throw new MaevaError(
+          MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
+          {field: fieldName},
+          this.$schema,
+          this.constructor,
+          this,
+        );
       }
       const converted = field.set(value);
       _.set(this, fieldName, converted);
@@ -101,16 +113,16 @@ export default class Model extends ModelStatement {
       return this;
     }
   }
-  make() {
+  make(): Model {
     this.applyDefault();
     this.ensureRequired();
     this.runValidators();
     return this;
   }
-  toJSON() {
+  toJSON(): $fields {
     return {...this};
   }
-  applyDefault() {
+  applyDefault(): Model {
     const defaults = this.constructor._getDefault();
     const doc = this.toJSON();
     for (const field in defaults) {
@@ -123,45 +135,51 @@ export default class Model extends ModelStatement {
     }
     return this;
   }
-  ensureRequired() {
+  ensureRequired(): Model {
     const required = this.constructor._getRequired();
     const doc = this.toJSON();
     for (const field in required) {
       const currentValue = _.get(doc, field);
       if (typeof currentValue === 'undefined' || currentValue === null) {
-        throw new MaevaError(MaevaError.MISSING_REQUIRED_FIELD, {
-          model: this.constructor._getInfo(),
-          field: {[field]: required[field]},
-          document: this.toJSON(),
-        });
+        throw new MaevaError(
+          'Missing required field',
+          MaevaError.MISSING_REQUIRED_FIELD,
+          this.constructor,
+          required[field],
+          this,
+        );
       }
     }
     return this;
   }
-  runValidators() {
+  runValidators(): Model {
     const validators = this.constructor._getValidators();
-    for (const field in validators) {
-      const isValid = validators[field].validator(this.get(field));
-      if (!isValid) {
-        throw new MaevaError(MaevaError.FIELD_VALIDATOR_FAILED, {
-          model: this.constructor._getInfo(),
-          field: validators[field],
-          document: this.toJSON(),
-        });
+    for (const fieldName in validators) {
+      const field = validators[fieldName];
+      if (field !== null && typeof field.validator === 'function') {
+        const isValid = field.validator(this.get(fieldName));
+        if (!isValid) {
+          throw new MaevaError(
+            'Field custom validator failed',
+            MaevaError.FIELD_VALIDATOR_FAILED,
+            this,
+            field,
+          );
+        }
       }
     }
     return this;
   }
-  save() {
+  save(): Promise<void> {
     return new Promise(async (resolve, reject) => {
       try {
         this.make();
-        if (this.$fromDB) {
+        if (this.$fromDB && this.$conn && this.$conn.operations) {
           let get = {};
           // is database using unique id or primary keys?
-          if (this.$conn.id) {
-            const id = this.$conn.id.name;
-            get = {[id]: this[id]};
+          if (this.$conn._id) {
+            const id = this.$conn._id.name;
+            get = {[id]: this.get(id)};
           } else {
             // otherwise use untouched object
             get = this.$old;
@@ -172,7 +190,7 @@ export default class Model extends ModelStatement {
             get,
             set: this.$changed,
           });
-        } else {
+        } else if (this.$conn && this.$conn.operations) {
           await this.$conn.operations.insert({
             model: this,
             collection: this.constructor._getCollectionName(),

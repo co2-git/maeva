@@ -6,6 +6,7 @@ import {
   Embed as embed,
   Array as array,
   Tuple as tuple,
+  Type,
 } from './Type';
 import MaevaError from './Error';
 import Model from './Model';
@@ -19,62 +20,65 @@ export default class Schema {
       value: {},
       writable: true,
     });
-    for (const field in schema) {
+    for (const fieldName in schema) {
+      let field;
       try {
-        let structure = schema[field];
+        field = schema[fieldName];
         // {field: Type}
-        if (_.isFunction(schema[field])) {
-          structure = {type: schema[field]};
+        if (_.isFunction(schema[fieldName])) {
+          field = {type: schema[fieldName]};
         // {field: Array(1)}
-        } else if (_.isArray(schema[field])) {
-          if (schema[field].length === 1) {
-            structure = {type: array(schema[field][0])};
-          } else if (schema[field].length > 1) {
-            structure = {type: tuple(...schema[field])};
+        } else if (_.isArray(schema[fieldName])) {
+          if (schema[fieldName].length === 1) {
+            field = {type: array(schema[fieldName][0])};
+          } else if (schema[fieldName].length > 1) {
+            field = {type: tuple(...schema[fieldName])};
           }
         // {field: new Schema}
         } else if (
-          isObject(schema[field]) &&
-          schema[field] instanceof this.constructor
+          isObject(schema[fieldName]) &&
+          schema[fieldName] instanceof this.constructor
         ) {
-          structure = {type: embed(schema[field])};
+          field = {type: embed(schema[fieldName])};
         // {field: {type: new Schema}}
         } else if (
-          schema[field].type &&
-          !_.isFunction(schema[field].type) &&
-          schema[field].type instanceof this.constructor
+          schema[fieldName].type &&
+          !_.isFunction(schema[fieldName].type) &&
+          schema[fieldName].type instanceof this.constructor
         ) {
-          structure = {
-            ...schema[field],
-            type: embed(schema[field].type),
+          field = {
+            ...schema[fieldName],
+            type: embed(schema[fieldName].type),
           };
         // {field: {type: Array(1)}}
         } else if (
-          schema[field].type &&
-          !_.isFunction(schema[field].type) &&
-          _.isArray(schema[field].type)
+          schema[fieldName].type &&
+          !_.isFunction(schema[fieldName].type) &&
+          _.isArray(schema[fieldName].type)
         ) {
-          if (schema[field].type.length === 1) {
-            structure = {
-              ...schema[field],
-              type: array(schema[field].type[0]),
+          if (schema[fieldName].type.length === 1) {
+            field = {
+              ...schema[fieldName],
+              type: array(schema[fieldName].type[0]),
             };
-          } else if (schema[field].type.length > 1) {
-            structure = {
-              ...schema[field],
-              type: tuple(...schema[field].type),
+          } else if (schema[fieldName].type.length > 1) {
+            field = {
+              ...schema[fieldName],
+              type: tuple(...schema[fieldName].type),
             };
           }
         }
-        Object.assign(this, {[field]: new Field(structure)});
-        if (this.get(field).$type.isMaevaModel) {
-          this.$links[field] = this.get(field).$type;
+        Object.assign(this, {[fieldName]: new Field(field)});
+        if (this.get(fieldName).$type.isMaevaModel) {
+          this.$links[fieldName] = this.get(fieldName).$type;
         }
       } catch (error) {
-        throw MaevaError.rethrow(
+        throw new MaevaError(
           error,
           MaevaError.FAILED_BUILDING_SCHEMA_FIELD,
-          {schema, field},
+          this,
+          field,
+          {input: {field: fieldName, schema}},
         );
       }
     }
@@ -91,13 +95,9 @@ export default class Schema {
     ) {
       maeva.events.emit('warning', new MaevaError(
         MaevaError.JAVASCRIPT_NATIVE_OBJECTS_ARE_NOT_SCHEMAS,
-        {
-          ['new Schema().validate()']: {
-            document,
-            schema: this.toJSON(),
-            type: document.constructor.name,
-          }
-        }
+        {document},
+        this,
+        new Type(document.constructor),
       ));
       return false;
     }
@@ -107,13 +107,12 @@ export default class Schema {
         if (!(field in this)) {
           maeva.events.emit('warning', new MaevaError(
             MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
-            {document, field, schema: this}
+            {document, field},
+            this,
           ));
           fields[field] = {
             valid: false,
-            reason: MaevaError.errorMessages[
-              MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA
-            ],
+            reason: 'could not find field in schema',
           };
         } else {
           fields[field] = {
@@ -121,10 +120,11 @@ export default class Schema {
           };
         }
       } catch (error) {
-        throw MaevaError.rethrow(
+        throw new MaevaError(
           error,
           MaevaError.FAILED_BUILDING_SCHEMA_FIELD,
-          {document, field, schema: this},
+          {document, field},
+          this,
         );
       }
     }
@@ -138,7 +138,8 @@ export default class Schema {
         if (this.get(field).isRequired()) {
           maeva.events.emit('warning', new MaevaError(
             MaevaError.MISSING_REQUIRED_FIELD,
-            {document, field, schema: this},
+            this,
+            {document, field},
           ));
         } else {
           valid.push(true);
@@ -154,7 +155,8 @@ export default class Schema {
     if (!isObject(document)) {
       maeva.events.emit('warning', new MaevaError(
         'Could not convert non-object to schema',
-        {document, schema: this.toJSON()}
+        {document},
+        this,
       ));
       return document;
     }
@@ -163,7 +165,8 @@ export default class Schema {
       if (!(field in this)) {
         maeva.events.emit('warning', new MaevaError(
           MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
-          {document, field, schema: this.toJSON()}
+          {document, field},
+          this,
         ));
       } else {
         converted[field] = this.get(field).convert(document[field]);
@@ -180,13 +183,15 @@ export default class Schema {
   get(field: string): Field {
     const flattenSchema = this.flatten();
     if (!(field in flattenSchema)) {
-      throw new MaevaError(MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA, {
-        field, schema: this.toJSON(),
-      });
+      throw new MaevaError(
+        MaevaError.COULD_NOT_FIND_FIELD_IN_SCHEMA,
+        {field},
+        this,
+      );
     }
     return flattenSchema[field];
   }
-  toJSON(): Object {
+  toJSON(): $Schema$JSON {
     const schema = {};
     for (const field in this) {
       schema[field] = this.get(field).toJSON();
@@ -194,16 +199,17 @@ export default class Schema {
     return schema;
   }
   flatten(): {[dotNotation: string]: Field} {
-    function _flattenEmbedded(fieldName, schema)
-    : {[dotNotation: string]: Field} {
+    function _flattenEmbedded(
+      fieldName: string,
+      schema: Schema): {[dotNotation: string]: Field} {
       const flat = {};
       for (const embeddedFieldName in schema) {
         flat[`${fieldName}.${embeddedFieldName}`] =
-          schema[embeddedFieldName];
-        if (schema[embeddedFieldName].type.isEmbeddedSchema) {
+          schema.get(embeddedFieldName);
+        if (schema.get(embeddedFieldName).type.isEmbeddedSchema) {
           Object.assign(flat, _flattenEmbedded(
             `${fieldName}.${embeddedFieldName}`,
-            schema[embeddedFieldName].type.embeddedSchema,
+            schema.get(embeddedFieldName).type.embeddedSchema,
           ));
         }
       }
@@ -212,7 +218,7 @@ export default class Schema {
     function _flatten(schema: Schema): {[dotNotation: string]: Field} {
       const flat = {};
       for (const fieldName in schema) {
-        const field = schema[fieldName];
+        const field = schema.get(fieldName);
         flat[fieldName] = field;
         if (field.type.isEmbeddedSchema) {
           Object.assign(flat, _flattenEmbedded(

@@ -1,71 +1,78 @@
-/* global describe it before */
+/* global describe it */
 import 'babel-polyfill';
 import should from 'should';
 import MaevaError from '../../lib/Error';
 
+function checkError(error, attrs) {
+  it('should be an error', () => {
+    should(error).be.an.instanceOf(Error);
+  });
+  for (const attr in attrs) {
+    if (('is' in attrs[attr])) {
+      it(`${attr} should be the correct value`, () => {
+        should(error[attr]).eql(attrs[attr].is);
+      });
+    }
+    if (('match' in attrs[attr])) {
+      it(`${attr} should match the correct value`, () => {
+        should(error[attr]).match(attrs[attr].match);
+      });
+    }
+  }
+}
+
 describe('Mungo Error', () => {
   describe('Unit', () => {
-    it('should be a class', () => {
+    it('should be a function', () => {
       should(MaevaError).be.a.Function();
     });
-    it('has static function rethrow', () => {
-      should(MaevaError).have.property('rethrow').which.is.a.Function();
-    });
   });
-  describe('New mungo error with only a message', () => {
-    let error;
-    before(() => {
-      error = new MaevaError('Ouch');
+  describe('Message', () => {
+    describe('Error with just a message', () => {
+      checkError(new MaevaError('Oops!'), {
+        message: {is: 'Oops!'},
+      });
     });
-    it('should be an error', () => {
-      should(error).be.an.instanceOf(Error);
+    describe('Error with just an error', () => {
+      checkError(new MaevaError(new Error('Ouch!')), {
+        message: {match: new RegExp(
+          '^\\[Error\\] Ouch! at Suite\\.<anonymous> ' +
+          '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js:\\d+:\\d+\\)'
+        )},
+      });
     });
-    it('should have empty options', () => {
-      should(error).have.property('options').which.eql({});
+    describe('Error with message and error', () => {
+      checkError(new MaevaError('Oops!', new Error('Ouch!')), {
+        message: {match: new RegExp(
+          '^\\[Error\\] Oops! at Suite\\.<anonymous> ' +
+          '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js:\\d+:\\d+\\)'
+        )},
+      });
     });
-  });
-  describe('New mungo error with options', () => {
-    let error;
-    before(() => {
-      error = new MaevaError('Ouch', {foo: 1});
-    });
-    it('should be an error', () => {
-      should(error).be.an.instanceOf(Error);
-    });
-    it('should have the message', () => {
-      should(error).have.property('message');
-    });
-    it('should have options', () => {
-      should(error).have.property('options').which.eql({foo: 1});
-    });
-  });
-  describe('New mungo error with options and code', () => {
-    let error;
-    before(() => {
-      error = new MaevaError('Ouch', {foo: 1, code: 2});
-    });
-    it('should be an error', () => {
-      should(error).be.an.instanceOf(Error);
-    });
-    it('should have options', () => {
-      should(error).have.property('options').which.eql({foo: 1});
-    });
-    it('should have code', () => {
-      should(error).have.property('code').which.eql(2);
-    });
-  });
-  describe('Rethrow', () => {
-    let error;
-    before(() => {
-      const error1 = new MaevaError('Error #1', {number: 1});
-      error = MaevaError.rethrow(error1, 'Error #2', {number: 2});
-    });
-    it('should be an error', () => {
-      should(error).be.an.instanceOf(Error);
-    });
-    it('should have previous error', () => {
-      should(error).have.property('previous')
-        .which.is.an.instanceOf(MaevaError);
+    describe('Error with context', () => {
+      describe('And with personalized message', () => {
+        checkError(new MaevaError('Ouch!', checkError), {
+          message: {is: '@checkError() Ouch!'},
+        });
+      });
+      describe('And with error', () => {
+        checkError(new MaevaError(new Error('Ouch!'), checkError), {
+          message: {match: new RegExp(
+            '^@checkError\\(\\) \\[Error\\] Ouch! at Suite\\.<anonymous> ' +
+            '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js' +
+            ':\\d+:\\d+\\)'
+          )},
+        });
+      });
+      describe('With both', () => {
+        checkError(new MaevaError(new Error('Ouch!'), 'Ay!', checkError), {
+          message: {match: new RegExp(
+            '^@checkError\\(\\) \\[Error\\] Ay! at Suite\\.<anonymous> ' +
+            '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js' +
+            ':\\d+:\\d+\\)'
+          )},
+        });
+      });
     });
   });
 });

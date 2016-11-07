@@ -1,4 +1,14 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module maeva
+ *  @name MaevaAny
+ *  @description description
+ *  @author francois
+ *  @license MIT
+ *  @type function
+ *  @flow
+ *  ****************************************************************************
+**/
 
 import {Set} from './set';
 
