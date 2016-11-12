@@ -125,4 +125,12 @@ describe('Mungo Error', () => {
       }
     );
   });
+  describe('Options', () => {
+    checkError(
+      new MaevaError({foo: 1}),
+      {
+        message: {is: ' {"options":{"foo":1}}'}
+      }
+    );
+  });
 });

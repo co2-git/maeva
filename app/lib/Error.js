@@ -104,6 +104,7 @@ export default class MaevaError extends ExtendableError {
     }
     const debug = {
       code,
+      options,
       type: type && type.name,
       document: document && document.toJSON(),
       documents: documents.length ? documents.map(doc => doc.toJSON()) : [],
@@ -113,6 +114,9 @@ export default class MaevaError extends ExtendableError {
     };
     if (!debug.documents.length) {
       delete debug.documents;
+    }
+    if (!Object.keys(debug.options).length) {
+      delete debug.options;
     }
     super(errorMessage + ' ' + JSON.stringify(debug));
     this.error = error;
