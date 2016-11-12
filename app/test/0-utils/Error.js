@@ -2,6 +2,13 @@
 import 'babel-polyfill';
 import should from 'should';
 import MaevaError from '../../lib/Error';
+import Model from '../../lib/Model';
+
+class Foo extends Model {
+  static schema = {
+    foo: Number,
+  };
+}
 
 function checkError(error, attrs) {
   it('should be an error', () => {
@@ -21,7 +28,7 @@ function checkError(error, attrs) {
   }
 }
 
-describe('Mungo Error', () => {
+describe.only('Mungo Error', () => {
   describe('Unit', () => {
     it('should be a function', () => {
       should(MaevaError).be.a.Function();
@@ -30,7 +37,7 @@ describe('Mungo Error', () => {
   describe('Message', () => {
     describe('Error with just a message', () => {
       checkError(new MaevaError('Oops!'), {
-        message: {is: 'Oops!'},
+        message: {is: 'Oops! {}'},
       });
     });
     describe('Error with just an error', () => {
@@ -51,12 +58,12 @@ describe('Mungo Error', () => {
     });
     describe('Error with context', () => {
       describe('And with personalized message', () => {
-        checkError(new MaevaError('Ouch!', checkError), {
-          message: {is: 'Ouch!'},
+        checkError(new MaevaError('Ouch!'), {
+          message: {is: 'Ouch! {}'},
         });
       });
       describe('And with error', () => {
-        checkError(new MaevaError(new Error('Ouch!'), checkError), {
+        checkError(new MaevaError(new Error('Ouch!')), {
           message: {match: new RegExp(
             '^\\[Error\\] Ouch! at Suite\\.<anonymous> ' +
             '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js' +
@@ -74,5 +81,48 @@ describe('Mungo Error', () => {
         });
       });
     });
+  });
+  describe('Code', () => {
+    checkError(
+      new MaevaError(22),
+      {
+        message: {is: ' {"code":22}'}
+      }
+    );
+  });
+  describe('Type', () => {
+    checkError(
+      new MaevaError(String),
+      {
+        message: {is: ' {"type":"String"}'}
+      }
+    );
+  });
+  describe('Document', () => {
+    checkError(
+      new MaevaError(new Foo({foo: 1})),
+      {
+        message: {is: ' {"document":{"foo":1}}'}
+      }
+    );
+  });
+  describe('Model', () => {
+    checkError(
+      new MaevaError(Foo),
+      {
+        message: {is: ' ' + JSON.stringify({
+          model: {
+            name: 'Foo',
+            version: 0,
+            collectionName: 'foos',
+            schema: {
+              foo: {
+                type: 'Number',
+              },
+            },
+          }
+        })}
+      }
+    );
   });
 });

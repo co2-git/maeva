@@ -48,6 +48,7 @@ export default class MaevaError extends ExtendableError {
   stackToArray: string[] = [];
   options: {} = {};
   type: ?Function;
+  model: ?Function;
   constructor(...messages: $message[]) {
     let _message = '',
       code,
@@ -58,6 +59,7 @@ export default class MaevaError extends ExtendableError {
       schema,
       field,
       type,
+      model,
       options = {};
 
     for (const message of messages) {
@@ -66,7 +68,11 @@ export default class MaevaError extends ExtendableError {
       } else if (typeof message === 'number') {
         code = message;
       } else if (typeof message === 'function') {
-        type = message;
+        if (message.isMaevaModel) {
+          model = message;
+        } else {
+          type = message;
+        }
       } else if (message instanceof Error) {
         error = message;
       } else if (message instanceof Model) {
@@ -96,7 +102,19 @@ export default class MaevaError extends ExtendableError {
     if (stack[1]) {
       errorMessage += ` ${stack[1].trim()}`;
     }
-    super(errorMessage);
+    const debug = {
+      code,
+      type: type && type.name,
+      document: document && document.toJSON(),
+      documents: documents.length ? documents.map(doc => doc.toJSON()) : [],
+      schema: schema && schema.toJSON(),
+      field: field && field.toJSON(),
+      model: model && model._getInfo(),
+    };
+    if (!debug.documents.length) {
+      delete debug.documents;
+    }
+    super(errorMessage + ' ' + JSON.stringify(debug));
     this.error = error;
     this.code = code;
     this.options = options;
