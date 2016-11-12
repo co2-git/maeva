@@ -29,6 +29,10 @@ maeva.connect(mysql());
 User.insert({name: 'lambda', active: true, score: 100});
 ```
 
+# Supported drivers
+
+- [mongodb](npmjs.com/package/maeva-mongodb)
+
 # Deep into models
 
 ## Type
@@ -198,6 +202,20 @@ class Foo extends Model {
 
 All database expose the same CRUD operations:
 
+- find
+- findOne
+- findById
+- findRandomOne
+- findRandom
+- count
+- update
+- updateOne
+- updateById
+- remove
+- removeOne
+- removeById
+- insert
+
 ## find
 
 ```js
@@ -215,12 +233,28 @@ You can use the following projection:
 - sort (view below)
 - reverse (boolean, to reverse order)
 
+## update
+
+```js
+Model.update({number: {$gt: 0}}, {number: 0}, {limit: 10});
+```
+
 # Singleton
 
 ```js
 const foo = new Foo({bar: 1});
 foo.set({barz: true}).save();
 ```
+
+# Queries
+
+You can pass meta-queries:
+
+```js
+Model.find({foo: {$not: true});
+```
+
+See a [list of meta queries here](docs/Find Statement.md).
 
 # Connections
 
@@ -234,60 +268,4 @@ const mongodbConnection = mongodb.connect(mongodb());
 User
   .conn(mysqlConnection, mongodbConnection)
   .insert({username: 'foo'});
-```
-
-# Drivers
-
-You can write drivers for any database. Here we share how to do a simple JSON database.
-
-```js
-import _ from 'lodash'; // for simplicity's sake
-
-function connect() {
-  // we need to return a function that will be called with a maeva connection handler
-  return (connection) => {
-    // and this function returns a promise
-    return new Promise((resolve, reject) => {
-      // we initiate our local db
-      const db = {
-        users: [],
-      };
-      // we create our CRUD
-      connection.operations = {
-        find: (where) => new Promise((resolve) => {
-          resolve(_.find(db.users, where));
-        }),
-        insert: (document) => new Promise((resolve) => {
-          db.users.push(document);
-          resolve();
-        }),
-        update: (where, updater) => new Promise((resolve) => {
-          db.users = db.users.map((document) => {
-            let _document = document;
-            if (_.isMatch(document, where)) {
-              _document = {
-                ...document,
-                ...update,
-              };
-            }
-            return _document;
-          });
-          resolve();
-        }),
-        delete: (where) => new Promise((resolve) => {
-          db.users = _.filter(db.users, where);
-          resolve();
-        }),
-      };
-      // we tell how to disconnect (here we'll do nothing)
-      connection.disconnectDriver = () => new Promise((ok) => ok());
-      // we resolve our promise
-      resolve();
-    });
-  }
-}
-
-maeva.connect(connect());
-
-User.find({name: 'james'});
 ```
