@@ -28,7 +28,7 @@ function checkError(error, attrs) {
   }
 }
 
-describe.only('Mungo Error', () => {
+describe('Mungo Error', () => {
   describe('Unit', () => {
     it('should be a function', () => {
       should(MaevaError).be.a.Function();
