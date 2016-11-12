@@ -49,7 +49,7 @@ You can set any of these native types as your field type:
 Objects are seen as embedded documents and are declared as `Schema`:
 
 ```js
-import {Model, Type} from 'maeva';
+import {Model, Schema} from 'maeva';
 
 class Foo extends Model {
   static schema = {
