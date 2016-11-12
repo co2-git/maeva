@@ -1,7 +1,17 @@
-// @flow
+/**
+ *  ****************************************************************************
+ *  @module maeva
+ *  @name set
+ *  @description description
+ *  @type type
+ *  @license ISC
+ *  @author francois https://github.com/co2-git
+ *  @flow
+ *  ****************************************************************************
+**/
+
 
 import MaevaError from '../Error';
-import {Type} from '../Type';
 
 export class Set {
   static validate(): boolean {
@@ -22,8 +32,7 @@ export function set(value: any, type: Function): any {
   }
   throw new MaevaError(
     'Failed setting value to type',
-    {value},
-    new Type(type),
+    {value, type},
     MaevaError.COULD_NOT_SET_VALUE_TO_TYPE,
   );
 }

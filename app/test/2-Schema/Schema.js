@@ -79,7 +79,7 @@ describe('Schema', () => {
           type: Boolean,
           default: false,
         },
-      })
+      }),
     });
   });
   describe('Short notation', () => {

@@ -13,7 +13,6 @@
 import Model from './Model';
 import Schema from './Schema';
 import Field from './Field';
-import {Type} from './Type';
 
 type $message = string
 | Error
@@ -21,7 +20,7 @@ type $message = string
 | Schema
 | Field
 | number
-| Type;
+| Function;
 
 class ExtendableError extends Error {
   constructor(message: string) {
@@ -48,7 +47,7 @@ export default class MaevaError extends ExtendableError {
   field: ?Field;
   stackToArray: string[] = [];
   options: {} = {};
-  type: ?Type;
+  type: ?Function;
   constructor(...messages: $message[]) {
     let _message = '',
       code,
@@ -66,6 +65,8 @@ export default class MaevaError extends ExtendableError {
         _message = message;
       } else if (typeof message === 'number') {
         code = message;
+      } else if (typeof message === 'function') {
+        type = message;
       } else if (message instanceof Error) {
         error = message;
       } else if (message instanceof Model) {
@@ -74,8 +75,6 @@ export default class MaevaError extends ExtendableError {
         schema = message;
       } else if (message instanceof Field) {
         field = message;
-      } else if (message instanceof Type) {
-        type = message;
       } else if (Array.isArray(message)) {
         documents = message;
       } else if (typeof message === 'object') {

@@ -11,13 +11,3 @@ export {default as Mixed} from './Type/Mixed';
 export {default as Embed} from './Type/Embed';
 export {default as Array} from './Type/Array';
 export {default as Tuple} from './Type/Tuple';
-
-export class Type {
-  type: Function;
-  constructor(type: Function) {
-    this.type = type;
-  }
-  toJSON(): {type: string} {
-    return {type: this.type.name};
-  }
-}

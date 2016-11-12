@@ -6,20 +6,13 @@ import {
   Embed as embed,
   Array as array,
   Tuple as tuple,
-  Type,
 } from './Type';
 import MaevaError from './Error';
 import Model from './Model';
 import isObject from './utils/isObject';
 
 export default class Schema {
-  $links: {[fieldDotName: string]: Model};
   constructor(schema: Object = {}) {
-    Object.defineProperty(this, '$links', {
-      enumerable: false,
-      value: {},
-      writable: true,
-    });
     for (const fieldName in schema) {
       let field;
       try {
@@ -69,9 +62,6 @@ export default class Schema {
           }
         }
         Object.assign(this, {[fieldName]: new Field(field)});
-        if (this.get(fieldName).$type.isMaevaModel) {
-          this.$links[fieldName] = this.get(fieldName).$type;
-        }
       } catch (error) {
         throw new MaevaError(
           error,
@@ -97,7 +87,7 @@ export default class Schema {
         MaevaError.JAVASCRIPT_NATIVE_OBJECTS_ARE_NOT_SCHEMAS,
         {document},
         this,
-        new Type(document.constructor),
+        document.constructor,
       ));
       return false;
     }
@@ -194,7 +184,7 @@ export default class Schema {
   toJSON(): $Schema$JSON {
     const schema = {};
     for (const field in this) {
-      schema[field] = this.get(field).toJSON();
+      schema[field] = this[field].toJSON();
     }
     return schema;
   }
@@ -218,7 +208,7 @@ export default class Schema {
     function _flatten(schema: Schema): {[dotNotation: string]: Field} {
       const flat = {};
       for (const fieldName in schema) {
-        const field = schema.get(fieldName);
+        const field = schema[fieldName];
         flat[fieldName] = field;
         if (field.type.isEmbeddedSchema) {
           Object.assign(flat, _flattenEmbedded(

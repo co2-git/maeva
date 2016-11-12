@@ -2,12 +2,19 @@
 import should from 'should';
 import maeva from '../..';
 import * as other from '../..';
+import packageJSON from '../../../package.json';
 import Connection from '../../lib/Connection';
 import Model from '../../lib/Model';
 import Schema from '../../lib/Schema';
 import * as Type from '../../lib/Type';
 
 describe('Module', () => {
+  describe('Package info', () => {
+    it('should expose version', () => {
+      should(other).have.property('version')
+        .which.eql(packageJSON.version);
+    });
+  });
   describe('Default', () => {
     it('should be Connection', () => {
       should(maeva).eql(Connection);

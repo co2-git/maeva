@@ -53,8 +53,9 @@ describe('Field', () => {
     it('should JSON deep embedded schemas', () => {
       const field = new Field({
         type: embed({foo: String}),
-      }).toJSON();
-      should(field).have.property('type').which.eql('maevaEmbeddedSchema');
+      });
+      const json = field.toJSON();
+      should(json).have.property('type').which.eql('maevaEmbeddedSchema');
     });
   });
 });

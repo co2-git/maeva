@@ -52,13 +52,13 @@ describe('Mungo Error', () => {
     describe('Error with context', () => {
       describe('And with personalized message', () => {
         checkError(new MaevaError('Ouch!', checkError), {
-          message: {is: '@checkError() Ouch!'},
+          message: {is: 'Ouch!'},
         });
       });
       describe('And with error', () => {
         checkError(new MaevaError(new Error('Ouch!'), checkError), {
           message: {match: new RegExp(
-            '^@checkError\\(\\) \\[Error\\] Ouch! at Suite\\.<anonymous> ' +
+            '^\\[Error\\] Ouch! at Suite\\.<anonymous> ' +
             '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js' +
             ':\\d+:\\d+\\)'
           )},
@@ -67,7 +67,7 @@ describe('Mungo Error', () => {
       describe('With both', () => {
         checkError(new MaevaError(new Error('Ouch!'), 'Ay!', checkError), {
           message: {match: new RegExp(
-            '^@checkError\\(\\) \\[Error\\] Ay! at Suite\\.<anonymous> ' +
+            '^\\[Error\\] Ay! at Suite\\.<anonymous> ' +
             '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js' +
             ':\\d+:\\d+\\)'
           )},
