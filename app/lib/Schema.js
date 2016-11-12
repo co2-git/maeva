@@ -184,6 +184,7 @@ export default class Schema {
   toJSON(): $Schema$JSON {
     const schema = {};
     for (const field in this) {
+      // $FlowFixMe: suppressing this error until we can refactor
       schema[field] = this[field].toJSON();
     }
     return schema;
@@ -208,6 +209,7 @@ export default class Schema {
     function _flatten(schema: Schema): {[dotNotation: string]: Field} {
       const flat = {};
       for (const fieldName in schema) {
+        // $FlowFixMe: suppressing this error until we can refactor
         const field = schema[fieldName];
         flat[fieldName] = field;
         if (field.type.isEmbeddedSchema) {

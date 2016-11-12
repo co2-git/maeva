@@ -17,7 +17,6 @@ import _Boolean from './Boolean';
 import _Date from './Date';
 import _Error from './Error';
 import _RegExp from './RegExp';
-import {Type} from '../Type';
 
 export default function associate(type: Function): Function {
   switch (type) {
@@ -32,7 +31,7 @@ export default function associate(type: Function): Function {
       throw new MaevaError(
         'Could not associate type (it lacks validator, convertor or setter)',
         MaevaError.FAILED_ASSOCIATING_TYPE,
-        new Type(type),
+        type,
       );
     }
     return type;

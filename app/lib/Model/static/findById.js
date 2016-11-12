@@ -10,6 +10,7 @@ function findById(id: any, options: $options = {}): Promise<?$Model> {
       if (options.conn) {
         conn = options.conn;
       } else {
+        // $FlowFixMe: suppressing this error until we can refactor
         conn = await Connection.findConnection();
       }
       const found = await conn.operations.findById({
