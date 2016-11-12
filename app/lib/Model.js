@@ -188,14 +188,32 @@ export default class Model extends ModelStatement {
             set: this.$changed,
           });
         } else if (this.$conn && this.$conn.operations) {
-          await this.$conn.operations.insert({
-            model: this,
-            collection: this.constructor._getCollectionName(),
-            documents: this.toJSON(),
-          });
+          try {
+            for (const inserting of this.constructor.inserting()) {
+              await inserting(this);
+            }
+          } catch (error) {
+            throw new MaevaError(
+              'Failed applying pre-insert hooks',
+              error,
+              this,
+              this.constructor,
+            );
+          }
+          // TODO flow complains if following statement not wrapped in if(){}
+          if (this.$conn) {
+            await this.$conn.operations.insert({
+              model: this,
+              collection: this.constructor._getCollectionName(),
+              documents: this.toJSON(),
+            });
+          }
         }
         resolve();
         this.$changed = {};
+        for (const inserted of this.constructor.inserted()) {
+          await inserted(this);
+        }
       } catch (error) {
         reject(error);
       }

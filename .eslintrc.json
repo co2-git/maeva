@@ -163,7 +163,7 @@
     "no-useless-call": 1,
     "no-useless-concat": 1,
     "no-void": 2,
-    "no-warning-comments": 1,
+    "no-warning-comments": 0,
     "no-whitespace-before-property": 2,
     "no-with": 2,
     "object-curly-spacing": [

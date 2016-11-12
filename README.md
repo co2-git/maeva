@@ -289,31 +289,31 @@ class Foo extends Model {
     ];
   }
   // will be called after insertion. If one of promises failed, insertion is not rollbacked but maintained
-  static inserting(doc, model) {
+  static inserting(doc) {
     return [
       new Promise((resolve, reject) => { /* ... */ }),
     ];
   }
   // will be called before updating. If one of promises failed, document will not be updated
-  static updating(doc, model) {
+  static updating(doc) {
     return [
       new Promise((resolve, reject) => { /* ... */ }),
     ];
   }
   // will be called after updating. If one of promises failed, update is not rollbacked but maintained
-  static updated(doc, model) {
+  static updated(doc) {
     return [
       new Promise((resolve, reject) => { /* ... */ }),
     ];
   }
   // will be called before removing. If one of promises failed, document will not be removed
-  static removing(doc, model) {
+  static removing(doc) {
     return [
       new Promise((resolve, reject) => { /* ... */ }),
     ];
   }
   // will be called after removal. If one of promises failed, removal is not rollbacked but maintained
-  static removed(doc, model) {
+  static removed(doc) {
     return [
       new Promise((resolve, reject) => { /* ... */ }),
     ];

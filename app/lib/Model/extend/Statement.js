@@ -1,6 +1,6 @@
 // @flow
 
-import ModelInfo from './Info';
+import ModelHook from './Hook';
 import count from '../static/count';
 import find from '../static/find';
 import findOne from '../static/findOne';
@@ -9,7 +9,7 @@ import create from '../static/create';
 import remove from '../static/remove';
 import removeById from '../static/removeById';
 
-export default class ModelStatement extends ModelInfo {
+export default class ModelStatement extends ModelHook {
   static create(
     document: $fields | $fields[] = {},
     options: $options = {},
