@@ -44,7 +44,7 @@ class Connection extends EventEmitter {
   static findConnection(): Promise<Connection> {
     return new Promise(async (resolve, reject) => {
       try {
-        let $conn;
+        let $conn: Connection;
         const availableConnections = Connection.connections.filter(
           conn => conn.status === 'connected'
         );

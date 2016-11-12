@@ -3,7 +3,7 @@ import should from 'should';
 import maeva from '../..';
 import {EventEmitter} from 'events';
 
-const connector = (url) => (conn) => new Promise((resolve, reject) => {
+const connector = () => (conn) => new Promise((resolve) => {
   conn.db = {};
   conn.operations = {
     insert: () => 1,

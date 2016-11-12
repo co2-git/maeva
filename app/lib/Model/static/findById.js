@@ -1,10 +1,9 @@
 // @flow
 
 import Connection from '../../Connection';
-import Model from '../../Model';
 
 export default
-function findById(id: any, options: $options = {}): Promise<?Model> {
+function findById(id: any, options: $options = {}): Promise<?$Model> {
   return new Promise(async (resolve, reject) => {
     try {
       let conn: Connection;
@@ -28,7 +27,6 @@ function findById(id: any, options: $options = {}): Promise<?Model> {
       });
       resolve(doc);
     } catch (error) {
-      console.log(error.stack);
       reject(error);
     }
   });

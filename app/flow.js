@@ -33,6 +33,8 @@ declare type $fields = {
 
 // connections
 
+declare type $Connection = Connection;
+
 declare type $Connection$status = 'idle'
 | 'connecting'
 | 'connected'
@@ -105,6 +107,8 @@ declare type $get$options = {
 };
 
 // models
+
+declare type $Model = Model;
 
 declare type $Model$info = {
   name: string,

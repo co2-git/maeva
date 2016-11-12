@@ -1,5 +1,4 @@
 /* global describe it before after */
-import should from 'should';
 
 describe.skip('Remove', () => {
   before(async () => {

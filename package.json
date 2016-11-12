@@ -4,11 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npm run eslint && npm run flow && mocha dist/test/*",
+    "test": "npm run eslint && npm run flow && npm run mocha",
     "babel": "babel --out-dir dist/ app/",
     "babel:watch": "babel --watch --out-dir dist/ app/",
     "eslint": "eslint app",
-    "flow": "flow"
+    "flow": "flow",
+    "mocha": "mocha dist/test/*"
   },
   "author": "",
   "license": "ISC",

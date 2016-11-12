@@ -20,7 +20,8 @@ describe('Model statement', () => {
       should(ModelStatement).have.property('findRandom').which.is.a.Function();
     });
     it.skip('should have a findRandomOne method', () => {
-      should(ModelStatement).have.property('findRandomOne').which.is.a.Function();
+      should(ModelStatement)
+        .have.property('findRandomOne').which.is.a.Function();
     });
   });
   after(async () => {
