@@ -269,3 +269,54 @@ User
   .conn(mysqlConnection, mongodbConnection)
   .insert({username: 'foo'});
 ```
+
+# Hooks
+
+You can pass an array of promises before and after the following operations:
+
+- insert
+- update
+- remove
+
+*Note* a failing promise will break the sequence.
+
+```js
+class Foo extends Model {
+  // will be called before insertion. If one of promises failed, document will not be inserted
+  static inserting(doc, model) {
+    return [
+      new Promise((resolve, reject) => { /* ... */ }),
+    ];
+  }
+  // will be called after insertion. If one of promises failed, insertion is not rollbacked but maintained
+  static inserting(doc, model) {
+    return [
+      new Promise((resolve, reject) => { /* ... */ }),
+    ];
+  }
+  // will be called before updating. If one of promises failed, document will not be updated
+  static updating(doc, model) {
+    return [
+      new Promise((resolve, reject) => { /* ... */ }),
+    ];
+  }
+  // will be called after updating. If one of promises failed, update is not rollbacked but maintained
+  static updated(doc, model) {
+    return [
+      new Promise((resolve, reject) => { /* ... */ }),
+    ];
+  }
+  // will be called before removing. If one of promises failed, document will not be removed
+  static removing(doc, model) {
+    return [
+      new Promise((resolve, reject) => { /* ... */ }),
+    ];
+  }
+  // will be called after removal. If one of promises failed, removal is not rollbacked but maintained
+  static removed(doc, model) {
+    return [
+      new Promise((resolve, reject) => { /* ... */ }),
+    ];
+  }
+}
+```
