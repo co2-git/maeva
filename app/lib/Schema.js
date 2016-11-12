@@ -61,7 +61,10 @@ export default class Schema {
             };
           }
         }
-        Object.assign(this, {[fieldName]: new Field(field)});
+        Object.assign(this, {[fieldName]: new Field({
+          ...field,
+          name: fieldName,
+        })});
       } catch (error) {
         throw new MaevaError(
           error,

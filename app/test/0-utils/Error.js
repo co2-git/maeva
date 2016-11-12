@@ -3,10 +3,14 @@ import 'babel-polyfill';
 import should from 'should';
 import MaevaError from '../../lib/Error';
 import Model from '../../lib/Model';
+// import Field from '../../lib/Field';
 
 class Foo extends Model {
   static schema = {
-    foo: Number,
+    foo: {
+      type: Number,
+      required: true,
+    },
   };
 }
 
@@ -51,7 +55,7 @@ describe('Mungo Error', () => {
     describe('Error with message and error', () => {
       checkError(new MaevaError('Oops!', new Error('Ouch!')), {
         message: {match: new RegExp(
-          '^\\[Error\\] Oops! at Suite\\.<anonymous> ' +
+          '^\\[Error\\] Oops!: Ouch! at Suite\\.<anonymous> ' +
           '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js:\\d+:\\d+\\)'
         )},
       });
@@ -74,7 +78,7 @@ describe('Mungo Error', () => {
       describe('With both', () => {
         checkError(new MaevaError(new Error('Ouch!'), 'Ay!', checkError), {
           message: {match: new RegExp(
-            '^\\[Error\\] Ay! at Suite\\.<anonymous> ' +
+            '^\\[Error\\] Ay!: Ouch! at Suite\\.<anonymous> ' +
             '\\(\\/.+\\/maeva\\/dist\\/test\\/0\\-utils\\/Error\\.js' +
             ':\\d+:\\d+\\)'
           )},
@@ -86,7 +90,7 @@ describe('Mungo Error', () => {
     checkError(
       new MaevaError(22),
       {
-        message: {is: ' {"code":22}'}
+        message: {is: JSON.stringify({code: 22}, null, 2)}
       }
     );
   });
@@ -94,7 +98,7 @@ describe('Mungo Error', () => {
     checkError(
       new MaevaError(String),
       {
-        message: {is: ' {"type":"String"}'}
+        message: {is: JSON.stringify({type: 'String'}, null, 2)}
       }
     );
   });
@@ -102,7 +106,7 @@ describe('Mungo Error', () => {
     checkError(
       new MaevaError(new Foo({foo: 1})),
       {
-        message: {is: ' {"document":{"foo":1}}'}
+        message: {is: JSON.stringify({document: {foo: 1}}, null, 2)}
       }
     );
   });
@@ -110,7 +114,7 @@ describe('Mungo Error', () => {
     checkError(
       new MaevaError(Foo),
       {
-        message: {is: ' ' + JSON.stringify({
+        message: {is: JSON.stringify({
           model: {
             name: 'Foo',
             version: 0,
@@ -118,10 +122,12 @@ describe('Mungo Error', () => {
             schema: {
               foo: {
                 type: 'Number',
+                required: true,
+                name: 'foo',
               },
             },
           }
-        })}
+        }, null, 2)}
       }
     );
   });
@@ -129,8 +135,36 @@ describe('Mungo Error', () => {
     checkError(
       new MaevaError({foo: 1}),
       {
-        message: {is: ' {"options":{"foo":1}}'}
+        message: {is: JSON.stringify({options: {foo: 1}}, null, 2)}
       }
     );
   });
+  // describe('Nested errors', () => {
+  //   let originalError;
+  //   let error;
+  //   before(() => {
+  //     originalError = new MaevaError(
+  //       'Missing required field',
+  //       new Field({
+  //         type: Number,
+  //         required: true,
+  //         name: 'foo',
+  //       }),
+  //       new Foo({}),
+  //       Foo._getSchema(),
+  //       Foo,
+  //     );
+  //     error = new MaevaError(
+  //       'Could not create field',
+  //       new Foo({}),
+  //       Foo._getSchema(),
+  //       Foo,
+  //       originalError
+  //     );
+  //     console.log(error);
+  //   });
+  //   it('should be something', () => {
+  //     // ...
+  //   });
+  // });
 });

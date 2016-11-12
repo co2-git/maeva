@@ -34,7 +34,7 @@ describe('Model Info', () => {
       should(info).have.property('version').which.eql(4);
       should(info).have.property('collectionName').which.eql('foo');
       should(info).have.property('schema').which.eql({
-        foo: {type: 'String'}
+        foo: {type: 'String', name: 'foo'}
       });
     });
   });

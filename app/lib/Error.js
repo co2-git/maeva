@@ -96,6 +96,9 @@ export default class MaevaError extends ExtendableError {
     }
     if (_message) {
       errorMessage += _message;
+      if (error) {
+        errorMessage += `: ${error.message}`;
+      }
     } else if (error) {
       errorMessage += error.message;
     }
@@ -118,7 +121,7 @@ export default class MaevaError extends ExtendableError {
     if (!Object.keys(debug.options).length) {
       delete debug.options;
     }
-    super(errorMessage + ' ' + JSON.stringify(debug));
+    super((errorMessage + ' ' + JSON.stringify(debug, null, 2)).trim());
     this.error = error;
     this.code = code;
     this.options = options;

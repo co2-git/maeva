@@ -11,6 +11,7 @@ export default class Field {
   type: Function;
   required: ?boolean;
   default: ?any;
+  name: ?string;
   constructor(field: Object) {
     for (const attribute in field) {
       if (attribute === 'validate') {
