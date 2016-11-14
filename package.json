@@ -1,6 +1,6 @@
 {
   "name": "maeva",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "Agnostic database models in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -31,5 +31,17 @@
   },
   "dependencies": {
     "lodash": "^4.15.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-0"
+    ],
+    "plugins": [
+      "transform-flow-strip-types",
+      ["babel-plugin-transform-builtin-extend", {
+        "globals": ["Error"],
+      }],
+    ]
   }
 }
