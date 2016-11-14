@@ -42,6 +42,7 @@
       ["babel-plugin-transform-builtin-extend", {
         "globals": ["Error"]
       }]
-    ]
+    ],
+    "babelrc": false,
   }
 }
