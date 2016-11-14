@@ -43,6 +43,6 @@
         "globals": ["Error"]
       }]
     ],
-    "babelrc": false,
+    "babelrc": false
   }
 }
