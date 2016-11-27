@@ -219,7 +219,13 @@ All database expose the same CRUD operations:
 ## find
 
 ```js
-Model.find({foo: true, number: {$gt: 0}}, {limit: 10, reverse: true});
+const results = await Model.find(
+  {
+    foo: true,
+    number: {$gt: 0}
+  },
+  {limit: 10, reverse: true}
+);
 ```
 
 You can use modifiers via the `$` prefix.

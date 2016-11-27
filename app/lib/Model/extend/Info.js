@@ -16,7 +16,7 @@ export default class ModelInfo extends ModelSchema {
     }
     return `${this.name.toLowerCase()}s`;
   }
-  static _getInfo(options: $_getInfo$options = {}): $Model$info {
+  static toJSON(options: $_getInfo$options = {}): $Model$info {
     let schema = false;
     if (!options.skipSchema) {
       schema = this._printSchema();
@@ -26,5 +26,8 @@ export default class ModelInfo extends ModelSchema {
       collectionName: this._getCollectionName(),
       schema,
     };
+  }
+  static _getInfo(options: $_getInfo$options = {}): $Model$info {
+    return this.toJSON(options);
   }
 }

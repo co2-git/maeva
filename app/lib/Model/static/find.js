@@ -20,18 +20,24 @@ export default function find(
         ...conn.schema,
         ...this._getSchema(),
       }));
-      const found = await conn.operations.find({
+      const {
+        conn: connInfo,
+        results,
+      } = await conn.operations.find({
         model: this,
         collection: this._getCollectionName(),
         get,
         options,
       });
-      if (!Array.isArray(found)) {
+      if (!Array.isArray(results)) {
         return resolve([]);
       }
-      const documents = found.map(doc => new this(doc, {
+      const documents = results.map(doc => new this(doc, {
         fromDB: true,
-        conn,
+        conn: {
+          ...conn,
+          ...connInfo,
+        },
       }));
       resolve(documents);
     } catch (error) {
