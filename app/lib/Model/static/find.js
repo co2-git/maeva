@@ -20,15 +20,18 @@ export default function find(
         ...conn.schema,
         ...this._getSchema(),
       }));
-      const {
-        conn: connInfo,
-        results,
-      } = await conn.operations.find({
+      const res = await conn.operations.find({
         model: this,
         collection: this._getCollectionName(),
         get,
         options,
       });
+      console.log({res});
+      const {
+        conn: connInfo,
+        results,
+      } = res;
+      console.log({connInfo, results});
       if (!Array.isArray(results)) {
         return resolve([]);
       }
@@ -39,6 +42,7 @@ export default function find(
           ...connInfo,
         },
       }));
+      console.log({documents});
       resolve(documents);
     } catch (error) {
       console.log(error.stack);
