@@ -13,6 +13,26 @@ class Connection extends EventEmitter {
 
   // ---------------------------------------------------------------------------
 
+  static on(event: string, cb: Function): Function {
+    this.events.on(event, cb);
+    return this;
+  }
+
+  static once(event: string, cb: Function): Function {
+    this.events.once(event, cb);
+    return this;
+  }
+
+  static off(event: string, cb: Function): Function {
+    this.events.removeListener(event, cb);
+    return this;
+  }
+
+  static emit(...messages: any[]): Function {
+    this.events.emit(...messages);
+    return this;
+  }
+
   static connect(driver: Function, name: ?string): Promise<Connection> {
     return new Promise(async (resolve, reject) => {
       let connection: ?Connection;
