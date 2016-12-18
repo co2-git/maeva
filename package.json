@@ -30,6 +30,7 @@
     "uuid": "^2.0.3"
   },
   "dependencies": {
+    "flow-bin": "^0.36.0",
     "lodash": "^4.15.0"
   },
   "babel": {
@@ -39,9 +40,14 @@
     ],
     "plugins": [
       "transform-flow-strip-types",
-      ["babel-plugin-transform-builtin-extend", {
-        "globals": ["Error"]
-      }]
+      [
+        "babel-plugin-transform-builtin-extend",
+        {
+          "globals": [
+            "Error"
+          ]
+        }
+      ]
     ],
     "babelrc": false
   }

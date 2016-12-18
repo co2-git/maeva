@@ -13,6 +13,7 @@
 import Model from './Model';
 import Schema from './Schema';
 import Field from './Field';
+import json from '../../package.json';
 
 type $message = string
 | Error
