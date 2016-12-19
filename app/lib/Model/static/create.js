@@ -31,7 +31,7 @@ export default function create(
       const results = await conn.operations.insert({
         model: this,
         collection: this._getCollectionName(),
-        documents: docs,
+        set: docs,
       });
       results.forEach((result: Object, index: number) => {
         for (const field in result) {
