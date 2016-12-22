@@ -75,6 +75,9 @@ export default class ModelStatement extends ModelHook {
     return removeById.apply(this, [id, options]);
   }
   static update(get, set, options) {
-
+    return update.apply(this, [get, set, options]);
+  }
+  static updateById(id, set, options) {
+    return updateById.apply(this, [id, set, options]);
   }
 }
