@@ -8,6 +8,8 @@ import findById from '../static/findById';
 import create from '../static/create';
 import remove from '../static/remove';
 import removeById from '../static/removeById';
+import update from '../static/update';
+import updateById from '../static/updateById';
 
 export default class ModelStatement extends ModelHook {
   static create(
@@ -71,5 +73,8 @@ export default class ModelStatement extends ModelHook {
   }
   static deleteById(id: $id, options: $options): Promise<$id> {
     return removeById.apply(this, [id, options]);
+  }
+  static update(get, set, options) {
+
   }
 }

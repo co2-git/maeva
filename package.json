@@ -1,6 +1,6 @@
 {
   "name": "maeva",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Agnostic database models in JavaScript",
   "main": "dist/index.js",
   "scripts": {
