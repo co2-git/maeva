@@ -3,3 +3,4 @@
 !/dist/*
 /dev_notes/*
 /npm-debug.log
+.babelrc
