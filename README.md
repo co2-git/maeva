@@ -8,13 +8,13 @@ JS models. Database agnostic.
 Use `maeva` to define a model.
 
 ```js
-import {is, Model} from 'maeva';
+import {Model} from 'maeva';
 
 class User extends Model {
   static schema = {
-    name: is(String),
-    active: is(Boolean),
-    score: is(Number),
+    name: {String},
+    active: {Boolean},
+    score: {Number},
   };
 }
 ```
@@ -37,21 +37,33 @@ Supports circular dependencies via `getter` syntax.
 ```javascript
 class Team extends Model {
   static schema = {
-    name: is(String),
-    awards: is(Number),
+    name: {String},
+    awards: {Number},
+  };
+}
+
+class Club extends Model {
+  static schema = {
+    name: {String},
   };
 }
 
 class Player extends Model {
   static schema = {
-    name: is(String),
-    score: is(Number),
-    isCaptain: is(Boolean),
-    team: is(Team),
+    name: {String},
+    score: {Number},
+    isCaptain: {Boolean},
+    team: {Team},
+    club: {Club},
   };
 }
 
-const player = await Player.findById(id);
+const player = await Player.findOne(
+  await Team.findOne({name}),
+  await Club.findOne({name}),
+  {score: 100},
+  Player.sort('score'),
+);
 
 if (player.isCaptain) {
   await Promise.all([
@@ -72,11 +84,13 @@ We use key notations (with dots).
 
 ```js
 {
-  temperature: is({
-    day: is(Number),
-    night: is(Number),
-    unit: is('Celsius', 'Fahrenheit', 'Kelvin')
-  })
+  temperature: {
+    Object: {
+      day: {Number},
+      night: {Number},
+      unit: {Enum: ['Celsius', 'Fahrenheit', 'Kelvin']}
+    }
+  }
 }
 ```
 
@@ -86,7 +100,7 @@ Enclose type in array brackets to declare an array:
 
 ```js
 {
-  numbers: is.many(Number),
+  numbers: {Array: Number},
 }
 ```
 
@@ -96,7 +110,7 @@ An array with more than one type is seen as a tuple:
 
 ```js
 {
-  items: is.many(Number, String, is.many(Boolean)),
+  items: {Tuple: [Number, String]},
 }
 ```
 
@@ -106,7 +120,7 @@ You can declare mixed types such as:
 
 ```js
 {
-  mixed: is.either(Number, String),
+  mixed: {Mixed: [Number, String]},
 }
 ```
 
@@ -114,7 +128,7 @@ You can declare mixed types such as:
 
 ```js
 {
-  mixed: is.many(is.either(Number, String)),
+  mixed: {Array: {Mixed: [Number, String]}},
 }
 ```
 
@@ -123,8 +137,10 @@ You can declare mixed types such as:
 Accept any type
 
 ```js
+import {Any} from 'maeva';
+
 {
-  any: is.anything,
+  any: {Any},
 }
 ```
 
@@ -132,7 +148,7 @@ Accept any type
 
 ```js
 {
-  greeting: is.eitheir('hello', 'goodbye'),
+  greeting: {Enum: ['hello', 'goodbye']},
 }
 ```
 
@@ -145,15 +161,16 @@ import Bar from './Bar'; // and Bar also imports Foo
 
 Foo {
   // use a getter in order not to get a null value
-  get bar = () => Is(Bar),
+  get bar = () => {Bar},
 }
 ```
 
 ## Required
 
 ```js
+import {Required} from 'maeva';
 {
-  email: is(String).required,
+  email: {String, Required},
 }
 ```
 
@@ -161,8 +178,8 @@ Foo {
 
 ```js
 {
-  created: is(Date).default(Date.now),
-  score: is(Number).default(100),
+  created: {Date, Default: Date.now},
+  score: {Number, Default: 0},
 }
 ```
 
@@ -170,8 +187,8 @@ Foo {
 
 ```js
 {
-  url: is(String).validate(/^https:/),
-  status: is(Number).validate((status) => status === 200)
+  url: {String, Validate: /^https/},
+  status: {Number, Validate: (status) => status >= 200 && status < 300}
 }
 ```
 
@@ -180,9 +197,11 @@ Foo {
 Indexes might vary from a database to another but expect standard indexes to be exposed:
 
 ```js
+import {Index, Unique} from 'maeva';
+
 {
-  field: is(Number).index(),
-  uniqueField: is(Number).unique()
+  field: {Number, Index},
+  uniqueField: {Number, Unique}
 }
 ```
 
@@ -190,28 +209,57 @@ Indexes might vary from a database to another but expect standard indexes to be 
 
 ```js
 {
-  number: is(Number).unique('team'),
-  team: is(Team)
+  name: {Number, Unique: ['team']},
+  team: {Team}
 }
+```
+
+# Read query
+
+This is how you query a read request:
+
+## Use id
+
+```javascript
+Player
+  .findOne(
+    player.maeva().id,
+  );
+```
+
+## Add query
+
+```javascript
+Player
+  .findOne(
+    {team: await Team.findOne()},
+  );
+```
+
+## Use projection
+
+```javascript
+Player
+  .findOne(
+
+  );
 ```
 
 # CRUD
 
-All database expose the same CRUD operations:
+All databases expose the same CRUD operations:
 
-- find
-- findOne
-- findById
-- findRandomOne
-- findRandom
 - count
-- update
-- updateOne
-- updateById
-- remove
+- findMany
+- findOne
+- insert (alias create)
+- removeMany
 - removeOne
-- removeById
-- insert
+- updateMany
+- updateOne
+- sum
+- subtract
+- multipl
 
 ## find
 
@@ -219,40 +267,235 @@ All database expose the same CRUD operations:
 const results = await Model.find(
   {
     foo: true,
-    number: {$gt: 0}
+    number: {'>': 0}
   },
   {limit: 10, reverse: true}
 );
 ```
 
-You can use modifiers via the `$` prefix.
+## Results
+
+```javascript
+class Team extends Model {
+  static schema = {
+    color: {String, Unique},
+  };
+}
+
+class Player extends Model {
+  static schema = {
+    active: {Boolean, Default: false},
+    created: {Date, Default: Date.now},
+    email: {String, Required, Unique, Index},
+    pseudo: {String, Unique, Required},
+    quotes: {Array: String},
+    score: {Number, Default: 100},
+    team: {Team, Required, Index},
+  };
+}
+
+const redTeam = await Team.create({color: 'Red'});
+
+team.log();
+
+Team {
+  [[maeva]]: {
+    id: teamIdKey,
+    version: 0,
+    revision: 0,
+  },
+  color: 'Red',
+}
+
+const redPlayer = await Player.create({
+  email: 'cool@joe.com',
+  pseudo: 'cool joe',
+  team,
+});
+
+redPlayer.json();
+
+Player {
+  [[maeva]]: {
+    id: playerIdKey,
+    version: 0,
+    revision: 0,
+  },
+  active: true,
+  created: Date,
+  email: 'cool@joe.com',
+  pseudo: 'cool joe',
+  quotes: [],
+  score: 100,
+  team: Team {
+    [[maeva]]: {
+      id: teamIdKey,
+      version: 0,
+      revision: 0,
+    },
+    color: 'Red'
+  },
+}
+
+const redPlayers = await Player.findMany(redTeam);
+
+redPlayers.json();
+
+Player.Many {
+  [[maeva]]: {
+    size: 1,
+    total: 1,
+    page: 1,
+    range: 100, // default maeva limit
+    pages: 1,
+    query: {team: teamIdKey},
+  },
+  [
+    Player {
+      [[maeva]]: {
+        id: playerIdKey,
+        version: 0,
+        revision: 0,
+      },
+      active: true,
+      created: Date,
+      email: 'cool@joe.com',
+      pseudo: 'cool joe',
+      quotes: [],
+      score: 100,
+      team: Team {
+        [[maeva]]: {
+          id: teamIdKey,
+          version: 0,
+          revision: 0,
+        },
+        color: 'Red'
+      },
+    }
+  ],
+}
+
+for (const redPlayer of redPlayers) {
+  const {revision} = redPlayer.maeva();
+  const {pseudo} = redPlayer;
+}
+```
+
+### Equality
+
+You can ask for value equality such as:
+
+```js
+class User extends Model {
+  static schema = {
+    name: {String},
+    score: {Number},
+    active: {Boolean},
+  }
+}
+
+Model.find({name: 'john'});
+
+Model.find({score: 100});
+
+Model.find({active: true});
+```
+
+### Key search
+
+Search sub documents by key with dot notation and dollar signs:
+
+```js
+class User extends Model {
+  static schema = {
+    email: {
+      Object: {
+        default: {String},
+        secondaries: {Array: {Object: {name: {String}, address: {String}}}},
+      }
+    },
+  }
+}
+
+Model.findOne({'email.default': 'john@doe.com'});
+
+Model.findMany({'email.secondaries.name': 'home'});
+```
+
+### Meta search
+
+```js
+class User extends Model {
+  static schema = {
+    score: {Number}
+  }
+}
+
+Model.findMany({'score': {Above: 0}});
+
+#### Number
+
+- Above <Number>
+- Below <Number>
+- Between <Number, Number>
+
+#### String
+
+- Contain <RegularExpression | String>
+- StartWith <RegularExpression | String>
+- EndWith <RegularExpression | String>
+
+#### Date
+
+- Before <Date>
+- After <Date>
+- Between <Date>, <Date>
+
+#### Object
+
+- HasProperty <String>
+
+#### Array
+
+- HasItem <Any>
+- LengthIsBelow <Number>
+- LengthIs <Number>
+- LengthIsAbove <Number>
+```
 
 ## projection
 
 You can use the following projection:
 
-- limit (number)
-- skip (number)
-- sort (view below)
-- reverse (boolean, to reverse order)
+- Limit (number)
+- Skip (number)
+- Range (number) (number..number)
+- Sort (view below)
+- Reverse (boolean, to reverse order)
+
+```javascript
+Model.findOne({}, {Limit: 100, Skip: 50, Sort})
+```
 
 ## update
 
 ```js
-Model.update({number: {$gt: 0}}, {number: 0}, {limit: 10});
+Model.updateMany({number: {Above: 0}}, {number: 0}, {Limit: 10});
 ```
 
-## find with function
+## find with function (slow)
 
 ```javascript
-Model.find((collection) => collection.foo === 2, {limit: 10});
+Model.findMany(
+  (doc) => doc.foo === 2, {Limit: 10}
+);
 ```
 
 # Singleton
 
 ```js
 const foo = new Foo({bar: 1});
-foo.set({barz: true}).save();
+foo.set({bar: 2}).save();
 ```
 
 # Queries
@@ -260,7 +503,9 @@ foo.set({barz: true}).save();
 You can pass meta-queries:
 
 ```js
-Model.find({foo: {$not: true});
+Model.find(
+  Not({query: true})
+);
 ```
 
 See a [list of meta queries here](docs/Find Statement.md).
@@ -283,49 +528,15 @@ User
 
 You can pass an array of promises before and after the following operations:
 
-- insert
-- update
-- remove
-
-*Note* a failing promise will break the sequence.
-
 ```js
 class Foo extends Model {
-  // will be called before insertion. If one of promises failed, document will not be inserted
-  static inserting(doc, model) {
-    return [
-      new Promise((resolve, reject) => { /* ... */ }),
-    ];
-  }
-  // will be called after insertion. If one of promises failed, insertion is not rollbacked but maintained
-  static inserting(doc) {
-    return [
-      new Promise((resolve, reject) => { /* ... */ }),
-    ];
-  }
-  // will be called before updating. If one of promises failed, document will not be updated
-  static updating(doc) {
-    return [
-      new Promise((resolve, reject) => { /* ... */ }),
-    ];
-  }
-  // will be called after updating. If one of promises failed, update is not rollbacked but maintained
-  static updated(doc) {
-    return [
-      new Promise((resolve, reject) => { /* ... */ }),
-    ];
-  }
-  // will be called before removing. If one of promises failed, document will not be removed
-  static removing(doc) {
-    return [
-      new Promise((resolve, reject) => { /* ... */ }),
-    ];
-  }
-  // will be called after removal. If one of promises failed, removal is not rollbacked but maintained
-  static removed(doc) {
-    return [
-      new Promise((resolve, reject) => { /* ... */ }),
-    ];
+  static hooks = {
+    inserted,
+    inserting,
+    removed,
+    removing,
+    updated,
+    updating,
   }
 }
 ```

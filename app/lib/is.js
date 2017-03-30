@@ -1,0 +1,7 @@
+// @flow
+
+class Field {
+  constructor() {
+    
+  }
+}
