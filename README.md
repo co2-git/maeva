@@ -102,7 +102,7 @@ Enclose type in array brackets to declare an array:
 
 ```js
 {
-  numbers: Model.Array(Number),
+  numbers: {Array: Number},
 }
 ```
 
