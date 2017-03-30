@@ -59,9 +59,11 @@ class Player extends Model {
 }
 
 const player = await Player.findOne(
-  await Team.findOne({name}),
-  await Club.findOne({name}),
-  {score: 100},
+  {
+    club: await Club.findOne({name}),
+    team: await Team.findOne({name})},
+    score: Player.Above(100),
+  },
   Player.sort('score'),
 );
 
@@ -86,9 +88,9 @@ We use key notations (with dots).
 {
   temperature: {
     Object: {
-      day: {Number},
-      night: {Number},
-      unit: {Enum: ['Celsius', 'Fahrenheit', 'Kelvin']}
+      day: Model.Number,
+      night: Model.Number,
+      unit: Model.enum('Celsius', 'Fahrenheit', 'Kelvin')
     }
   }
 }
@@ -100,7 +102,7 @@ Enclose type in array brackets to declare an array:
 
 ```js
 {
-  numbers: {Array: Number},
+  numbers: Model.Array(Number),
 }
 ```
 
