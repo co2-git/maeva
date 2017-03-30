@@ -8,13 +8,13 @@ JS models. Database agnostic.
 Use `maeva` to define a model.
 
 ```js
-import {Model} from 'maeva';
+import {is, Model} from 'maeva';
 
 class User extends Model {
   static schema = {
-    name: String,
-    active: Boolean,
-    score: Number,
+    name: is(String),
+    active: is(Boolean),
+    score: is(Number),
   };
 }
 ```
@@ -26,38 +26,58 @@ import mysql from 'maeva-mysql';
 
 maeva.connect(mysql());
 
-User.insert({name: 'lambda', active: true, score: 100});
+User.insert({name: 'joe', active: true, score: 100});
 ```
 
-# Supported drivers
+# Population
 
-- [mongodb](npmjs.com/package/maeva-mongodb)
+Supports `lazy population`.
+Supports circular dependencies via `getter` syntax.
 
-# Deep into models
-
-## Type
-
-You can set any of these native types as your field type:
-
-- String
-- Boolean
-- Number
-- Date
-
-## Objects
-
-Objects are seen as embedded documents and are declared as `Schema`:
-
-```js
-import {Model, Schema} from 'maeva';
-
-class Foo extends Model {
+```javascript
+class Team extends Model {
   static schema = {
-    subdocument: new Schema({foo: String}),
+    name: is(String),
+    awards: is(Number),
   };
 }
 
-new Foo({subdocument: {foo: 'hello'}});
+class Player extends Model {
+  static schema = {
+    name: is(String),
+    score: is(Number),
+    isCaptain: is(Boolean),
+    team: is(Team),
+  };
+}
+
+const player = await Player.findById(id);
+
+if (player.isCaptain) {
+  await Promise.all([
+    player
+      .increment('score', 100)
+      .save(),
+
+    player.team
+      .increment('awards', 10)
+      .save(),
+  ])
+}
+```
+
+## Objects (embedded documents)
+
+We use key notations (with dots).
+
+```js
+{
+  temperature: is({
+    day: is(Number),
+    night: is(Number),
+    unit: is('Celsius', 'Fahrenheit', 'Kelvin')
+  })
+}
 ```
 
 ## Arrays
@@ -65,15 +85,9 @@ new Foo({subdocument: {foo: 'hello'}});
 Enclose type in array brackets to declare an array:
 
 ```js
-import {Model} from 'maeva';
-
-class Foo extends Model {
-  static schema = {
-    numbers: [Number],
-  };
+{
+  numbers: is.many(Number),
 }
-
-new Foo({numbers: [1, 2, 3]});
 ```
 
 ## Tuples
@@ -81,15 +95,9 @@ new Foo({numbers: [1, 2, 3]});
 An array with more than one type is seen as a tuple:
 
 ```js
-import {Model} from 'maeva';
-
-class Foo extends Model {
-  static schema = {
-    tuple: [Number, String],
-  };
+{
+  items: is.many(Number, String, is.many(Boolean)),
 }
-
-new Foo({tuple: [1, 'hello']});
 ```
 
 ## Mixed
@@ -97,16 +105,17 @@ new Foo({tuple: [1, 'hello']});
 You can declare mixed types such as:
 
 ```js
-import {Model, Type} from 'maeva';
-
-class Foo extends Model {
-  static schema = {
-    mixed: Type.Mixed(Number, String),
-  };
+{
+  mixed: is.either(Number, String),
 }
+```
 
-new Foo({mixed: 0});
-new Foo({mixed: 'hello'});
+## Array of mixed
+
+```js
+{
+  mixed: is.many(is.either(Number, String)),
+}
 ```
 
 ## Any
@@ -114,26 +123,16 @@ new Foo({mixed: 'hello'});
 Accept any type
 
 ```js
-import {Model, Type} from 'maeva';
-
-class Foo extends Model {
-  static schema = {
-    any: Type.any,
-  };
+{
+  any: is.anything,
 }
 ```
 
-# Link models
-
-You can associate a type to another model.
+## Enum
 
 ```js
-class Bar extends Model {}
-
-class Foo extends Model {
-  static schema = {
-    bar: Bar
-  };
+{
+  greeting: is.eitheir('hello', 'goodbye'),
 }
 ```
 
@@ -144,27 +143,35 @@ In case of cicular dependencies, you can use a getter:
 ```js
 import Bar from './Bar'; // and Bar also imports Foo
 
-class Foo extends Model {
-  static schema = {
-    get bar() { // use a getter to not get a null value
-      return Bar;
-    }
-  };
+Foo {
+  // use a getter in order not to get a null value
+  get bar = () => Is(Bar),
 }
 ```
 
-# Other options
+## Required
 
 ```js
-class Foo extends Model {
-  static schema = {
-    field: {
-      type: String,
-      required: true, // this field is required upon insertion
-      default: 'hello', // default value. You can pass a function to be called
-      validate: (value) => /abc/.test(value), // a boolean function that will reject false results on any write operations
-    },
-  };
+{
+  email: is(String).required,
+}
+```
+
+## Default
+
+```js
+{
+  created: is(Date).default(Date.now),
+  score: is(Number).default(100),
+}
+```
+
+## Validate
+
+```js
+{
+  url: is(String).validate(/^https:/),
+  status: is(Number).validate((status) => status === 200)
 }
 ```
 
@@ -173,28 +180,18 @@ class Foo extends Model {
 Indexes might vary from a database to another but expect standard indexes to be exposed:
 
 ```js
-class Foo extends Model {
-  static schema = {
-    field: {
-      index: true, // index this field
-      unique: true, // mark this field as unique
-    },
-  };
+{
+  field: is(Number).index(),
+  uniqueField: is(Number).unique()
 }
 ```
 
 ## Compound indexes
 
 ```js
-class Foo extends Model {
-  static schema = {
-    field1: {
-      index: ['field2'], // index this field with field2
-      unique: ['field3'], // mark this field as unique with field3
-    },
-    field2: Boolean,
-    field3: String,
-  };
+{
+  number: is(Number).unique('team'),
+  team: is(Team)
 }
 ```
 
@@ -243,6 +240,12 @@ You can use the following projection:
 
 ```js
 Model.update({number: {$gt: 0}}, {number: 0}, {limit: 10});
+```
+
+## find with function
+
+```javascript
+Model.find((collection) => collection.foo === 2, {limit: 10});
 ```
 
 # Singleton

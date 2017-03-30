@@ -25,6 +25,7 @@ function update(get: {}, set: {}, options: {}): Promise<Object[]> {
       Connection.events.emit('updated', this, docs);
       resolve(docs);
     } catch (error) {
+      console.log('we failed!!');
       console.log(error.stack);
       reject(error);
     }

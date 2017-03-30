@@ -48,41 +48,17 @@ Some types have special syntax:
 You have three ways of declaring embedded schemas:
 
 ```javascript
-import {Type, Schema} from 'maeva';
+import {Type as is, Schema} from 'maeva';
 
 new Schema({
-  user: Type.Embed(new Schema({
-    name: String,
-    email: Type.Embed({
-      main: String,
-      active: Boolean,
-    }),
-  })),
-});
-
-// For simplicity's sake, we also allow the following syntax:
-
-new Schema({
-  user: new Schema({
-    name: String,
-    email: new Schema({
-      main: String,
-      active: Boolean,
-    }),
-  }),
-});
-
-// Or this one
-
-new Schema({
-  user: Type.Embed({
-    name: String,
-    email: Type.Embed({
-      main: String,
-      active: Boolean,
-    }),
-  }),
-});
+  user: is({
+    name: is.String,
+    email: is({
+      main: is.String,
+      active: is.Boolean
+    })
+  })
+})
 ```
 
 ### Any

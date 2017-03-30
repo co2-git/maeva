@@ -35,7 +35,7 @@ export default function find(
       }));
       resolve(documents);
     } catch (error) {
-      console.log(error.stack);
+      console.log(error);
       reject(error);
     }
   });
