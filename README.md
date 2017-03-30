@@ -263,15 +263,18 @@ All databases expose the same CRUD operations:
 - subtract
 - multipl
 
-## find
+## findOne / findMany
 
 ```js
-const results = await Model.find(
+const results = await Model.findOne(
   {
     foo: true,
-    number: {'>': 0}
+    number: {Above: 10},
+    user: await User.findOne()
   },
-  {limit: 10, reverse: true}
+  Model.Cursor.Limit(100),
+  Model.Cursor.Skip(50),
+  Model.Cursor.Sort(),
 );
 ```
 
