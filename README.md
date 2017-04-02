@@ -12,9 +12,9 @@ import {Model} from 'maeva';
 
 class User extends Model {
   static schema = {
-    name: {String},
-    active: {Boolean},
-    score: {Number},
+    name: String,
+    active: Boolean,
+    score: Number,
   };
 }
 ```
@@ -37,24 +37,24 @@ Supports circular dependencies via `getter` syntax.
 ```javascript
 class Team extends Model {
   static schema = {
-    name: {String},
-    awards: {Number},
+    name: String,
+    awards: Number,
   };
 }
 
 class Club extends Model {
   static schema = {
-    name: {String},
+    name: String,
   };
 }
 
 class Player extends Model {
   static schema = {
-    name: {String},
-    score: {Number},
-    isCaptain: {Boolean},
-    team: {Team},
-    club: {Club},
+    name: String,
+    score: Number,
+    isCaptain: Boolean,
+    team: Team,
+    club: Club,
   };
 }
 
@@ -88,9 +88,9 @@ We use key notations (with dots).
 {
   temperature: {
     Object: {
-      day: Model.Number,
-      night: Model.Number,
-      unit: Model.enum('Celsius', 'Fahrenheit', 'Kelvin')
+      day: Number,
+      night: Number,
+      unit: {Enum: ['Celsius', 'Fahrenheit', 'Kelvin']}
     }
   }
 }
@@ -142,7 +142,7 @@ Accept any type
 import {Any} from 'maeva';
 
 {
-  any: {Any},
+  any: Any,
 }
 ```
 
