@@ -2,85 +2,43 @@
 import Type from './Type';
 import {MaevaFieldError} from './Error';
 
+const _type = (type: MaevaFieldConstructor) => new Field(type);
+
+_type.object = (type: MaevaFieldConstructor) => new Field(new Type.Object(type));
+_type.array = (type: MaevaFieldConstructor) => new Field(new Type.Array(type));
+_type.tuple = (...types: [MaevaFieldConstructor]) => new Field(
+  new Type.Tuple(...types)
+);
+_type.mixed = (...types: [MaevaFieldConstructor]) => new Field(
+  new Type.Mixed(...types)
+);
+_type.any = () => new Field(new Type.Any());
+
 export default class Field {
 
-  default: ?any;
-  required: boolean = false;
+  attributes: MaevaFieldAttributes = {
+    required: false,
+  };
+
   type: any;
-  validate: ?Function;
-  array: ?Type.Array;
-  tuple: ?Type.Tuple;
-  mixed: ?Type.Mixed;
-  object: ?Type.Object;
-  any: ?Type.Any;
-  enum: ?Type.Enum;
 
-  constructor(abstract: MaevaFieldAbstract) {
-    for (const key in abstract) {
-      switch (key) {
+  constructor(type: MaevaFieldConstructor) {
+    this.type = Type.associate(type);
+  }
 
-      case 'required': {
-        this.required = abstract.required;
-      } break;
+  required(): Field {
+    this.attributes.required = true;
+    return this;
+  }
 
-      case 'default': {
-        this.default = abstract.default;
-      } break;
+  default(defaultValue: Function | any): Field {
+    this.attributes.default = defaultValue;
+    return this;
+  }
 
-      case 'validate': {
-        this.validate = abstract.validate;
-      } break;
-
-      case 'String': {
-        this.type = new Type.String();
-      } break;
-
-      case 'Number': {
-        this.type = new Type.Number();
-      } break;
-
-      case 'Boolean': {
-        this.type = new Type.Boolean();
-      } break;
-
-      case 'Date': {
-        this.type = new Type.Date();
-      } break;
-
-      case 'Array': {
-        this.type = new Type.Array(abstract.Array[0]);
-      } break;
-
-      case 'Tuple': {
-        this.type = new Type.Tuple(...abstract.Tuple);
-      } break;
-
-      case 'Mixed': {
-        this.type = new Type.Mixed(...abstract.Mixed);
-      } break;
-
-      case 'Object': {
-        const object = {};
-        for (const field in abstract.Object) {
-          object[field] = new Field(abstract.Object[field]);
-        }
-        this.type = new Type.Object(object);
-      } break;
-
-      case 'type': {
-        this.type = new Type.Any();
-      } break;
-
-      case 'enum': {
-        this.type = new Type.Enum(...abstract.enum);
-      } break;
-
-      default: {
-        this.type = new Type.Model(abstract[key]);
-      } break;
-
-      }
-    }
+  validate(validateValue: Function | any): Field {
+    this.attributes.validate = validateValue;
+    return this;
   }
 
   convertValue(value: any): any {

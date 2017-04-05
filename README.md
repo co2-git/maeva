@@ -56,6 +56,10 @@ class Player extends Model {
     team: type(Team),
     country: type(Country),
   };
+
+  isCaptain() {
+    return this.get('isCaptain');
+  }
 }
 
 await Players.insertMany(
@@ -76,13 +80,13 @@ const player = await Player.findOne(
   Player.sort('points'),
 );
 
-if (player.isCaptain) {
+if (player.isCaptain()) {
   await Promise.all([
     player.save(
       player.increment('points', 1),
     ),
 
-    player.team.save(
+    player.get('team').save(
       player.team.increment('points', 3),
     ),
   ])
@@ -91,14 +95,11 @@ if (player.isCaptain) {
 
 ## Objects (embedded documents)
 
-We use key notations (with dots).
-
 ```js
 {
-  temperature: type.schema({
+  temperature: type.object({
     day: type(Number),
     night: type(Number),
-    unit: type.enum('Celsius', 'Fahrenheit', 'Kelvin'),
   })
 }
 ```
@@ -154,7 +155,7 @@ Accept any type
 
 ```js
 {
-  any: type(),
+  any: type.any(),
 }
 ```
 
@@ -225,35 +226,101 @@ Indexes might vary from a database to another but expect standard indexes to be 
 }
 ```
 
-# Read query
-
-This is how you query a read request:
-
-## Use id
-
-```javascript
-Player
-  .findOne(
-    player.maeva().id,
-  );
-```
-
-## Add query
-
-```javascript
-Player
-  .findOne(
-    {team: await Team.findOne()},
-  );
-```
-
 ## Use projection
 
 ```javascript
 Player
   .findOne(
-
+    {},
+    {
+      limit: 100,
+      skip: 50,
+      order:
+    }
   );
+```
+
+# Query
+
+## String
+
+```javascript
+class Foo extends Model {
+  static schema = {name: type(String)};
+}
+
+Foo.find({name: 'joe'});
+Foo.find({name: {insensitive: 'joe'}});
+Foo.find({name: /joe/});
+Foo.find({name: {start: 'j'}});
+Foo.find({name: {end: 'oe'}});
+Foo.find({name: {like: 'j*e'}});
+```
+
+## Number
+
+```javascript
+class Foo extends Model {
+  static schema = {score: type(Number)};
+}
+
+Foo.find({score: 0});
+Foo.find({score: {below: 0}});
+Foo.find({score: {above: 0});
+```
+
+## Boolean
+
+```javascript
+class Foo extends Model {
+  static schema = {active: type(Boolean)};
+}
+
+Foo.find({active: true});
+```
+
+## Date
+
+```javascript
+class Foo extends Model {
+  static schema = {date: type(Date)};
+}
+
+Foo.find({date: new Date()});
+Foo.find({date: 'date string'});
+Foo.find({date: {before: new Date()}});
+Foo.find({date: {after: new Date()}});
+```
+
+## Array
+
+```javascript
+class Foo extends Model {
+  static schema = {numbers: type.array(Number)};
+}
+
+Foo.find({numbers: {size: 0}});
+Foo.find({numbers: {has: 1}});
+Foo.find({numbers: {filter: (item, index) => true}});
+```
+
+## Object
+
+```javascript
+class Foo extends Model {
+  static schema = {object: type.object({
+    foo: type(String),
+  })};
+}
+
+Foo.find({'object.foo': /foo/});
+Foo.find({object: {has: 'foo'}});
+```
+
+# AND OR
+
+```javascript
+Foo.find([{foo: 1, bar: 1}, {bar: 2}]); // where (foo=1 and bar=2) or bar=2
 ```
 
 # CRUD
@@ -263,14 +330,12 @@ All databases expose the same CRUD operations:
 - count
 - findMany
 - findOne
-- insert (alias create)
+- insertMany
+- insertOne
 - removeMany
 - removeOne
 - updateMany
 - updateOne
-- sum
-- subtract
-- multipl
 
 ## findOne / findMany
 
@@ -278,12 +343,9 @@ All databases expose the same CRUD operations:
 const results = await Model.findOne(
   {
     foo: true,
-    number: {Above: 10},
+    number: {above: 10},
     user: await User.findOne()
-  },
-  Model.Cursor.Limit(100),
-  Model.Cursor.Skip(50),
-  Model.Cursor.Sort(),
+  }
 );
 ```
 
