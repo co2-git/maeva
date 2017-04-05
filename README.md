@@ -8,13 +8,13 @@ JS models. Database agnostic.
 Use `maeva` to define a model.
 
 ```js
-import {Model} from 'maeva';
+import {Model, type} from 'maeva';
 
 class User extends Model {
   static schema = {
-    name: String,
-    active: Boolean,
-    score: Number,
+    name: type(String),
+    active: type(Boolean),
+    score: type(Number),
   };
 }
 ```
@@ -37,45 +37,54 @@ Supports circular dependencies via `getter` syntax.
 ```javascript
 class Team extends Model {
   static schema = {
-    name: String,
-    awards: Number,
+    name: type(String),
+    points: type(Number).default(0),
   };
 }
 
-class Club extends Model {
+class Country extends Model {
   static schema = {
-    name: String,
+    name: type(String),
   };
 }
 
 class Player extends Model {
   static schema = {
-    name: String,
-    score: Number,
-    isCaptain: Boolean,
-    team: Team,
-    club: Club,
+    name: type(String),
+    points: type(Number).default(0),
+    isCaptain: type(Boolean).default(false),
+    team: type(Team),
+    country: type(Country),
   };
 }
 
-const player = await Player.findOne(
+await Players.insertMany(
   {
-    club: await Club.findOne({name}),
-    team: await Team.findOne({name})},
-    score: Player.Above(100),
+    name: 'Leo Messi',
+    team: await Team.insertOne({name: 'Barca'}),
+    country: await Country.insertOne({name: 'Argentina'}),
   },
-  Player.sort('score'),
+  {
+    name: 'Cristiano Ronaldo',
+    team: await Team.insertOne({name: 'Real Madrid'}),
+    country: await Country.insertOne({name: 'Portugal'}),
+  }
+);
+
+const player = await Player.findOne(
+  {team: {name: 'Barca'}},
+  Player.sort('points'),
 );
 
 if (player.isCaptain) {
   await Promise.all([
-    player
-      .increment('score', 100)
-      .save(),
+    player.save(
+      player.increment('points', 1),
+    ),
 
-    player.team
-      .increment('awards', 10)
-      .save(),
+    player.team.save(
+      player.team.increment('points', 3),
+    ),
   ])
 }
 ```
