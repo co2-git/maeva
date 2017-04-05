@@ -37,7 +37,7 @@ Supports circular dependencies via `getter` syntax.
 ```javascript
 class Team extends Model {
   static schema = {
-    name: type(String),
+    name: String,
     points: type(Number).default(0),
   };
 }
@@ -72,7 +72,7 @@ await Players.insertMany(
 );
 
 const player = await Player.findOne(
-  {team: {name: 'Barca'}},
+  {team: await Team.findOne({name: 'Barca'})},
   Player.sort('points'),
 );
 
@@ -95,13 +95,11 @@ We use key notations (with dots).
 
 ```js
 {
-  temperature: {
-    Object: {
-      day: Number,
-      night: Number,
-      unit: {Enum: ['Celsius', 'Fahrenheit', 'Kelvin']}
-    }
-  }
+  temperature: type.schema({
+    day: type(Number),
+    night: type(Number),
+    unit: type.enum('Celsius', 'Fahrenheit', 'Kelvin'),
+  })
 }
 ```
 
@@ -111,7 +109,9 @@ Enclose type in array brackets to declare an array:
 
 ```js
 {
-  numbers: {Array: Number},
+  number: Number,
+  numbers: type.array(Number),
+  arrays: type.array(type.array(Number))
 }
 ```
 
@@ -121,7 +121,7 @@ An array with more than one type is seen as a tuple:
 
 ```js
 {
-  items: {Tuple: [Number, String]},
+  items: type.tuple(String, Number),
 }
 ```
 
@@ -131,7 +131,12 @@ You can declare mixed types such as:
 
 ```js
 {
-  mixed: {Mixed: [Number, String]},
+  mixed: type.mixed(
+    Boolean,
+    type.object({
+      names: type.array(String)
+    })
+  ),
 }
 ```
 
@@ -139,7 +144,7 @@ You can declare mixed types such as:
 
 ```js
 {
-  mixed: {Array: {Mixed: [Number, String]}},
+  mixed: type.array(type.mixed(Number, String)),
 }
 ```
 
@@ -148,10 +153,8 @@ You can declare mixed types such as:
 Accept any type
 
 ```js
-import {Any} from 'maeva';
-
 {
-  any: Any,
+  any: type(),
 }
 ```
 
@@ -159,7 +162,7 @@ import {Any} from 'maeva';
 
 ```js
 {
-  greeting: {Enum: ['hello', 'goodbye']},
+  languages: type.values('es', 'en'),
 }
 ```
 
@@ -172,16 +175,15 @@ import Bar from './Bar'; // and Bar also imports Foo
 
 Foo {
   // use a getter in order not to get a null value
-  get bar = () => {Bar},
+  get bar = () => type(Bar),
 }
 ```
 
 ## Required
 
 ```js
-import {Required} from 'maeva';
 {
-  email: {String, Required},
+  email: type(String).isRequired(),
 }
 ```
 
@@ -189,8 +191,8 @@ import {Required} from 'maeva';
 
 ```js
 {
-  created: {Date, Default: Date.now},
-  score: {Number, Default: 0},
+  created: type(Date).default(Date.now),
+  score: type(Number).default(0),
 }
 ```
 
@@ -198,8 +200,8 @@ import {Required} from 'maeva';
 
 ```js
 {
-  url: {String, Validate: /^https/},
-  status: {Number, Validate: (status) => status >= 200 && status < 300}
+  url: type(String).validate(/^https/),
+  status: type(Number).validate((status) => status >= 200 && status < 300)
 }
 ```
 
@@ -208,11 +210,9 @@ import {Required} from 'maeva';
 Indexes might vary from a database to another but expect standard indexes to be exposed:
 
 ```js
-import {Index, Unique} from 'maeva';
-
 {
-  field: {Number, Index},
-  uniqueField: {Number, Unique}
+  field: type(Number).index(),
+  uniqueField: type(Number).unique()
 }
 ```
 
@@ -220,8 +220,8 @@ import {Index, Unique} from 'maeva';
 
 ```js
 {
-  name: {Number, Unique: ['team']},
-  team: {Team}
+  name: type(Number).index({with: 'Team'}),
+  team: type(Team),
 }
 ```
 
@@ -292,7 +292,7 @@ const results = await Model.findOne(
 ```javascript
 class Team extends Model {
   static schema = {
-    color: {String, Unique},
+    color: type(String).required().unique(),
   };
 }
 
