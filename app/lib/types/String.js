@@ -1,6 +1,9 @@
 // @flow
+import Type from './Type';
 
-export default class MaevaTypeString {
+export default class MaevaTypeString extends Type {
+
+  name = 'String';
 
   validate(value: any): boolean {
     return (typeof value === 'string');

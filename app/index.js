@@ -10,10 +10,10 @@
  *  ****************************************************************************
 **/
 
-export {default as default} from './lib/Connection';
-export {default as Model} from './lib/Model';
-export {default as Schema} from './lib/Schema';
-import * as Type from './lib/Type';
-export {Type};
 import packageJSON from '../package.json';
+
+export {default as default} from './src/Connection';
+export {default as Model} from './src/Model';
+export {default as type} from './src/helpers/type';
+
 export const {version} = packageJSON;

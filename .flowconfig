@@ -3,8 +3,7 @@
 [include]
 
 [libs]
-app/flow.js
-app/flow/*
+flow/
 
 [options]
 module.system=haste

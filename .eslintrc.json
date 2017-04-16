@@ -263,7 +263,7 @@
       "never"
     ],
     "flowtype/type-id-match": [
-      2,
+      0,
       "^\\$"
     ],
     "flowtype/union-intersection-spacing": [

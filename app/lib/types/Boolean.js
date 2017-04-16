@@ -1,6 +1,9 @@
 // @flow
+import Type from './Type';
 
-export default class MaevaTypeBoolean {
+export default class MaevaTypeBoolean extends Type {
+
+  name = 'Boolean';
 
   validate(value: any): boolean {
     return typeof value === 'boolean';

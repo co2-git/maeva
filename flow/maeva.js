@@ -1,8 +1,85 @@
 // @flow
+import Field from '../app/lib/Field';
+import Model from '../app/lib/Model';
+import Type from '../app/lib/types/Type';
 
-import Field from '../app/src/Field';
+// Type
+
+declare type MaevaType = Type;
+
+// Model
+
+declare type MaevaHook =
+  | 'willInsert'
+  | 'didInsert'
+  | 'willUpdate'
+  | 'didUpate'
+  | 'willRemove'
+  | 'didRemove'
+  ;
+
+declare type MaevaStaticModel = {
+  willInsert?: () => Promise<void> | Promise<void>[],
+  didInsert?: () => Promise<void> | Promise<void>[],
+  willUpdate?: () => Promise<void> | Promise<void>[],
+  didUpate?: () => Promise<void> | Promise<void>[],
+  willRemove?: () => Promise<void> | Promise<void>[],
+  didRemove?: () => Promise<void> | Promise<void>[],
+};
 
 declare type MaevaField = Field;
+
+declare type MaevaConnectionStatus =
+  | 'idle'
+  | 'connecting'
+  | 'connected'
+  | 'disconnecting'
+  | 'disconnected'
+  | 'failed'
+  ;
+
+declare type MaevaSortBy =
+  | string
+  | string[]
+  | {[field: string]: -1 | 1}
+  ;
+
+declare type MaevaSchemaJSON = {
+  [field: string]: {
+    type: string,
+  },
+};
+
+declare type MaevaModelJSON = {
+  collection: string,
+  version: number,
+  schema: MaevaSchemaJSON,
+};
+
+declare type MaevaQuery = {
+  model: MaevaModelJSON,
+  get?: Object,
+  set?: Object,
+  projection?: {
+    limit: number,
+    offset: number,
+    sortBy: MaevaSortBy
+  },
+};
+
+declare type MaevaConnectorInterface = {
+  count: (query: MaevaQuery) => Promise<number>,
+  findMany: (query: MaevaQuery) => Promise<Object|Object[]>,
+  findOne: (query: MaevaQuery) => Promise<Object|Object[]>,
+  insertMany: (query: MaevaQuery) => Promise<Object|Object[]>,
+  insertMany: (query: MaevaQuery) => Promise<Object|Object[]>,
+  removeMany: (query: MaevaQuery) => Promise<void>,
+  removeOne: (query: MaevaQuery) => Promise<any>,
+  updateMany: (query: MaevaQuery) => Promise<void>,
+  updateOne: (query: MaevaQuery) => Promise<any>,
+};
+
+declare type MaevaConnector = (conn: MaevaConnection) => MaevaConnectorInterface;
 
 declare type MaevaFieldConstructor = Function | MaevaField;
 
@@ -13,9 +90,11 @@ declare type MaevaFieldAttributes = {
 };
 
 declare type MaevaConnectorResponse = {
-  set: Object,
-  reads: Object[],
-  writes: Object[],
+  query: MaevaQuery,
+  results: {
+    get?: Object[],
+    set?: Object[],
+  },
 };
 
 declare type MaevaResponse = {

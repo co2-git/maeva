@@ -2,7 +2,7 @@
 
 export default function insertOne(
   document: Object
-): Promise<void> {
+): Promise<MaevaConnectorResponse> {
   return new Promise(async (resolve, reject) => {
     try {
       const candidate = new this(document);

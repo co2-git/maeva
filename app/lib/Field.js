@@ -1,87 +1,70 @@
 // @flow
-
-import _ from 'lodash';
-import * as Type from './Type';
-import * as Schema from './Schema';
-import MaevaError from './Error';
+import Type from './types/Type';
+import associate from './types/associate';
+import {MaevaFieldError} from './Error';
 
 export default class Field {
-  validator: ?Function;
-  $type: Function;
-  type: Function;
-  required: ?boolean;
-  default: ?any;
-  name: ?string;
-  constructor(field: Object) {
-    for (const attribute in field) {
-      if (attribute === 'validate') {
-        Object.assign(this, {validator: field.validate});
-      } else {
-        Object.assign(this, {[attribute]: field[attribute]});
-      }
+
+  attributes: MaevaFieldAttributes = {
+    required: false,
+  };
+
+  type: Type;
+
+  constructor(type: Function | Type) {
+    if (type instanceof Type) {
+      this.type = type;
+    } else {
+      this.type = associate(type);
     }
-    Object.defineProperties(this, {
-      $type: {
-        enumerable: false,
-        value: this.associate(),
-      },
-    });
   }
-  associate(): Function {
-    try {
-      if (typeof Schema === 'function' && this.type instanceof Schema) {
-        return Schema;
-      }
-      return Type.associate(this.type);
-    } catch (error) {
-      throw new MaevaError(
-        error,
-        this,
-        this.associate,
+
+  convertValue(value: any): any {
+    return this.type.convert(value);
+  }
+
+  default(defaultValue: Function | any): Field {
+    this.attributes.default = defaultValue;
+    return this;
+  }
+
+  formatValue(value: any): any {
+    const convertedValue = this.convertValue(value);
+
+    if (!this.validateValue(convertedValue)) {
+      throw new MaevaFieldError(
+        'Field value rejected by type',
+        {
+          field: this,
+          value,
+        }
       );
     }
   }
-  convert(value: any): any {
-    return this.$type.convert(value);
+
+  required(): Field {
+    this.attributes.required = true;
+    return this;
   }
-  validate(value: any): boolean {
-    return this.$type.validate(value);
-  }
-  set(value: any): any {
-    return this.$type.set(value);
-  }
-  toJSON(): $Field$JSON {
-    const json = {
-      ..._.omit(this, ['$type']),
+
+  toJSON() {
+    return {
       type: this.type.name,
+      ...this.attributes,
     };
-    if (typeof json.default === 'function') {
-      json.default = json.default.toString();
-    }
-    if (typeof json.validate === 'function') {
-      json.validate = json.validate.toString();
-    }
-    if (json.type === 'maevaEmbeddedSchema') {
-      json.embeddedSchema = this.type.embeddedSchema.toJSON();
-    }
-    if (json.type === 'maevaArray') {
-      json.arrayOf = this.type.type.name;
-    }
-    return json;
   }
-  isRequired(): boolean {
-    return this.required === true;
+
+  unique(): Field {
+    return this;
   }
-  hasDefault(): boolean {
-    return ('default' in this);
+
+  validate(validateValue: Function | any): Field {
+    this.attributes.validate = validateValue;
+    return this;
   }
-  hasValidator(): boolean {
-    return ('validator' in this);
+
+  validateValue(value: any): boolean {
+    return this.type.validate(value);
   }
-  isLink(): boolean {
-    return this.type.isMaevaModel;
-  }
-  isEmbedded(): boolean {
-    return this.type.isEmbeddedSchema;
-  }
+
 }

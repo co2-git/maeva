@@ -29,69 +29,14 @@ maeva.connect(mysql());
 User.insert({name: 'joe', active: true, score: 100});
 ```
 
-# Population
-
-Supports `lazy population`.
-Supports circular dependencies via `getter` syntax.
-
-```javascript
-class Team extends Model {
-  static schema = {
-    name: String,
-    points: type(Number).default(0),
-  };
-}
-
-class Country extends Model {
-  static schema = {
-    name: type(String),
-  };
-}
-
-class Player extends Model {
-  static schema = {
-    name: type(String),
-    points: type(Number).default(0),
-    isCaptain: type(Boolean).default(false),
-    team: type(Team),
-    country: type(Country),
-  };
-
-  isCaptain() {
-    return this.get('isCaptain');
-  }
-}
-
-await Players.insertMany(
-  {
-    name: 'Leo Messi',
-    team: await Team.insertOne({name: 'Barca'}),
-    country: await Country.insertOne({name: 'Argentina'}),
-  },
-  {
-    name: 'Cristiano Ronaldo',
-    team: await Team.insertOne({name: 'Real Madrid'}),
-    country: await Country.insertOne({name: 'Portugal'}),
-  }
-);
-
-const player = await Player.findOne(
-  {team: await Team.findOne({name: 'Barca'})},
-  Player.sort('points'),
-);
-
-if (player.isCaptain()) {
-  await Promise.all([
-    player.save(
-      player.increment('points', 1),
-    ),
-
-    player.get('team').save(
-      player.team.increment('points', 3),
-    ),
-  ])
-}
-```
+- [Schema]
+- [Types]
+  - [String]
+  - [Number]
+  - [Boolean]
+  - [Date]
+- [Relations](doc/Relations.md)
+- []
 
 ## Objects (embedded documents)
 
@@ -250,11 +195,11 @@ class Foo extends Model {
 }
 
 Foo.find({name: 'joe'});
-Foo.find({name: {insensitive: 'joe'}});
+Foo.find({name: {not: 'joe'}});
 Foo.find({name: /joe/});
-Foo.find({name: {start: 'j'}});
-Foo.find({name: {end: 'oe'}});
+Foo.find({name: {not: /joe/}});
 Foo.find({name: {like: 'j*e'}});
+Foo.find({name: {not: {like: 'j*e'}}});
 ```
 
 ## Number
@@ -265,8 +210,10 @@ class Foo extends Model {
 }
 
 Foo.find({score: 0});
+Foo.find({score: {not: 0});
 Foo.find({score: {below: 0}});
 Foo.find({score: {above: 0});
+Foo.find({score: {above: 0, below: 100});
 ```
 
 ## Boolean
@@ -287,9 +234,12 @@ class Foo extends Model {
 }
 
 Foo.find({date: new Date()});
+Foo.find({date: {not: new Date()}});
 Foo.find({date: 'date string'});
+Foo.find({date: {not: 'date string'}});
 Foo.find({date: {before: new Date()}});
 Foo.find({date: {after: new Date()}});
+Foo.find({date: {before: Date, after: Date}});
 ```
 
 ## Array
@@ -300,6 +250,7 @@ class Foo extends Model {
 }
 
 Foo.find({numbers: {size: 0}});
+Foo.find({numbers: {not: {size: 0}}});
 Foo.find({numbers: {has: 1}});
 Foo.find({numbers: {filter: (item, index) => true}});
 ```
@@ -314,7 +265,6 @@ class Foo extends Model {
 }
 
 Foo.find({'object.foo': /foo/});
-Foo.find({object: {has: 'foo'}});
 ```
 
 # AND OR

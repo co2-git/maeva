@@ -1,7 +1,6 @@
 // @flow
 import 'babel-polyfill';
 import EventEmitter from 'events';
-import Schema from './Schema';
 
 class Connection extends EventEmitter {
 
@@ -31,6 +30,39 @@ class Connection extends EventEmitter {
   static emit(...messages: any[]): Function {
     this.events.emit(...messages);
     return this;
+  }
+
+  static count = ({model, get, conn}) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _conn = conn || await this.findConnection();
+        resolve(await _conn.count({model, get}));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  static findOne({model, get, conn, projection}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _conn: Connection = conn || await this.findConnection();
+        resolve(await _conn.operations.findOne({model, get, projection}));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  static insertOne({model, set, conn}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _conn: Connection = conn || await this.findConnection();
+        resolve(await _conn.operations.insertOne({model, set}));
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   static connect(driver: Function, name: ?string): Promise<Connection> {
@@ -99,7 +131,7 @@ class Connection extends EventEmitter {
     name: string,
     type: Function,
   };
-  schema: ?Schema;
+  schema: ?Object;
 
   // Properties merged with vendor client
   operations: $Connection$operations;
