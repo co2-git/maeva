@@ -2,6 +2,7 @@
 
 export default class MaevaType {
 
+  flags = [];
   name = 'Type';
 
   convert(value: any): any {
@@ -10,6 +11,13 @@ export default class MaevaType {
 
   validate(): boolean {
     return true;
+  }
+
+  toJSON(): Object {
+    return {
+      name: this.name,
+      flags: this.flags,
+    };
   }
 
 }

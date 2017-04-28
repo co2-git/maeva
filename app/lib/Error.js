@@ -11,17 +11,41 @@ export class ExtendableError extends Error {
 
 export default class MaevaError extends ExtendableError {
 
-  debug: {[field: string]: any} = {};
+  static FORMAT_VALUE_ERROR = class extends MaevaError {
+    constructor(field: MaevaField, value: any) {
+      super('FORMAT_VALUE_ERROR');
+      this.debug = {field, value};
+      const strField = JSON.stringify(field.toJSON(), null, 2);
+      const strValue = JSON.stringify(value, null, 2);
+      this.message =
+        `FORMAT_VALUE_ERROR {field: ${strField}, value: ${strValue}}`;
+    }
+  }
+
+  static SET_FIELD_ERROR = class extends MaevaError {
+    constructor(fieldName: string, value: any, field: ?Field, error: ?Error) {
+      super('SET_FIELD_ERROR');
+      this.debug = {field, value};
+      const strField = field ?
+        JSON.stringify(field.toJSON(), null, 2) :
+        'undefined';
+      const strValue = JSON.stringify(value, null, 2);
+      this.message =
+        `SET_FIELD_ERROR {field: {${fieldName}: ${strField}},` +
+        ` value: ${strValue}}`;
+      this.previousError = error;
+    }
+  }
+
+  code: string;
+  debug: Object = {};
   previousError: ?Error;
 
   constructor(
-    errorMessage: string,
-    errorDebug: ?{[field: string]: any} = {},
-    previousError: ?Error,
+    code: string,
   ) {
-    super(errorMessage);
-    this.debug = errorDebug;
-    this.previousError = previousError;
+    super('MaevaError');
+    this.code = code;
   }
 }
 

@@ -97,8 +97,7 @@ const modelB = await ModelB.findOne({
 
 await modelB
   .get('modelA')
-  .set({name: 'bar'})
-  .save();
+  .update({name: 'bar'});
 ```
 
 # <a id="remove-a-relation"></a>Remove a relation

@@ -27,7 +27,21 @@ declare type MaevaStaticModel = {
   didRemove?: () => Promise<void> | Promise<void>[],
 };
 
+// Field
+
 declare type MaevaField = Field;
+
+declare type MaevaSchema = {
+  [field]: Field,
+};
+
+declare type MaevaSchemaJSON = {
+  [field: string]: {
+    type: string,
+  },
+};
+
+// Connection
 
 declare type MaevaConnectionStatus =
   | 'idle'
@@ -38,46 +52,25 @@ declare type MaevaConnectionStatus =
   | 'failed'
   ;
 
-declare type MaevaSortBy =
-  | string
-  | string[]
-  | {[field: string]: -1 | 1}
-  ;
-
-declare type MaevaSchemaJSON = {
-  [field: string]: {
-    type: string,
-  },
-};
-
-declare type MaevaModelJSON = {
-  collection: string,
-  version: number,
-  schema: MaevaSchemaJSON,
-};
-
-declare type MaevaQuery = {
-  model: MaevaModelJSON,
-  get?: Object,
-  set?: Object,
-  projection?: {
-    limit: number,
-    offset: number,
-    sortBy: MaevaSortBy
-  },
-};
-
 declare type MaevaConnectorInterface = {
   count: (query: MaevaQuery) => Promise<number>,
   findMany: (query: MaevaQuery) => Promise<Object|Object[]>,
   findOne: (query: MaevaQuery) => Promise<Object|Object[]>,
   insertMany: (query: MaevaQuery) => Promise<Object|Object[]>,
-  insertMany: (query: MaevaQuery) => Promise<Object|Object[]>,
+  insertOne: (query: MaevaQuery) => Promise<Object|Object[]>,
   removeMany: (query: MaevaQuery) => Promise<void>,
   removeOne: (query: MaevaQuery) => Promise<any>,
   updateMany: (query: MaevaQuery) => Promise<void>,
   updateOne: (query: MaevaQuery) => Promise<any>,
 };
+
+
+
+declare type MaevaSortBy =
+  | string
+  | string[]
+  | {[field: string]: -1 | 1}
+  ;
 
 declare type MaevaConnector = (conn: MaevaConnection) => MaevaConnectorInterface;
 

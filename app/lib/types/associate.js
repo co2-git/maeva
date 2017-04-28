@@ -5,7 +5,6 @@ import MaevaTypeBoolean from './Boolean';
 import MaevaTypeDate from './Date';
 
 export default function associate(type: Function): Type {
-
   switch (type) {
   case String:
     return new MaevaTypeString();
@@ -18,5 +17,4 @@ export default function associate(type: Function): Type {
   default:
     return type;
   }
-
 }

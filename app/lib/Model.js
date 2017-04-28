@@ -1,21 +1,27 @@
 // @flow
+import clone from 'lodash/clone';
 import StaticModel from './Model/StaticModel';
 import Field from './Field';
 import Connection from './Connection';
+import MaevaError from './Error';
 
 export default class Model extends StaticModel {
 
   changes: {[field: string]: Field} = {};
   fields: {[field: string]: Field} = {};
+  id: any;
+  isNew: boolean = true;
+  schema: MaevaSchema;
 
-  constructor(document: Object = {}) {
+  constructor(document: Object = {}, isNew: boolean = true) {
     super();
-    const model = this.constructor;
-    const {maevaSchema, schema} = model;
-    const schemas = {...schema, ...maevaSchema};
-    for (const field in schemas) {
-      this.set(field, document[field]);
+    this.isNew = isNew;
+    this.schema = this.getModel().schema;
+    const setter = {};
+    for (const field in this.schema) {
+      setter[field] = document[field];
     }
+    this.set(setter);
   }
 
   find() {
@@ -33,6 +39,28 @@ export default class Model extends StaticModel {
   }
 
   getModel = () => this.constructor;
+
+  insert() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const model = this.getModel();
+        if (typeof model.willInsert === 'function') {
+          await model.willInsert(this);
+        }
+        const query: MaevaQueryOne = {
+          model,
+          set: this,
+        };
+        const {results} = await Connection.insertOne(query);
+        const [inserted] = results.set;
+        if (typeof model.didInsert === 'function') {
+          await model.didInsert(this);
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
   remove() {
     return new Promise(async (resolve, reject) => {
@@ -98,28 +126,43 @@ export default class Model extends StaticModel {
     });
   }
 
-  set(field: string | {[field: string]: any}, value: any): Model {
-    if (typeof field === 'object') {
-      for (const attr in field) {
-        this.set(attr, field[attr]);
+  set(setter: {[field: string]: any} = {}): Model {
+    let field: string;
+    let fieldValue: any;
+    let structure: Field;
+    try {
+      for (field in setter) {
+        fieldValue = clone(setter[field]);
+        structure = this.schema[field];
+
+        if (structure) {
+          if (
+            (typeof fieldValue === 'undefined' || fieldValue === null) &&
+            structure.hasDefault()
+          ) {
+            fieldValue = structure.getDefaultValue();
+          }
+
+          fieldValue = structure.formatValue(fieldValue);
+
+          this.fields[field] = fieldValue;
+          this.changes[field] = fieldValue;
+        }
       }
-      return this;
-    }
-    const {schema} = this.constructor;
-    if ((field in schema)) {
-      const formattedValue = schema[field].formatValue(value);
-      this.fields[field] = formattedValue;
-      this.changes[field] = formattedValue;
+    } catch (error) {
+      throw new MaevaError.SET_FIELD_ERROR(
+        field || '',
+        fieldValue,
+        structure,
+        error
+      );
     }
     return this;
   }
 
   toJSON() {
     const json = {};
-    const model = this.constructor;
-    const {maevaSchema, schema} = model;
-    const schemas = {...schema, ...maevaSchema};
-    for (const field in schemas) {
+    for (const field in this.fields) {
       json[field] = this.get(field);
     }
     return json;

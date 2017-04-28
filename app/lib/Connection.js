@@ -54,11 +54,40 @@ class Connection extends EventEmitter {
     });
   }
 
-  static insertOne({model, set, conn}) {
+  static insertOne({conn, model, set}: MaevaQueryOne) {
     return new Promise(async (resolve, reject) => {
       try {
         const _conn: Connection = conn || await this.findConnection();
-        resolve(await _conn.operations.insertOne({model, set}));
+        const inserter = {
+          model: model.toJSON(),
+          set: set.toJSON(),
+        };
+        const {
+          connectorResponse,
+        }: {connectorResponse: MaevaConnectorResponse} = await _conn.operations.insertOne(inserter);
+        resolve(await _conn.operations.insertOne(inserter));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  static removeOne({model, get, conn}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _conn: Connection = conn || await this.findConnection();
+        resolve(await _conn.operations.removeOne({model, get}));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  static updateOne({model, get, set, conn}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const _conn: Connection = conn || await this.findConnection();
+        resolve(await _conn.operations.updateOne({model, get, set}));
       } catch (error) {
         reject(error);
       }
@@ -125,7 +154,7 @@ class Connection extends EventEmitter {
 
   // Default properties
   index: number = 0;
-  status: $Connection$status = 'idle';
+  status: MaevaConnectionStatus = 'idle';
   name: ?string;
   _id: ?{
     name: string,
@@ -134,7 +163,7 @@ class Connection extends EventEmitter {
   schema: ?Object;
 
   // Properties merged with vendor client
-  operations: $Connection$operations;
+  operations: MaevaConnectorInterface;
   disconnectDriver: () => Promise<void>;
 
   // Call this function to make sure connection is ready

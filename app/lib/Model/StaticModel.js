@@ -1,21 +1,13 @@
 // @flow
-import uuid from 'uuid';
 import Connection from '../Connection';
-import type from '../helpers/type';
 
 export default class StaticModel {
 
   static collectionName = '';
 
-  static maevaSchema = type.object({
-    id: type(String).default(uuid.v4),
-    version: type(Number).default((doc) => doc.getModel().version),
-    revision: type(Number).default(0),
-    inserted: type(Date).default(Date.now),
-    updated: type(Date).default(Date.now),
-  });
+  static size: ?number = null;
 
-  static schema = {};
+  static schema: MaevaSchema = {};
 
   static version = 0;
 
@@ -28,8 +20,8 @@ export default class StaticModel {
 
   static findOne(get = {}, projection = {}) {
     return Connection.findOne({
-      model: this,
       get,
+      model: this,
       projection,
     });
   }
@@ -38,7 +30,7 @@ export default class StaticModel {
     return new Promise(async (resolve, reject) => {
       try {
         const document: Model = new this(set);
-        await document.save();
+        await document.insert();
       } catch (error) {
         reject(error);
       }

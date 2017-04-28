@@ -1,7 +1,6 @@
 // @flow
 import Type from './types/Type';
 import associate from './types/associate';
-import {MaevaFieldError} from './Error';
 
 export default class Field {
 
@@ -31,15 +30,29 @@ export default class Field {
   formatValue(value: any): any {
     const convertedValue = this.convertValue(value);
 
-    if (!this.validateValue(convertedValue)) {
-      throw new MaevaFieldError(
-        'Field value rejected by type',
-        {
-          field: this,
-          value,
-        }
-      );
+    if (this.validateValue(convertedValue)) {
+      return convertedValue;
     }
+
+    return null;
+  }
+
+  getDefaultValue(): any {
+    if (this.hasDefault()) {
+      if (typeof this.attributes.default === 'function') {
+        return this.attributes.default();
+      }
+      return this.attributes.default;
+    }
+    return null;
+  }
+
+  hasDefault(): boolean {
+    return ('default' in this.attributes);
+  }
+
+  index(): Field {
+    return this;
   }
 
   required(): Field {
@@ -49,7 +62,7 @@ export default class Field {
 
   toJSON() {
     return {
-      type: this.type.name,
+      type: this.type.toJSON(),
       ...this.attributes,
     };
   }

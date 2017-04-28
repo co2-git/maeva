@@ -8,15 +8,9 @@ JS models. Database agnostic.
 Use `maeva` to define a model.
 
 ```js
-import {Model, type} from 'maeva';
+import {model} from 'maeva';
 
-class User extends Model {
-  static schema = {
-    name: type(String),
-    active: type(Boolean),
-    score: type(Number),
-  };
-}
+const users = model({foo: String});
 ```
 
 Then use a maeva driver to plug into a database.
@@ -26,7 +20,17 @@ import mysql from 'maeva-mysql';
 
 maeva.connect(mysql());
 
-User.insert({name: 'joe', active: true, score: 100});
+const foo = 'abc';
+
+await maeva.insertOne(users, {foo});
+await maeva.findOne(users, {foo});
+await maeva.updateOne(users, {foo}, {foo: 'b'});
+await maeva.removeOne(users, {foo});
+
+const user = await maeva.findOne(users);
+if (user && user.score < 100) {
+  maeva.updateOne(user, {score: 100});
+}
 ```
 
 - [Schema]
@@ -35,31 +39,9 @@ User.insert({name: 'joe', active: true, score: 100});
   - [Number]
   - [Boolean]
   - [Date]
+  - [Object](doc/types/Object.md)
 - [Relations](doc/Relations.md)
 - []
-
-## Objects (embedded documents)
-
-```js
-{
-  temperature: type.object({
-    day: type(Number),
-    night: type(Number),
-  })
-}
-```
-
-## Arrays
-
-Enclose type in array brackets to declare an array:
-
-```js
-{
-  number: Number,
-  numbers: type.array(Number),
-  arrays: type.array(type.array(Number))
-}
-```
 
 ## Tuples
 
@@ -240,31 +222,6 @@ Foo.find({date: {not: 'date string'}});
 Foo.find({date: {before: new Date()}});
 Foo.find({date: {after: new Date()}});
 Foo.find({date: {before: Date, after: Date}});
-```
-
-## Array
-
-```javascript
-class Foo extends Model {
-  static schema = {numbers: type.array(Number)};
-}
-
-Foo.find({numbers: {size: 0}});
-Foo.find({numbers: {not: {size: 0}}});
-Foo.find({numbers: {has: 1}});
-Foo.find({numbers: {filter: (item, index) => true}});
-```
-
-## Object
-
-```javascript
-class Foo extends Model {
-  static schema = {object: type.object({
-    foo: type(String),
-  })};
-}
-
-Foo.find({'object.foo': /foo/});
 ```
 
 # AND OR
