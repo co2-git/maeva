@@ -9,14 +9,11 @@ Use `maeva` to define a model.
 
 ```js
 import {model} from 'maeva';
+import mysql from 'maeva-mysql';
 
 const users = model({foo: String});
-```
 
-Then use a maeva driver to plug into a database.
-
-```js
-import mysql from 'maeva-mysql';
+# Then use a maeva driver to plug into a database.
 
 maeva.connect(mysql());
 
