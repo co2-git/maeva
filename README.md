@@ -5,12 +5,11 @@ JS models. Database agnostic.
 
 # Usage
 
-Use `maeva` to define a model.
-
 ```js
 import {model} from 'maeva';
 import mysql from 'maeva-mysql';
 
+# Use maeva to define a model
 const users = model({foo: String});
 
 # Then use a maeva driver to plug into a database.
