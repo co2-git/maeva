@@ -3,113 +3,50 @@ mavea - Relations
 
 How to create relations between models
 
-- [Proof of concept](#proof-of-concept)
-- [Cross relations](#cross-relations)
-- [Find by relation](#find-by-relation)
-- [Update a relation](#update-a-relation)
-- [Remove a relation](#remove-a-relation)
-
-# <a id="proof-of-concept"></a>Proof of concept
-
-This is how to relate a model to another.
-
 ```javascript
-// models/ModelA.js
 
-class ModelA extends Model {
-  static schema = {
-    name: type(String),
-  };
-}
+const teams = {
+  name: 'teams',
+  fields: {
+    name: String,
+    victories: Number,
+    losses: Number,
+  },
+};
 
-// models/ModelB.js
+const players = {
+  name: 'players',
+  fields: {
+    isCaptain: boolean,
+    name: String,
+    score: {type: Number, default: 0},
+    team: {link: teams},
+  }
+};
 
-import ModelA from './ModelA';
+// insert a new player and a new team
 
-class ModelB extends Model {
-  static schema = {
-    modelA: type(ModelA),
-  };
-}
-```
-
-# <a id="cross-relations"></a>Cross relations
-
-If both models relate to each other, use getters to avoid getting undefined relations.
-
-```javascript
-// models/ModelA.js
-import ModelB from './ModelB';
-
-class ModelA extends Model {
-  static schema = {
-    name: type(String),
-    // use getters to delay execution passed infinite import loops
-    get modelB() {
-      return type(ModelB);
-    },
-  };
-}
-
-// models/ModelB.js
-import ModelA from './ModelA';
-
-class ModelB extends Model {
-  static schema = {
-    get modelA() {
-      return type(ModelA);
-    },
-  };
-}
-```
-
-# <a id="find-by-relation"></a>Find by relation
-
-There are two ways to find a model by its relation to another model:
-
-- Find by query
-- Find by document
-
-## <a id="find-by-query"></a>Find by query
-
-```javascript
-await ModelB.findOne({
-  modelA: {name: 'foo'}
-});
-```
-
-## <a id="find-by-document"></a>Find by document
-
-```javascript
-await ModelB.findOne({
-  modelA: await ModelA.findOne({name: 'foo'})
-});
-```
-
-# <a id="update-a-relation"></a>Update a relation
-
-You can update a relation directly from the document:
-
-```javascript
-const modelB = await ModelB.findOne({
-  modelA: await ModelA.findOne({name: 'foo'})
+await insertOne(players, {
+  name: 'Jessica',
+  isCaptain: true,
+  team: await insertOne(teams, {name: 'Dolphins'}),
 });
 
-await modelB
-  .get('modelA')
-  .update({name: 'bar'});
-```
+// get team's players
 
-# <a id="remove-a-relation"></a>Remove a relation
+await findMany(players, {team: {name: 'Dolphins'}});
 
-You can remove a relation directly from the document:
+// update a team using player
 
-```javascript
-const modelB = await ModelB.findOne({
-  modelA: await ModelA.findOne({name: 'foo'})
-});
+const player = await findOne(players);
+if (player.isCaptain && player.score > 100) {
+  await updateOne(teams, player.team, {victories: player.team.victories + 1});
+}
 
-await modelB
-  .get('modelA')
-  .remove();
+// remove a team using player
+
+const player = await findOne(players);
+if (player.isCaptain && player.score < 100) {
+  await removeOne(teams, player.team);
+}
 ```

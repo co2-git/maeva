@@ -6,36 +6,39 @@ JS models. Database agnostic.
 # Usage
 
 ```js
-import {model} from 'maeva';
-import mysql from 'maeva-mysql';
+import * as maeva from 'maeva';
+import mysql from '@maeva/mysql';
 
-# Use maeva to define a model
-const users = model({foo: String});
+# Use Maeva to define a model
+
+const players = maeva.model({
+  name: 'players',
+  fields: {
+    name: String,
+    score: Number,
+  },
+});
 
 # Then use a maeva driver to plug into a database.
 
-maeva.connect(mysql());
+const connector = mysql('mysql://192.1.1.1');
 
-const foo = 'abc';
+maeva.connect(connector);
 
-await maeva.insertOne(users, {foo});
-await maeva.findOne(users, {foo});
-await maeva.updateOne(users, {foo}, {foo: 'b'});
-await maeva.removeOne(users, {foo});
-
-const user = await maeva.findOne(users);
-if (user && user.score < 100) {
-  maeva.updateOne(user, {score: 100});
-}
+await maeva.insertOne(players, {foo: 1});
+await maeva.findOne(players, {foo: 1});
+await maeva.updateOne(players, {foo: 1 }, {foo: 2});
+await maeva.removeOne(players, {foo: 2});
 ```
 
-- [Schema]
+- [Model](doc/Model.md)
 - [Types]
   - [String]
   - [Number]
   - [Boolean]
   - [Date]
   - [Object](doc/types/Object.md)
+  - [Array](doc/types/Array.md)
 - [Relations](doc/Relations.md)
 - []
 
@@ -44,9 +47,9 @@ if (user && user.score < 100) {
 An array with more than one type is seen as a tuple:
 
 ```js
-{
-  items: type.tuple(String, Number),
-}
+maeva.model({
+  fields: {foo: [String, Number]}
+});
 ```
 
 ## Mixed
@@ -54,22 +57,18 @@ An array with more than one type is seen as a tuple:
 You can declare mixed types such as:
 
 ```js
-{
-  mixed: type.mixed(
-    Boolean,
-    type.object({
-      names: type.array(String)
-    })
-  ),
-}
+maeva.model({
+  fields: {
+    mixed: mavea.mixed(String, Number),
+  }
+});
 ```
 
 ## Array of mixed
 
 ```js
-{
-  mixed: type.array(type.mixed(Number, String)),
-}
+mavea.model({field: mavea.array.mixed(Number, String)});
+
 ```
 
 ## Any
@@ -106,6 +105,7 @@ Foo {
 ## Required
 
 ```js
+maeva.model({field: {type: String, required: true}});
 {
   email: type(String).isRequired(),
 }
@@ -459,23 +459,9 @@ Model.findOne({}, {Limit: 100, Skip: 50, Sort})
 ## update
 
 ```js
-Model.updateMany({number: {Above: 0}}, {number: 0}, {Limit: 10});
+maeva.updateMany(users, {score: {above: 0}}, {score: {add: 10}}, {projection: {limit: 10}});
 ```
 
-## find with function (slow)
-
-```javascript
-Model.findMany(
-  (doc) => doc.foo === 2, {Limit: 10}
-);
-```
-
-# Singleton
-
-```js
-const foo = new Foo({bar: 1});
-foo.set({bar: 2}).save();
-```
 
 # Queries
 
@@ -494,13 +480,15 @@ See a [list of meta queries here](docs/Find Statement.md).
 You could eventually use more than one database for the same model simultaneously:
 
 ```js
-import mysql from 'maeva-mysql';
-import mongodb from 'maeva-mongodb';
-const mysqlConnection = maeva.connect(mysql());
-const mongodbConnection = mongodb.connect(mongodb());
-User
-  .conn(mysqlConnection, mongodbConnection)
-  .insert({username: 'foo'});
+import mysql from '@maeva/mysql';
+import mongodb from '@maeva/mongodb';
+import connect from 'maeva/connect';
+import findOne from 'maeva/findOne';
+
+const mysqlConnection = connect(mysql());
+const mongodbConnection = connect(mongodb());
+
+const userMySQL = findOne(users, {}, {connection: mysqlConnection});
 ```
 
 # Hooks
@@ -508,14 +496,12 @@ User
 You can pass an array of promises before and after the following operations:
 
 ```js
-class Foo extends Model {
-  static hooks = {
-    inserted,
-    inserting,
-    removed,
-    removing,
-    updated,
-    updating,
+const model = {
+  name: 'users',
+  options: {
+    will: {
+      insert:
+    }
   }
 }
 ```

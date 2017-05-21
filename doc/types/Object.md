@@ -6,6 +6,13 @@ You can use objects to embed documents.
 ## Object field
 
 ```js
+
+// {object: {foo: 1}}
+
+model(
+  field('object', {foo: field(Number)}),
+);
+
 class A extends Model {
   static schema = {
     embed: type.object({

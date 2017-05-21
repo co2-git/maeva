@@ -3,20 +3,24 @@
 Enclose type in array brackets to declare an array:
 
 ```js
-class A extends Model {
-  static schema = {
-    numbers: type.array(Number),
+import {array, findOne, model} from 'mavea';
+
+const collection = model({
+  fields: {
+    numbers: [Number],
   }
-}
+});
 ```
 
 ## Array
 
 ```javascript
-A.find({numbers: {is: Array}});
-A.find({numbers: {size: 0}});
-A.find({numbers: {not: {size: 0}}});
-A.find({numbers: {has: 1}});
-A.find({numbers: {not: {has: 1}}});
-A.find({numbers: {1: 'foo'});
+import {findOne} from 'maeva';
+
+findOne(collection, {field: {is: Array}});
+findOne(collection, {field: {size: 0}});
+findOne(collection, {field: {not: {size: 0}}});
+findOne(collection, {field: {has: 1}});
+findOne(collection, {field: {not: {has: 1}}});
+findOne(collection, {field: {1: 'foo'});
 ```

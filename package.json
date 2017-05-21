@@ -2,14 +2,16 @@
   "name": "maeva",
   "version": "4.0.0",
   "description": "Agnostic database models in JavaScript",
-  "main": "dist/index.js",
+  "main": "__dist__/index.js",
   "scripts": {
-    "test": "rm -rf dist && npm run babel && npm run eslint && npm run flow && npm run mocha",
-    "babel": "babel --out-dir dist/ app/",
-    "babel:watch": "babel --watch --out-dir dist/ app/",
+    "test": "yarn eslint && yarn flow && yarn mocha",
+    "babel": "rm -rf __dist__; babel --out-dir __dist__ app",
+    "babel:test": "rm -rf __mocha__; babel --out-dir __mocha__ __test__",
+    "babel:test:watch": "rm -rf __mocha__; babel --watch --out-dir __mocha__ __test__",
+    "babel:watch": "rm -rf __dist__; babel --watch --out-dir __dist__ app",
     "eslint": "eslint app",
     "flow": "flow",
-    "mocha": "mocha dist/test/*/*/*"
+    "mocha": "yarn babel && yarn babel:test && mocha __mocha__/run.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,12 +26,11 @@
     "chai": "^3.5.0",
     "eslint": "^3.5.0",
     "eslint-plugin-flowtype": "^2.25.0",
-    "flow-bin": "^0.33.0",
+    "flow-bin": "^0.36.0",
     "mocha": "^3.0.2",
     "should": "^11.1.0"
   },
   "dependencies": {
-    "flow-bin": "^0.36.0",
     "lodash": "^4.15.0"
   }
 }

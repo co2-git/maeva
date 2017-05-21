@@ -1,4 +1,5 @@
 /node_modules/*
-/dist/*
+/__dist__/*
+/__mocha__/*
 /dev_notes/*
 /npm-debug.log
