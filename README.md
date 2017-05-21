@@ -25,10 +25,10 @@ const connector = mysql('mysql://192.1.1.1');
 
 maeva.connect(connector);
 
-await maeva.insertOne(players, {foo: 1});
-await maeva.findOne(players, {foo: 1});
-await maeva.updateOne(players, {foo: 1 }, {foo: 2});
-await maeva.removeOne(players, {foo: 2});
+await maeva.insertOne(players, {name: 'Joe', score: 100});
+await maeva.findOne(players, {name: 'Joe'});
+await maeva.updateOne(players, {name: 'Joe' }, {score: 0});
+await maeva.removeOne(players, {name: 'Joe'});
 ```
 
 - [Model](doc/Model.md)
