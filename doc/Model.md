@@ -137,10 +137,10 @@ Value can be links to other models:
 model({
   name: 'players',
   fields: {
-    team: {
+    team: model({
       name: 'teams',
       field: {name: String}
-    }
+    })
   },
 })
 ```
@@ -177,5 +177,58 @@ Value can be tuples:
 model({
   name: 'data',
   fields: {value: Type.tuple(String, Number)}
+})
+```
+
+# Required
+
+A collection of field names that are required upon insertion.
+
+```javascript
+model({
+  name: 'users',
+  fields: {email: String, password: String},
+  required: ['email', 'password'],
+})
+```
+
+# Default
+
+You can set default values. If default value is a function, it will be executed.
+
+```javascript
+model({
+  name: 'players',
+  fields: {score: Number},
+  default: {score: 0}, // default value fore "score" is 0
+});
+
+// With functions
+model({
+  name: 'players',
+  fields: {joined: Date},
+  default: {joined: () => new Date()}, // default value fore "joined" is current date
+})
+```
+
+# Validation
+
+You can set validations for fields that should return a boolean.
+
+Validations can be either a function or a regular expression (for strings).
+
+```javascript
+// Using regular expression
+model({
+  name: 'players',
+  fields: {email: String},
+  validate: {email: /^.+@.+\..+$/}
+});
+
+// Using function
+model({
+  name: 'players',
+  fields: {password: String},
+  validate: {password: (password) => password.length >= 4 && password.length <= 16},
 })
 ```
