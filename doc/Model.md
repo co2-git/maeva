@@ -55,14 +55,16 @@ await maeva.findOne(playerModel, {name: 'Joe'});
 
 `fields` is a required field. It is an object which keys are field names and values its type.
 
-Value must be an instance of `MaevaType`.
+Value must be an instance of `MaevaType` or a native type.
 
-Yet, for handy purposes, you can use one of the following native types as shortcuts:
+## Native types
 
-- `Boolean` shortcut for `new MaevaTypeBoolean()`
-- `Date` shortcut for `new MaevaTypeDate()`
-- `Number` shortcut for `new MaevaTypeNumber()`
-- `String` shortcut for `new MaevaTypeString()`
+You can use one of the following native types:
+
+- `Boolean`
+- `Date`
+- `Number`
+- `String`
 
 ```javascript
 model({
@@ -73,5 +75,86 @@ model({
     isCaptain: Boolean,
     dateOfBirth: Date,
   }
+})
+```
+
+## Advanced types
+
+The following advanced types are also made available to you via `Type`
+
+```javascript
+import {Type} from 'maeva';
+```
+
+### Any
+
+Value can be of any type.
+
+```javascript
+model({
+  name: 'data',
+  fields: {value: Type.any}
+})
+```
+
+### Array
+
+Value can be arrays:
+
+```javascript
+model({
+  name: 'data',
+  fields: {value: Type.array(Number)}
+})
+```
+
+### Links
+
+Value can be links to other models:
+
+```javascript
+const teams = model({
+  name: 'teams',
+  fields: {name: String},
+});
+
+const players = model({
+  name: 'players',
+  fields: {team: Type.model(teams)},
+})
+```
+
+### Mixed
+
+Value can be mixed:
+
+```javascript
+model({
+  name: 'data',
+  fields: {value: Type.mixed(String, Number)}
+})
+```
+
+### Object
+
+Value can be objects:
+
+```javascript
+model({
+  name: 'data',
+  fields: {
+    location: Type.embed({latitude: Number, longitude: Number}),
+  }
+})
+```
+
+### Tuples
+
+Value can be tuples:
+
+```javascript
+model({
+  name: 'data',
+  fields: {value: Type.tuple(String, Number)}
 })
 ```
