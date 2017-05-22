@@ -97,6 +97,14 @@ import {Type} from 'maeva';
 Value can be of any type.
 
 ```javascript
+// @flow
+declare type any = {
+  convert: (value: any) => any,
+  validate: (value: any) => true,
+};
+```
+
+```javascript
 model({
   name: 'data',
   fields: {value: Type.any}
@@ -119,13 +127,34 @@ model({
 You can create a custom type. View [Type](./Type.md) for more information on custom types.
 
 ```javascript
-class URLType extends Type.String {
-  validate = ::/^http/.test;
-}
+// @flow
+declare type V = any;
+
+declare function convert<V> (value: V): V;
+
+declare function validate<V> (value: V): boolean;
+
+declare type CustomT = {
+  convert?: convert<V>,
+  validate?: validate<V>,
+};
+
+declare type T = {
+  convert: convert<V>,
+  validate: validate<V>,
+};
+
+declare function custom<T> (type: CustomT): T;
+```
+
+```javascript
+const validateEmail = (email) => /^https?/.test(email);
 
 model({
   name: 'data',
-  fields: {url: URLType}
+  fields: {
+    email: Type.custom({validate: validateEmail})
+  }
 })
 ```
 
@@ -134,9 +163,20 @@ model({
 Value can be restricted to pure values:
 
 ```javascript
+// @flow
+{
+  convert: (value: any): any => value,
+  validate: (value: any)
+}
+```
+
+```javascript
 model({
   name: 'data',
-  fields: {lang: Type.values('en', 'es', 'fr')}
+  fields: {
+    lang: Type.values('en', 'es', 'fr'),
+    level: Type.values(2, 4, 16, 32, 64),
+  }
 })
 ```
 

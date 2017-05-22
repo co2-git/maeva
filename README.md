@@ -6,12 +6,12 @@ JS models. Database agnostic.
 # Usage
 
 ```js
-import * as maeva from 'maeva';
-import mysql from '@maeva/mysql';
+import * as data from 'maeva';
+import sockets from 'maeva-sockets';
 
-// Use Maeva to define a model
+// Use maeva to define a model
 
-const players = maeva.model({
+const players = data.model({
   name: 'players',
   fields: {
     name: String,
@@ -19,16 +19,19 @@ const players = maeva.model({
   },
 });
 
-// Then use a maeva driver to plug into a database.
+// Then use a maeva connector vendor to connect to a database server
 
-const connector = mysql('mysql://192.1.1.1');
+const connector = sockets('ws://mysockets.com');
 
-maeva.connect(connector);
+data.connect(connector)
+  .on('connect', console.log.bind(console, '🎉'))
+  .on('disconnect', data.reconnect)
+  .on('error', console.log.bind(console, '💩'));
 
-await maeva.insertOne(players, {name: 'Joe', score: 100});
-await maeva.findOne(players, {name: 'Joe'});
-await maeva.updateOne(players, {name: 'Joe' }, {score: 0});
-await maeva.removeOne(players, {name: 'Joe'});
+await data.insertOne(players, {name: 'Joe', score: 100});
+await data.findOne(players, {name: 'Joe'});
+await data.updateOne(players, {name: 'Joe' }, {score: 0});
+await data.removeOne(players, {name: 'Joe'});
 ```
 
 - [Model](doc/Model.md)
