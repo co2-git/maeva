@@ -120,7 +120,7 @@ You can create a custom type. View [Type](./Type.md) for more information on cus
 
 ```javascript
 class URLType extends Type.String {
-  validate = /^http/.test;
+  validate = ::/^http/.test;
 }
 
 model({
