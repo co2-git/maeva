@@ -22,13 +22,13 @@ Model holds the structure definition for your data. It looks like this:
 For example, this is how you could model the following data:
 
 ```javascript
-import {model} from 'maeva';
+import * as data from 'maeva';
 
 // Data
 const data = {foo: true, bar: 2};
 
 // Model
-const dataModel = model({
+const dataModel = data.model({
   name: 'data',
   fields: {
     foo: Boolean,
@@ -45,14 +45,14 @@ Here's a MySQL example:
 
 ```javascript
 // Data
-const playerModel = model({
+const playerModel = data.model({
   name: 'players',
   fields: {
     name: String,
   },
 });
 
-await maeva.findOne(playerModel, {name: 'Joe'});
+await data.findOne(playerModel, {name: 'Joe'});
 
 // SELECT * FROM `players` WHERE `name`="Joe";
 ```
@@ -73,41 +73,43 @@ You can use one of the following native types:
 - `String`
 
 ```javascript
-model({
+data.model({
   name: 'players',
   fields: {
+    dateOfBirth: data.type.date,
+    isCaptain: data.type.boolean,
+    name: data.type.string,
+    score: data.type.number,
+  }
+})
+```
+
+For faster coding, you can also write the following like this:
+
+```javascript
+data.model({
+  name: 'players',
+  fields: {
+    dateOfBirth: Date,
+    isCaptain: Boolean,
     name: String,
     score: Number,
-    isCaptain: Boolean,
-    dateOfBirth: Date,
   }
 })
 ```
 
 ## Advanced types
 
-The following advanced types are also made available to you via `Type`
-
-```javascript
-import {Type} from 'maeva';
-```
+The following advanced types are also made available to you via `data.type`
 
 ### Any
 
 Value can be of any type.
 
 ```javascript
-// @flow
-declare type any = {
-  convert: (value: any) => any,
-  validate: (value: any) => true,
-};
-```
-
-```javascript
-model({
+data.model({
   name: 'data',
-  fields: {value: Type.any}
+  fields: {value: data.type.any}
 })
 ```
 
@@ -116,9 +118,9 @@ model({
 Value can be arrays:
 
 ```javascript
-model({
+data.model({
   name: 'data',
-  fields: {value: Type.array(Number)}
+  fields: {value: data.type.array(Number)}
 })
 ```
 
@@ -127,33 +129,12 @@ model({
 You can create a custom type. View [Type](./Type.md) for more information on custom types.
 
 ```javascript
-// @flow
-declare type V = any;
-
-declare function convert<V> (value: V): V;
-
-declare function validate<V> (value: V): boolean;
-
-declare type CustomT = {
-  convert?: convert<V>,
-  validate?: validate<V>,
-};
-
-declare type T = {
-  convert: convert<V>,
-  validate: validate<V>,
-};
-
-declare function custom<T> (type: CustomT): T;
-```
-
-```javascript
 const validateEmail = (email) => /^https?/.test(email);
 
-model({
+data.model({
   name: 'data',
   fields: {
-    email: Type.custom({validate: validateEmail})
+    email: data.type({validate: validateEmail})
   }
 })
 ```
@@ -163,32 +144,23 @@ model({
 Value can be restricted to pure values:
 
 ```javascript
-// @flow
-{
-  convert: (value: any): any => value,
-  validate: (value: any)
-}
-```
-
-```javascript
-model({
+data.model({
   name: 'data',
   fields: {
-    lang: Type.values('en', 'es', 'fr'),
-    level: Type.values(2, 4, 16, 32, 64),
+    lang: data.type.values('en', 'es', 'fr'),
   }
 })
 ```
 
 ### Links
 
-Value can be links to other models:
+Value can be links to other data models:
 
 ```javascript
-model({
+data.model({
   name: 'players',
   fields: {
-    team: model({
+    team: data.model({
       name: 'teams',
       field: {name: String}
     })
@@ -201,9 +173,9 @@ model({
 Value can be mixed:
 
 ```javascript
-model({
+data.model({
   name: 'data',
-  fields: {value: Type.mixed(String, Number)}
+  fields: {value: data.type.mixed(String, Number)}
 })
 ```
 
@@ -212,10 +184,10 @@ model({
 Value can be objects:
 
 ```javascript
-model({
+data.model({
   name: 'data',
   fields: {
-    location: Type.shape({latitude: Number, longitude: Number}),
+    location: data.type.shape({latitude: Number, longitude: Number}),
   }
 })
 ```
@@ -225,9 +197,9 @@ model({
 Value can be tuples:
 
 ```javascript
-model({
+data.model({
   name: 'data',
-  fields: {value: Type.tuple(String, Number)}
+  fields: {value: data.type.tuple(String, Number)}
 })
 ```
 
@@ -236,7 +208,7 @@ model({
 A collection of field names that are required upon insertion.
 
 ```javascript
-model({
+data.model({
   name: 'users',
   fields: {email: String, password: String},
   required: ['email', 'password'],
@@ -248,14 +220,14 @@ model({
 You can set default values. If default value is a function, it will be executed.
 
 ```javascript
-model({
+data.model({
   name: 'players',
   fields: {score: Number},
   default: {score: 0}, // default value fore "score" is 0
 });
 
 // With functions
-model({
+data.model({
   name: 'players',
   fields: {joined: Date},
   default: {joined: () => new Date()}, // default value fore "joined" is current date
@@ -270,14 +242,14 @@ Validations can be either a function or a regular expression (for strings).
 
 ```javascript
 // Using regular expression
-model({
+data.model({
   name: 'players',
   fields: {email: String},
   validate: {email: /^.+@.+\..+$/}
 });
 
 // Using function
-model({
+data.model({
   name: 'players',
   fields: {password: String},
   validate: {password: (password) => password.length >= 4 && password.length <= 16},
