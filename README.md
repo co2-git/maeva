@@ -32,7 +32,7 @@ await maeva.removeOne(players, {name: 'Joe'});
 ```
 
 - [Model](doc/Model.md)
-- [Types]
+- [Types](doc/Type.md)
   - [String]
   - [Number]
   - [Boolean]
