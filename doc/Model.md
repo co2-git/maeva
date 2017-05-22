@@ -5,11 +5,17 @@ Model holds the structure definition for your data. It looks like this:
 
 ```javascript
 {
-  defaults?: {[fieldName: string]: Function | any},
-  fields: {[fieldName: string]: MaevaType},
+  defaults?: {
+    [fieldName: string]: Function | any
+  },
+  fields: {
+    [fieldName: string]: Function | Type | Model | Object,
+  },
   name: string,
   required?: string[],
-  validate?: {[fieldName: string]: Function | RegExp},
+  validate?: {
+    [fieldName: string]: Function | RegExp
+  },
 }
 ```
 
@@ -108,19 +114,34 @@ model({
 })
 ```
 
+### Custom
+
+You can create a custom type. View [Type](./Type.md) for more information on custom types.
+
+```javascript
+class URLType extends Type.String {
+  validate = /^http/.test;
+}
+
+model({
+  name: 'data',
+  fields: {url: URLType}
+})
+```
+
 ### Links
 
 Value can be links to other models:
 
 ```javascript
-const teams = model({
-  name: 'teams',
-  fields: {name: String},
-});
-
-const players = model({
+model({
   name: 'players',
-  fields: {team: Type.model(teams)},
+  fields: {
+    team: {
+      name: 'teams',
+      field: {name: String}
+    }
+  },
 })
 ```
 
