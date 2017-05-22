@@ -50,3 +50,28 @@ await maeva.findOne(playerModel, {name: 'Joe'});
 
 // SELECT * FROM `players` WHERE `name`="Joe";
 ```
+
+# Fields
+
+`fields` is a required field. It is an object which keys are field names and values its type.
+
+Value must be an instance of `MaevaType`.
+
+Yet, for handy purposes, you can use one of the following native types as shortcuts:
+
+- `Boolean` shortcut for `new MaevaTypeBoolean()`
+- `Date` shortcut for `new MaevaTypeDate()`
+- `Number` shortcut for `new MaevaTypeNumber()`
+- `String` shortcut for `new MaevaTypeString()`
+
+```javascript
+model({
+  name: 'players',
+  fields: {
+    name: String,
+    score: Number,
+    isCaptain: Boolean,
+    dateOfBirth: Date,
+  }
+})
+```
