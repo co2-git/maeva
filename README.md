@@ -18,9 +18,9 @@ const players = data.model('players', {name: String, score: Number});
 const connector = sockets('ws://mysockets.com');
 
 data.connect(connector)
-  .on('connect', console.log.bind(console, '🎉'))
-  .on('disconnect', data.reconnect)
-  .on('error', console.log.bind(console, '💩'));
+  .on('connect', (connection) => {})
+  .on('disconnect', connector.reconnect)
+  .on('error', (error) => {});
 
 await data.insertOne(players, {name: 'Joe', score: 100});
 await data.findOne(players, {name: 'Joe'});

@@ -95,17 +95,6 @@ You can use one of the following native types:
 
 ```javascript
 data.model('players', {
-  dateOfBirth: data.type.date,
-  isCaptain: data.type.boolean,
-  name: data.type.string,
-  score: data.type.number,
-})
-```
-
-For faster coding, you can also write the following like this:
-
-```javascript
-data.model('players', {
   dateOfBirth: Date,
   isCaptain: Boolean,
   name: String,
