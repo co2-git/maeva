@@ -129,6 +129,17 @@ model({
 })
 ```
 
+### Enum
+
+Value can be restricted to pure values:
+
+```javascript
+model({
+  name: 'data',
+  fields: {lang: Type.values('en', 'es', 'fr')}
+})
+```
+
 ### Links
 
 Value can be links to other models:

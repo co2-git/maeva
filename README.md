@@ -9,7 +9,7 @@ JS models. Database agnostic.
 import * as maeva from 'maeva';
 import mysql from '@maeva/mysql';
 
-# Use Maeva to define a model
+// Use Maeva to define a model
 
 const players = maeva.model({
   name: 'players',
@@ -19,7 +19,7 @@ const players = maeva.model({
   },
 });
 
-# Then use a maeva driver to plug into a database.
+// Then use a maeva driver to plug into a database.
 
 const connector = mysql('mysql://192.1.1.1');
 
