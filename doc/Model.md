@@ -4,19 +4,21 @@ Mavea - Model
 Model holds the structure definition for your data. It looks like this:
 
 ```javascript
-{
-  defaults?: {
-    [fieldName: string]: Function | any
-  },
-  fields: {
-    [fieldName: string]: Function | Type | Model | Object,
-  },
+data.model(
   name: string,
-  required?: string[],
-  validate?: {
-    [fieldName: string]: Function | RegExp
+  fields: {
+    [fieldName: string]: Function | Type,
   },
-}
+  options: {
+    defaults?: {
+      [fieldName: string]: Function | any
+    },
+    required?: string[],
+    validate?: {
+      [fieldName: string]: Function | RegExp
+    },
+  }
+)
 ```
 
 For example, this is how you could model the following data:
@@ -25,16 +27,40 @@ For example, this is how you could model the following data:
 import * as data from 'maeva';
 
 // Data
-const data = {foo: true, bar: 2};
+const rawData = {foo: true, bar: 2};
 
 // Model
-const dataModel = data.model({
-  name: 'data',
-  fields: {
-    foo: Boolean,
-    bar: Number,
-  },
+const dataModel = data.model('rawData', {foo: Boolean, bar: Number});
+```
+
+You have 2 ways of calling model:
+
+- with an object
+
+```javascript
+data.model({
+  name: 'players',
+  fields: {score: Number},
+  required: ['score'],
+  default: {score: 0},
+  validate: {score: (score) => score > 0 && score < 100},
 });
+```
+
+- with function arguments
+
+```javascript
+data.model(name, fields, options);
+
+data.model(
+  'players',
+  {score: Number},
+  {
+    required: ['score'],
+    default: {score: 0},
+    validate: {score: (score) => score > 0 && score < 100}
+  }
+);
 ```
 
 # Name
@@ -45,12 +71,7 @@ Here's a MySQL example:
 
 ```javascript
 // Data
-const playerModel = data.model({
-  name: 'players',
-  fields: {
-    name: String,
-  },
-});
+const playerModel = data.model('players', {name: String});
 
 await data.findOne(playerModel, {name: 'Joe'});
 
@@ -73,28 +94,22 @@ You can use one of the following native types:
 - `String`
 
 ```javascript
-data.model({
-  name: 'players',
-  fields: {
-    dateOfBirth: data.type.date,
-    isCaptain: data.type.boolean,
-    name: data.type.string,
-    score: data.type.number,
-  }
+data.model('players', {
+  dateOfBirth: data.type.date,
+  isCaptain: data.type.boolean,
+  name: data.type.string,
+  score: data.type.number,
 })
 ```
 
 For faster coding, you can also write the following like this:
 
 ```javascript
-data.model({
-  name: 'players',
-  fields: {
-    dateOfBirth: Date,
-    isCaptain: Boolean,
-    name: String,
-    score: Number,
-  }
+data.model('players', {
+  dateOfBirth: Date,
+  isCaptain: Boolean,
+  name: String,
+  score: Number,
 })
 ```
 
@@ -107,10 +122,7 @@ The following advanced types are also made available to you via `data.type`
 Value can be of any type.
 
 ```javascript
-data.model({
-  name: 'data',
-  fields: {value: data.type.any}
-})
+data.model('data', {value: data.type.any});
 ```
 
 ### Array
@@ -118,10 +130,7 @@ data.model({
 Value can be arrays:
 
 ```javascript
-data.model({
-  name: 'data',
-  fields: {value: data.type.array(Number)}
-})
+data.model('data', {value: data.type.array(Number)})
 ```
 
 ### Custom
@@ -131,11 +140,8 @@ You can create a custom type. View [Type](./Type.md) for more information on cus
 ```javascript
 const validateEmail = (email) => /^https?/.test(email);
 
-data.model({
-  name: 'data',
-  fields: {
-    email: data.type({validate: validateEmail})
-  }
+data.model('data', {
+  email: data.type({validate: validateEmail})
 })
 ```
 
@@ -144,11 +150,9 @@ data.model({
 Value can be restricted to pure values:
 
 ```javascript
-data.model({
-  name: 'data',
-  fields: {
-    lang: data.type.values('en', 'es', 'fr'),
-  }
+const langs = ['en', 'es', 'fr'];
+data.model('data', {
+  lang: data.type.values(...langs)
 })
 ```
 
@@ -157,14 +161,11 @@ data.model({
 Value can be links to other data models:
 
 ```javascript
-data.model({
-  name: 'players',
-  fields: {
-    team: data.model({
-      name: 'teams',
-      field: {name: String}
-    })
-  },
+data.model('players', {
+  team: data.type.model({
+    name: 'teams',
+    field: {name: String}
+  })
 })
 ```
 
@@ -173,9 +174,8 @@ data.model({
 Value can be mixed:
 
 ```javascript
-data.model({
-  name: 'data',
-  fields: {value: data.type.mixed(String, Number)}
+data.model('data', {
+  stringOrNumber: data.type.mixed(String, Number)
 })
 ```
 
@@ -184,11 +184,8 @@ data.model({
 Value can be objects:
 
 ```javascript
-data.model({
-  name: 'data',
-  fields: {
-    location: data.type.shape({latitude: Number, longitude: Number}),
-  }
+data.model('users',{
+  location: data.type.shape({latitude: Number, longitude: Number}),
 })
 ```
 
@@ -197,9 +194,8 @@ data.model({
 Value can be tuples:
 
 ```javascript
-data.model({
-  name: 'data',
-  fields: {value: data.type.tuple(String, Number)}
+data.model('data', {
+  value: data.type.tuple(String, Number)
 })
 ```
 
@@ -208,11 +204,10 @@ data.model({
 A collection of field names that are required upon insertion.
 
 ```javascript
-data.model({
-  name: 'users',
-  fields: {email: String, password: String},
-  required: ['email', 'password'],
-})
+data.model('users', {
+  email: String,
+  password: String,
+}, {required: ['email', 'password']})
 ```
 
 # Default
@@ -220,18 +215,8 @@ data.model({
 You can set default values. If default value is a function, it will be executed.
 
 ```javascript
-data.model({
-  name: 'players',
-  fields: {score: Number},
-  default: {score: 0}, // default value fore "score" is 0
-});
-
-// With functions
-data.model({
-  name: 'players',
-  fields: {joined: Date},
-  default: {joined: () => new Date()}, // default value fore "joined" is current date
-})
+data.model('players', {score: Number}, [], {score: 0});
+data.model('players', {joined: Date}, [], {joined: () => new Date()});
 ```
 
 # Validation

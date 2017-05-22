@@ -11,13 +11,7 @@ import sockets from 'maeva-sockets';
 
 // Use maeva to define a model
 
-const players = data.model({
-  name: 'players',
-  fields: {
-    name: String,
-    score: Number,
-  },
-});
+const players = data.model('players', {name: String, score: Number});
 
 // Then use a maeva connector vendor to connect to a database server
 

@@ -1,10 +1,17 @@
 Type
 ===
 
-Set field type. It could be a native type or an advanced maeva type.
+Types have a convert and a validate method used to verify a value.
 
 ```javascript
-data.type({convert: (any) => any, validate: (any) => boolean})
+// Example of creating an "email" type
+const emailType = data.type({
+  convert: (value) => value,
+  validate: (value) => typeof value === 'string' && /^.+@.+$/.test(value),
+})
+
+// You can now pass this as a type in models
+data.model('users', {email: emailType});
 ```
 
 # Interface
