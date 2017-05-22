@@ -164,7 +164,7 @@ Value can be objects:
 model({
   name: 'data',
   fields: {
-    location: Type.embed({latitude: Number, longitude: Number}),
+    location: Type.shape({latitude: Number, longitude: Number}),
   }
 })
 ```
