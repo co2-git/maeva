@@ -49,51 +49,51 @@ await data.removeOne(players, {name: 'Joe'});
   - [updateMany]
   - [updateOne]
   
-- above
+- above `number => DataValue`
 ```javascript
 findOne(here, {number: above(100)});
 ```
-- after
+- after `Date => DataValue`
 ```javascript
 findOne(here, {date: after(new Date())});
 ```
-- before
+- before `Date => DataValue`
 ```javascript
 findOne(here, {date: before(new Date())});
 ```
-- below
+- below `number => DataValue`
 ```javascript
 findOne(here, {number: below(100)});
 ```
-- connect
+- connect `DataConnector => DataConnection`
 ```javascript
-connect(new DataConnector());
+connect(connector);
 ```
-- disconnect
+- disconnect `DataConnection => void`
 ```javascript
-disconnect(new DataConnection());
+disconnect(connection);
 ```
-- like
+- like `string => DataValue`
 ```javascript
 findOne(here, {string: like('*FOO')});
 ```
-- match
+- match `string | RegExp => DataValue`
 ```javascript
 findOne(here, {string: match(/foo/)});
 ```
-- model
+- model `string, Object, Object? => DataValue`
 ```javascript
 model('foo', {name: String});
 ```
-- not
+- not `any => DataValue`
 ```javascript
 findOne(here, {value: not(null)});
 ```
-- reconnect
+- reconnect `DataConnection => void`
 ```javascript
-reconnect(new DataConnection());
+reconnect(connection);
 ```
-- type
+- type `Object => DataType`
 ```javascript
 type({
   convert: (value) => value,
