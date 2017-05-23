@@ -1,38 +1,58 @@
-Object type
+Maeva / Type / Object
 ===
 
-You can use objects to embed documents.
+Declare a shape.
 
-## Object field
+# Model
 
 ```js
+import * as data from 'mavea';
 
-// {object: {foo: 1}}
-
-model(
-  field('object', {foo: field(Number)}),
-);
-
-class A extends Model {
-  static schema = {
-    embed: type.object({
-      a: type(String),
-      b: type(Number),
-      c: type.object({
-        d: type(Boolean),
-      })
-    }),
-  }
-}
+const collection = data.model('data', {
+  object: data.type.shape({foo: Boolean, bar: Number}),
+});
 ```
 
-## Object query
-
-Use dot notation to access nested field.
+# Insert
 
 ```javascript
-A.find({'embed.a': /foo/});
-A.find({'embed.b': {above: 100}});
-A.find({'embed.c': {is: Object}});
-A.find({'embed.c.d': true});
+import * as data from 'maeva';
+
+const object = {foo: true, bar: 2};
+
+data.insertOne(collection, {object});
+```
+
+# Find
+
+## Find by deep equal
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {object});
+```
+
+## Find by not deep equal
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {object: data.where.not(object)});
+```
+
+## Find by key
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {'object.bar': 2});
+```
+
+## Find by key not
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {'object.bar': data.where.not(2)});
 ```
