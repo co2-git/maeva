@@ -41,7 +41,16 @@ await data.removeOne(players, {name: 'Joe'});
   - [String]
   - [Tuple]
 - [Relations](doc/Relations.md)
-- []
+- [Actions](doc/Actions.md)
+  - [count]
+  - [findMany]
+  - [findOne]
+  - [insertMany]
+  - [insertOne]
+  - [removeMany]
+  - [removeOne]
+  - [updateMany]
+  - [updateOne]
 
 ## Tuples
 
