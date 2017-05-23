@@ -31,7 +31,7 @@ import * as data from 'maeva';
 data.findOne(collection, {numbers});
 ```
 
-## Find by deep equal
+## Find by not deep equal
 
 ```javascript
 import * as data from 'maeva';
@@ -44,7 +44,7 @@ data.findOne(collection, {numbers: data.where.not(numbers)});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {numbers: data.where.includes(4, 5)});
+data.findOne(collection, {numbers: data.where.include(4, 5)});
 ```
 
 ## Find by exclusion
@@ -52,7 +52,7 @@ data.findOne(collection, {numbers: data.where.includes(4, 5)});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {numbers: data.where.not(data.where.includes(4, 5))});
+data.findOne(collection, {numbers: data.where.not.include(4, 5)});
 ```
 
 ## Find by filter in
@@ -71,6 +71,6 @@ data.findOne(collection, {
 import * as data from 'maeva';
 
 data.findOne(collection, {
-  numbers: data.where.not(data.where((numbers) => numbers.every(number => number < 10)))
+  numbers: data.where.not((numbers) => numbers.every(number => number < 10))
 });
 ```
