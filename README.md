@@ -51,65 +51,51 @@ await data.removeOne(players, {name: 'Joe'});
   
 - above
 ```javascript
-data.findOne(here, {
-  number: data.above(100)
- });
+findOne(here, {number: above(100)});
 ```
 - after
 ```javascript
-data.findOne(here, {
-  date: data.after(new Date())
- });
+findOne(here, {date: after(new Date())});
 ```
 - before
 ```javascript
-data.findOne(here, {
-  date: data.before(new Date())
- });
+findOne(here, {date: before(new Date())});
 ```
 - below
 ```javascript
-data.findOne(here, {
-  number: data.below(100)
- });
+findOne(here, {number: below(100)});
 ```
 - connect
 ```javascript
-data.connect(new DataConnector());
+connect(new DataConnector());
 ```
 - disconnect
 ```javascript
-data.disconnect(new DataConnection());
+disconnect(new DataConnection());
 ```
 - like
 ```javascript
-data.findOne(here, {
-  string: data.like('*FOO')
-});
+findOne(here, {string: like('*FOO')});
 ```
 - match
 ```javascript
-data.findOne(here, {
-  string: data.match(/foo/)
-});
+findOne(here, {string: match(/foo/)});
 ```
 - model
 ```javascript
-data.model('foo', {name: String});
+model('foo', {name: String});
 ```
 - not
 ```javascript
-data.findOne(here, {
-  value: not(null)
-});
+findOne(here, {value: not(null)});
 ```
 - reconnect
 ```javascript
-data.reconnect(new DataConnection());
+reconnect(new DataConnection());
 ```
 - type
 ```javascript
-data.type({
+type({
   convert: (value) => value,
   validate: (value) => true,
  });
