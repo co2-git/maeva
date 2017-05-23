@@ -17,10 +17,7 @@ const players = data.model('players', {name: String, score: Number});
 
 const connector = sockets('ws://mysockets.com');
 
-data.connect(connector)
-  .on('connect', (connection) => {})
-  .on('disconnect', connector.reconnect)
-  .on('error', (error) => {});
+data.connect(connector);
 
 await data.insertOne(players, {name: 'Joe', score: 100});
 await data.findOne(players, {name: 'Joe'});
@@ -51,6 +48,80 @@ await data.removeOne(players, {name: 'Joe'});
   - [removeOne]
   - [updateMany]
   - [updateOne]
+  
+- above
+```javascript
+data.findOne(here, {
+  number: data.above(100)
+ });
+```
+- after
+```javascript
+data.findOne(here, {
+  date: data.after(new Date())
+ });
+```
+- before
+```javascript
+data.findOne(here, {
+  date: data.before(new Date())
+ });
+```
+- below
+```javascript
+data.findOne(here, {
+  number: data.below(100)
+ });
+```
+- connect
+```javascript
+data.connect(new DataConnector());
+```
+- disconnect
+```javascript
+data.disconnect(new DataConnection());
+```
+- like
+```javascript
+data.findOne(here, {
+  string: data.like('*FOO')
+});
+```
+- match
+```javascript
+data.findOne(here, {
+  string: data.match(/foo/)
+});
+```
+- model
+```javascript
+data.model('foo', {name: String});
+```
+- not
+```javascript
+data.findOne(here, {
+  value: not(null)
+});
+```
+- reconnect
+```javascript
+data.reconnect(new DataConnection());
+```
+- type
+```javascript
+data.type({
+  convert: (value) => value,
+  validate: (value) => true,
+ });
+```
+- value
+```javascript
+data.value(new DataConnection());
+```
+- where
+```javascript
+data.where(({number}) => number > 100);
+```
 
 ## Tuples
 
