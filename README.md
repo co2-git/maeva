@@ -114,14 +114,6 @@ data.type({
   validate: (value) => true,
  });
 ```
-- value
-```javascript
-data.value(new DataConnection());
-```
-- where
-```javascript
-data.where(({number}) => number > 100);
-```
 
 ## Tuples
 
