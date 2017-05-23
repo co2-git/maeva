@@ -34,45 +34,55 @@ await data.removeOne(players, {name: 'Joe'});
 
 # API
 
-## above `(N: number): DataValue<'above', N>`
+## above
+
+`(N: number): DataValue<'above', N>`
+
 ```javascript
-// @example
 data.findOne(
   data.model('foo', {number: Number}),
   {number: data.above(10)},
 );
 ```
-- `DataValue` [after](doc/actions/Count.md) ( `Date`)
+
+## after
+
+`(D: Date): DataValue<'after', N>`
+
 ```javascript
-// @flow
-declare function after<D>(D: Date): DataValue<'after', D>;
-```
-```javascript
-// @example
 data.findOne(
   data.model('foo', {created: Date}),
   {created: data.after(new Date())},
 );
 ```
-- `DataType` [any](doc/actions/Count.md) ()
+
+## any
+
+`(): DataType<void, void>`
+
 ```javascript
-// @flow
-declare type any = DataType<void, void>;
-```
-```javascript
-// @example
 data.model('foo', {value: data.any});
 ```
-- `DataType` [array](doc/actions/Count.md) ( `Function` | `DataType` )
+
+## array
+
+`(T: Function | DataType): DataType<Function, Function>`
+
 ```javascript
-// @flow
-declare function array<T>(T: Function | DataType): DataType<Function, Function>;
-```
-```javascript
-// @example
 data.model('foo', {numbers: data.array(Number)});
 ```
-- `DataValue` [before](doc/actions/Count.md)
+
+## before
+
+`(D: Date): DataValue<'before', D>`
+
+```javascript
+data.findOne(
+  data.model('foo', {created: Date}),
+  {created: data.before(new Date())},
+);
+```
+
 - `DataType` [boolean](doc/actions/Count.md)
 - `DataConnection` [connect](doc/actions/Count.md)
 - `await number` [count](doc/actions/Count.md)
