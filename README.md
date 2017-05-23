@@ -9,49 +9,58 @@ JS models. Database agnostic.
 import * as data from 'maeva';
 import sockets from 'maeva-sockets';
 
-// Use maeva to define a model
+// Define a data model
+const players = data.model(
+  'players', // model name
+  {name: String, score: Number}, // model fields
+ );
 
-const players = data.model('players', {name: String, score: Number});
-
-// Then use a maeva connector vendor to connect to a database server
-
+// Use a data connector to connect to a database server
 const connector = sockets('ws://mysockets.com');
-
 data.connect(connector);
 
+// Insert one player whose name is "Joe" and whose score is 100
 await data.insertOne(players, {name: 'Joe', score: 100});
+
+// Find one player whose name is "Joe"
 await data.findOne(players, {name: 'Joe'});
-await data.updateOne(players, {name: 'Joe' }, {score: 0});
+
+// Update one player whose name is "Joe" to have score 0
+await data.updateOne(players, {name: 'Joe'}, {score: 0});
+
+// Remove one player whose name is "Joe"
 await data.removeOne(players, {name: 'Joe'});
 ```
 
 # API
 
-- [above](doc/value/Above.md)
-- [after](doc/actions/Count.md)
-- [any](doc/actions/Count.md)
-- [array](doc/actions/Count.md)
-- [before](doc/actions/Count.md)
-- [boolean](doc/actions/Count.md)
-- [connect](doc/actions/Count.md)
-- [count](doc/actions/Count.md)
-- [date](doc/actions/Count.md)
-- [findMany](doc/actions/Count.md)
-- [findOne](doc/actions/Count.md)
-- [insertMany](doc/actions/Count.md)
-- [insertOne](doc/actions/Count.md)
-- [like](doc/actions/Count.md)
-- [match](doc/actions/Count.md)
-- [mixed](doc/actions/Count.md)
-- [model](doc/actions/Count.md)
-- [number](doc/actions/Count.md)
-- [removeMany](doc/actions/Count.md)
-- [removeOne](doc/actions/Count.md)
-- [shape](doc/actions/Count.md)
-- [tuple](doc/actions/Count.md)
-- [type](doc/actions/Count.md)
-- [updateMany](doc/actions/Count.md)
-- [updateOne](doc/actions/Count.md)
+- `DataValue` [above](doc/value/Above.md)
+- `DataValue` [after](doc/actions/Count.md)
+- `DataValue` [any](doc/actions/Count.md)
+- `DataType` [array](doc/actions/Count.md)
+- `DataValue` [before](doc/actions/Count.md)
+- `DataType` [boolean](doc/actions/Count.md)
+- `DataConnection` [connect](doc/actions/Count.md)
+- `await number` [count](doc/actions/Count.md)
+- `DataType` [date](doc/actions/Count.md)
+- `await DataDocument[]` [findMany](doc/actions/Count.md)
+- `await DataDocument` [findOne](doc/actions/Count.md)
+- `await DataDocument[]` [insertMany](doc/actions/Count.md)
+- `await DataDocument` [insertOne](doc/actions/Count.md)
+- `DataValue` [like](doc/actions/Count.md)
+- `DataProjection` [limit](doc/actions/Count.md)
+- `DataValue` [match](doc/actions/Count.md)
+- `DataType` [mixed](doc/actions/Count.md)
+- `DataModel` [model](doc/actions/Count.md)
+- `await void` [removeMany](doc/actions/Count.md)
+- `await void` [removeOne](doc/actions/Count.md)
+- `DataValue` [shape](doc/actions/Count.md)
+- `DataProjection` [skip](doc/actions/Count.md)
+- `DataProjection` [sort](doc/actions/Count.md)
+- `DataType` [tuple](doc/actions/Count.md)
+- `DataType` [type](doc/actions/Count.md)
+- `await DataResponse` [updateMany](doc/actions/Count.md)
+- `await DataResponse` [updateOne](doc/actions/Count.md)
 
 # Guides
 
