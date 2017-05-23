@@ -36,7 +36,7 @@ data.findOne(collection, {numbers});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {numbers: data.where.not(numbers)});
+data.findOne(collection, {numbers: {not: numbers}});
 ```
 
 ## Find by inclusion
@@ -44,7 +44,7 @@ data.findOne(collection, {numbers: data.where.not(numbers)});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {numbers: data.where.include(4, 5)});
+data.findOne(collection, {numbers: {include: [4]}});
 ```
 
 ## Find by exclusion

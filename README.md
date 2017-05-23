@@ -133,10 +133,15 @@ maeva.model({field: {type: String, required: true}});
 ## Validate
 
 ```js
-{
-  url: type(String).validate(/^https/),
-  status: type(Number).validate((status) => status >= 200 && status < 300)
-}
+data.model('foo', {
+  url: String,
+  status: Number,
+}, {
+  validate: {
+    url: /^https/,
+    status: status => status >= 200 && status < 300,
+  }
+});
 ```
 
 # Indexes
@@ -178,16 +183,14 @@ Player
 ## String
 
 ```javascript
-class Foo extends Model {
-  static schema = {name: type(String)};
-}
+const foos = data.model('foos', {name: String});
 
-Foo.find({name: 'joe'});
-Foo.find({name: {not: 'joe'}});
-Foo.find({name: /joe/});
-Foo.find({name: {not: /joe/}});
-Foo.find({name: {like: 'j*e'}});
-Foo.find({name: {not: {like: 'j*e'}}});
+data.findOne(foos, {name: 'joe'});
+data.findOne(foos, {name: data.type.not('joe')});
+data.findOne(foos, {name: /joe/});
+data.findOne(foos, {name: data.type.not(/joe/)});
+data.findOne(foos, {name: {like: 'j*e'}});
+data.findOne(foos, {name: {not: {like: 'j*e'}}});
 ```
 
 ## Number

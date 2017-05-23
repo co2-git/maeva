@@ -30,7 +30,7 @@ data.insertOne(collection, {object});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {object});
+data.findOne(collection, {object: {is: object}});
 ```
 
 ## Find by not deep equal
@@ -38,7 +38,7 @@ data.findOne(collection, {object});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {object: data.where.not(object)});
+data.findOne(collection, {object: {not: object}});
 ```
 
 ## Find by key

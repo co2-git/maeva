@@ -1,13 +1,8 @@
 /* global describe */
-import describeConnectLib from './describeConnectLib';
-import describeFormatLib from './describeFormatLib';
+import describeConnect from './describers/describeConnect';
 
 describe('Maeva', () => {
   describe('connect', () => {
-    describeConnectLib();
-  });
-
-  describe('format', () => {
-    describeFormatLib();
+    describeConnect();
   });
 });

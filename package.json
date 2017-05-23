@@ -26,7 +26,7 @@
     "chai": "^3.5.0",
     "eslint": "^3.5.0",
     "eslint-plugin-flowtype": "^2.25.0",
-    "flow-bin": "^0.36.0",
+    "flow-bin": "^0.46.0",
     "mocha": "^3.0.2",
     "should": "^11.1.0"
   },

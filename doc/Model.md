@@ -4,11 +4,11 @@ Mavea - Model
 Model holds the structure definition for your data. It looks like this:
 
 ```javascript
-data.model(
+{
   name,
   fields,
-  options,
-)
+  
+}
 ```
 
 For example, this is how you could model the following data:
