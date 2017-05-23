@@ -34,11 +34,7 @@ await data.removeOne(players, {name: 'Joe'});
 
 # API
 
-- `DataValue` [above](doc/value/Above.md) ( `number` )
-```javascript
-// @flow
-declare function above<N>(N: number): DataValue<'above', N>
-```
+## above `(N: number): DataValue<'above', N>`
 ```javascript
 // @example
 data.findOne(
