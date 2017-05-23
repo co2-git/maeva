@@ -5,19 +5,9 @@ Model holds the structure definition for your data. It looks like this:
 
 ```javascript
 data.model(
-  name: string,
-  fields: {
-    [fieldName: string]: Function | Type,
-  },
-  options: {
-    defaults?: {
-      [fieldName: string]: Function | any
-    },
-    required?: string[],
-    validate?: {
-      [fieldName: string]: Function | RegExp
-    },
-  }
+  name,
+  fields,
+  options,
 )
 ```
 

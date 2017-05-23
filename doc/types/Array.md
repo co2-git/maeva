@@ -1,26 +1,76 @@
-## Arrays
+Maeva / Type / Array
+===
 
-Enclose type in array brackets to declare an array:
+Declare an array of type.
+
+# Model
 
 ```js
-import {array, findOne, model} from 'mavea';
+import * as data from 'mavea';
 
-const collection = model({
-  fields: {
-    numbers: [Number],
-  }
+const collection = data.model('data', {numbers: data.type.array(Number)});
+```
+
+# Insert
+
+```javascript
+import * as data from 'maeva';
+
+const numbers = [4, 5, 6]
+
+data.insertOne(collection, {numbers});
+```
+
+# Find
+
+## Find by deep equal
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {numbers});
+```
+
+## Find by deep equal
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {numbers: data.where.not(numbers)});
+```
+
+## Find by inclusion
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {numbers: data.where.includes(4, 5)});
+```
+
+## Find by exclusion
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {numbers: data.where.not(data.where.includes(4, 5))});
+```
+
+## Find by filter in
+
+```javascript
+import * as data from 'maeva';
+
+data.findOne(collection, {
+  numbers: data.where((numbers) => numbers.every(number => number < 10))
 });
 ```
 
-## Array
+## Find by filter out
 
 ```javascript
-import {findOne} from 'maeva';
+import * as data from 'maeva';
 
-findOne(collection, {field: {is: Array}});
-findOne(collection, {field: {size: 0}});
-findOne(collection, {field: {not: {size: 0}}});
-findOne(collection, {field: {has: 1}});
-findOne(collection, {field: {not: {has: 1}}});
-findOne(collection, {field: {1: 'foo'});
+data.findOne(collection, {
+  numbers: data.where.not(data.where((numbers) => numbers.every(number => number < 10)))
+});
 ```

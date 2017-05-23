@@ -30,12 +30,12 @@ await data.removeOne(players, {name: 'Joe'});
 
 - [Model](doc/Model.md)
 - [Types](doc/Type.md)
-  - [String]
-  - [Number]
+  - [Array](doc/types/Array.md)
   - [Boolean]
   - [Date]
+  - [Number]
   - [Object](doc/types/Object.md)
-  - [Array](doc/types/Array.md)
+  - [String]
 - [Relations](doc/Relations.md)
 - []
 
