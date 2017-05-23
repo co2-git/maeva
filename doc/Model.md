@@ -101,7 +101,7 @@ The following advanced types are also made available to you via `data.type`
 Value can be of any type.
 
 ```javascript
-data.model('data', {value: data.type.any});
+data.model('data', {value: data.any});
 ```
 
 ### Array
@@ -109,12 +109,12 @@ data.model('data', {value: data.type.any});
 Value can be arrays:
 
 ```javascript
-data.model('data', {value: data.type.array(Number)})
+data.model('data', {value: data.array(Number)})
 ```
 
 ### Custom
 
-You can create a custom type. View [Type](./Type.md) for more information on custom types.
+You can create a custom type. View [Type](./Type.md) for more information.
 
 ```javascript
 const validateEmail = (email) => /^https?/.test(email);
@@ -131,7 +131,7 @@ Value can be restricted to pure values:
 ```javascript
 const langs = ['en', 'es', 'fr'];
 data.model('data', {
-  lang: data.type.values(...langs)
+  lang: data.values(...langs)
 })
 ```
 
@@ -141,7 +141,7 @@ Value can be links to other data models:
 
 ```javascript
 data.model('players', {
-  team: data.type.model({
+  team: data.model({
     name: 'teams',
     field: {name: String}
   })
@@ -154,7 +154,7 @@ Value can be mixed:
 
 ```javascript
 data.model('data', {
-  stringOrNumber: data.type.mixed(String, Number)
+  stringOrNumber: data.mixed(String, Number)
 })
 ```
 
@@ -164,7 +164,7 @@ Value can be objects:
 
 ```javascript
 data.model('users',{
-  location: data.type.shape({latitude: Number, longitude: Number}),
+  location: data.shape({latitude: Number, longitude: Number}),
 })
 ```
 
@@ -174,7 +174,7 @@ Value can be tuples:
 
 ```javascript
 data.model('data', {
-  value: data.type.tuple(String, Number)
+  value: data.tuple(String, Number)
 })
 ```
 
