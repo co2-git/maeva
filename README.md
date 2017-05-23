@@ -37,7 +37,7 @@ await data.removeOne(players, {name: 'Joe'});
 - `DataValue` [above](doc/value/Above.md) ( `number` )
 ```javascript
 // @flow
-declare function above<N>(N: number): DataValue<number, 'above'>
+declare function above<N>(N: number): DataValue<'above', N>
 ```
 ```javascript
 // @example
@@ -47,8 +47,35 @@ data.findOne(
 );
 ```
 - `DataValue` [after](doc/actions/Count.md) ( `Date`)
-- `DataValue` [any](doc/actions/Count.md)
-- `DataType` [array](doc/actions/Count.md)
+```javascript
+// @flow
+declare function after<D>(D: Date): DataValue<'after', D>;
+```
+```javascript
+// @example
+data.findOne(
+  data.model('foo', {created: Date}),
+  {created: data.after(new Date())},
+);
+```
+- `DataType` [any](doc/actions/Count.md) ()
+```javascript
+// @flow
+declare type any = DataType<void, void>;
+```
+```javascript
+// @example
+data.model('foo', {value: data.any});
+```
+- `DataType` [array](doc/actions/Count.md) ( `Function` | `DataType` )
+```javascript
+// @flow
+declare function array<T>(T: Function | DataType): DataType<Function, Function>;
+```
+```javascript
+// @example
+data.model('foo', {numbers: data.array(Number)});
+```
 - `DataValue` [before](doc/actions/Count.md)
 - `DataType` [boolean](doc/actions/Count.md)
 - `DataConnection` [connect](doc/actions/Count.md)
