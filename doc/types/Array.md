@@ -16,7 +16,7 @@ const collection = data.model('data', {numbers: data.type.array(Number)});
 ```javascript
 import * as data from 'maeva';
 
-const numbers = [4, 5, 6]
+const numbers = [4, 5, 6];
 
 data.insertOne(collection, {numbers});
 ```
@@ -36,7 +36,7 @@ data.findOne(collection, {numbers});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {numbers: {not: numbers}});
+data.findOne(collection, {numbers: data.not(numbers)});
 ```
 
 ## Find by inclusion
@@ -44,7 +44,7 @@ data.findOne(collection, {numbers: {not: numbers}});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {numbers: {include: [4]}});
+data.findOne(collection, {numbers: data.includes(4, 5)});
 ```
 
 ## Find by exclusion
@@ -52,7 +52,7 @@ data.findOne(collection, {numbers: {include: [4]}});
 ```javascript
 import * as data from 'maeva';
 
-data.findOne(collection, {numbers: data.where.not.include(4, 5)});
+data.findOne(collection, {numbers: data.includes.not(4, 5)});
 ```
 
 ## Find by filter in
@@ -61,7 +61,7 @@ data.findOne(collection, {numbers: data.where.not.include(4, 5)});
 import * as data from 'maeva';
 
 data.findOne(collection, {
-  numbers: data.where((numbers) => numbers.every(number => number < 10))
+  numbers: data.predicate((numbers) => numbers.every(number => number < 10))
 });
 ```
 
@@ -71,6 +71,6 @@ data.findOne(collection, {
 import * as data from 'maeva';
 
 data.findOne(collection, {
-  numbers: data.where.not((numbers) => numbers.every(number => number < 10))
+  numbers: data.predicate.not((numbers) => numbers.every(number => number < 10))
 });
 ```

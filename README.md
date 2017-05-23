@@ -52,6 +52,19 @@ await data.removeOne(players, {name: 'Joe'});
   - [updateMany]
   - [updateOne]
 
+
+- [connect]
+- [model]
+- [count]
+- [findMany]
+- [findOne]
+- [insertMany]
+- [insertOne]
+- [removeMany]
+- [removeOne]
+- [updateMany]
+- [updateOne]
+
 ## Tuples
 
 An array with more than one type is seen as a tuple:
@@ -185,7 +198,7 @@ Player
 ```javascript
 const foos = data.model('foos', {name: String});
 
-data.findOne(foos, {name: 'joe'});
+data.findOne(foos, {name: data.where('joe')});
 data.findOne(foos, {name: data.type.not('joe')});
 data.findOne(foos, {name: /joe/});
 data.findOne(foos, {name: data.type.not(/joe/)});
@@ -472,7 +485,16 @@ Model.findOne({}, {Limit: 100, Skip: 50, Sort})
 ## update
 
 ```js
-maeva.updateMany(users, {score: {above: 0}}, {score: {add: 10}}, {projection: {limit: 10}});
+data.updateMany(
+  users,
+  {score: data.above(100)},
+  {score: data.increment(100)},
+  {
+    ...data.limit(100),
+    ...data.skip(100),
+    ...data.sort('score'),
+  }
+);
 ```
 
 
