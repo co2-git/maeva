@@ -17,10 +17,7 @@ const players = data.model('players', {name: String, score: Number});
 
 const connector = sockets('ws://mysockets.com');
 
-data.connect(connector)
-  .on('connect', (connection) => {})
-  .on('disconnect', connector.reconnect)
-  .on('error', (error) => {});
+data.connect(connector);
 
 await data.insertOne(players, {name: 'Joe', score: 100});
 await data.findOne(players, {name: 'Joe'});
@@ -51,6 +48,58 @@ await data.removeOne(players, {name: 'Joe'});
   - [removeOne]
   - [updateMany]
   - [updateOne]
+  
+- above `number => DataValue`
+```javascript
+findOne(here, {number: above(100)});
+```
+- after `Date => DataValue`
+```javascript
+findOne(here, {date: after(new Date())});
+```
+- before `Date => DataValue`
+```javascript
+findOne(here, {date: before(new Date())});
+```
+- below `number => DataValue`
+```javascript
+findOne(here, {number: below(100)});
+```
+- connect `DataConnector => DataConnection`
+```javascript
+connect(connector);
+```
+- disconnect `DataConnection => void`
+```javascript
+disconnect(connection);
+```
+- like `string => DataValue`
+```javascript
+findOne(here, {string: like('*FOO')});
+```
+- match `string | RegExp => DataValue`
+```javascript
+findOne(here, {string: match(/foo/)});
+```
+- model `string, Object, Object? => DataValue`
+```javascript
+model('foo', {name: String});
+```
+- not `any => DataValue`
+```javascript
+findOne(here, {value: not(null)});
+```
+- reconnect `DataConnection => void`
+```javascript
+reconnect(connection);
+```
+- type `Object => DataType`
+```javascript
+type({
+  convert: (value) => value,
+  validate: (value) => true,
+ });
+```
 
 
 - [connect]
