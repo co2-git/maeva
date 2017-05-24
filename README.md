@@ -38,10 +38,9 @@ await data.removeOne(players, {name: 'Joe'});
 
 Look for a value which is a number and is above another number.
 
-```javascript
-// @flow
-function above<N> (N: number): DataValue<'above', N>
-```
+`above(N)`
+- number
+=> [DataValue](#DataValue)`<'above', N>`
 
 ```javascript
 // @example
@@ -54,10 +53,9 @@ await data.findOne(data.model('foo', {bar: Number}), {
 
 Look for a value which is a date and is after another date.
 
-```javascript
-// @flow
-function after<D> (D: Date): DataValue<'after', D>
-```
+`after(D)`
+- Date
+=> [DataValue](#DataValue)`<'after', D>`
 
 ```javascript
 // @example
@@ -70,10 +68,8 @@ await findOne(players, {created: after(new Date())});
 
 A type that accepts anything.
 
-```javascript
-// @flow
-function any(): DataType<void, void>
-```
+`any()`
+=> [DataType](#DataType)`<Function, Function>`
 
 ```javascript
 // @example
@@ -85,10 +81,9 @@ model('foo', {value: any});
 
 A type that accepts arrays.
 
-```javascript
-// @flow
-function array<T> (T: Function | DataType): DataType<Function, Function>
-```
+`array(T)`
+- Function | [DataType](#DataType)
+=> [DataType](#DataType)`<Function, Function>`
 
 ```javascript
 // @example
@@ -292,7 +287,7 @@ const players = model('players', {name: String, score: Number});
 await insertOne(players, {name: 'A'});
 ```
 
-## like => `DataValue`
+## like
 
 Look for a value which is a string and is like another string.
 
@@ -304,7 +299,7 @@ const players = model('players', {name: String});
 await findOne(players, {name: like('jo*')});
 ```
 
-## match => `DataValue`
+## match
 
 Look for a value which is a string and matches another string.
 
@@ -316,7 +311,7 @@ const players = model('players', {name: String});
 await findOne(players, {name: match(/^jo/)});
 ```
 
-## mixed => `DataType`
+## mixed
 
 A type that accepts mixed types.
 
@@ -328,7 +323,7 @@ model('data', {value: mixed(String, Number, Boolean)});
 ```
 
 
-## model => `DataModel`
+## model
 
 Create a new data model.
 
@@ -401,9 +396,14 @@ await data.removeById(players, id);
 
 ## removeMany
 
-Remobe documents in collection.
+Remove documents in collection.
 
-`function removeMany(`[DataModel](#DataModel)`, `[DataRawQuery](#DataRawQuery)`, ?`[DataRawProjection](#DataModel)`, ?DataConnection) => number`
+`removeMany()`
+- [DataModel](#DataModel)
+- ?Object | [DataQuery](#DataQuery) default `new DataQuery({})`
+- ?Object | [DataProjection](#DataProjection) default `new DataProjection({})`
+- ?[DataConnection]#DataConnection)
+=> `number`
 
 ```javascript
 // @flow
