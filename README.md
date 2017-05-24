@@ -36,20 +36,19 @@ await data.removeOne(players, {name: 'Joe'});
 
 ## above
 
-`(N: number): DataValue<'above', N>`
+`function above<N> (N: number): DataValue<'above', N>`
 
 ```javascript
-data.findOne(
-  data.model('foo', {number: Number}),
-  {number: data.above(10)},
-);
+import {above, findOne, model} from 'maeva';
+findOne(model('foo', {number: Number}), {number: above(10)});
 ```
 
 ## after
 
-`(D: Date): DataValue<'after', N>`
+`function after<D> (D: Date): DataValue<'after', D>`
 
 ```javascript
+import {after, findOne, model} from 'maeva';
 data.findOne(
   data.model('foo', {created: Date}),
   {created: data.after(new Date())},
