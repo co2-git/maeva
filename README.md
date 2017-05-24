@@ -102,21 +102,29 @@ model('foo', {numbers: array(Number)});
 
 Look for a value which is a date and is before another date.
 
-`function before<D> (D: Date): DataValue<'before', D>`
+```javascript
+// @flow
+function before<D> (D: Date): DataValue<'before', D>
+```
 
 ```javascript
+// @example
 import {before, findOne, model} from 'maeva';
 const players = model('players', {created: Date});
-await findOne(players, {before: after(new Date())});
+await findOne(players, {created: before(new Date())});
 ```
 
 ## below
 
 Look for a value which is a date and is after another date.
 
-`function below<D> (D: Date): DataValue<'before', D>`
+```javascript
+// @flow
+function below<D> (D: Date): DataValue<'before', D>
+```
 
 ```javascript
+// @example
 import {below, findOne, limit} from 'maeva';
 const players = model('players', {score: Number});
 await findOne(players, {score: below(10)});
