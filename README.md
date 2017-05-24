@@ -32,7 +32,23 @@ await data.updateOne(players, {name: 'Joe'}, {score: 0});
 await data.removeOne(players, {name: 'Joe'});
 ```
 
-# API
+- [Guide](#Guide)
+  - [Install](doc/Model.md)
+  - [Model](doc/Type.md)
+    - [Field](doc/Type.md)
+    - [Hooks](doc/Type.md)
+  - [Connect](doc/Type.md)
+  - [Query](doc/Type.md)
+- [API](#API)
+- [Definitions](#defs)
+  - [DataConnection](#DataConnection)
+  - [DataConnector](#DataConnector)
+  - [DataType](#DataType)
+  - [DataValue](#DataValue)
+
+<a id="Guide"></a># Guide
+
+<a id="API"></a># API
 
 ## above
 
@@ -516,11 +532,5 @@ model('users', {email: type({format, validate}));
 - `await DataResponse` [updateMany](doc/actions/Count.md)
 - `await DataResponse` [updateOne](doc/actions/Count.md)
 
-# Guides
+<a id="defs"></a># Definitions
 
-- [Install](doc/Model.md)
-- [Model](doc/Type.md)
-  - [Field](doc/Type.md)
-  - [Hooks](doc/Type.md)
-- [Connect](doc/Type.md)
-- [Query](doc/Type.md)
