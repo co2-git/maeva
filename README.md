@@ -185,7 +185,7 @@ const players = model('players', {name: String});
 await findById(players, id);
 ```
 
-## findMany => `await DataDocument`
+## findMany
 
 Find documents in collection.
 
@@ -276,7 +276,7 @@ const players = model(
 await insertMany(players, {name: 'A'}, {name: 'B', score: 100});
 ```
 
-## insertOne => `await DataDocument`
+## insertOne
 
 Insert a single document in collection.
 
@@ -381,9 +381,99 @@ Reconnect a connection
 await data.reconnect(DataConnection);
 ```
 
-- `await void` [removeById](doc/actions/Count.md)
-- `await void` [removeMany](doc/actions/Count.md)
-- `await void` [removeOne](doc/actions/Count.md)
+## removeById
+
+Remove a single document by id in collection.
+
+```javascript
+// @flow
+function removeById<M, I> (
+  M: DataModel,
+  I: any,
+  C: ?DataConnection
+  ): Promise<DataDocument>
+```
+
+```javascript
+// @example
+await data.removeById(players, id);
+```
+
+## removeMany
+
+Remobe documents in collection.
+
+`function removeMany(`[DataModel](#DataModel)`, `[DataRawQuery](#DataRawQuery)`, ?`[DataRawProjection](#DataModel)`, ?DataConnection) => number`
+
+```javascript
+// @flow
+function removeMany<DataModel, Dat
+
+function removeMany<M, Q> (
+  M: DataModel,
+  Q: ?Object,
+  ...options: Array<number | number[] | {[field: string]: 1 | -1} | DataConnection>
+  ): Promise<DataDocument>
+```
+
+```javascript
+// @example
+const players = data.model('players', {name: String, score: Number});
+
+// Find all within default limits
+await data.findMany(players);
+
+// Find 100 players
+await data.findMany(players, {});
+
+// Limit
+await data.findMany(players, {}, 100);
+
+// Limit with skip
+await data.findMany(players, {}, [50, 100]);
+
+// Skip only
+await data.findMany(players, {}, [50]);
+
+// Sort
+await data.findMany(players, {}, {name: 1, score: -1});
+
+// Use specific connection
+await data.findMany(players, {}, DataConnection);
+```
+
+## findOne
+
+Find a single document in collection.
+
+```javascript
+// @flow
+function findOne<M, Q> (
+  M: DataModel,
+  Q: ?DataQuery,
+  ...options: Array<number[] | {[field: string]: 1 | -1} | DataConnection>
+  ): Promise<DataDocument>
+```
+
+```javascript
+// @example
+const players = data.model('players', {name: String, score: Number});
+
+// Find first document
+await data.findOne(players);
+
+// Find first matching query
+await data.findOne(players, {score: above(100)});
+
+// Set Offset
+await data.findOne(players, {}, [50]);
+
+// Sort
+await data.findOne(players, {}, {name: 1, score: -1});
+
+// Use specific connection
+await data.findOne(players, {}, DataConnection);
+```
 
 
 ## shape => `DataType`
