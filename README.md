@@ -143,31 +143,36 @@ await disconnect(DataConnection);
 
 Find documents in collection.
 
-`function findMany<M, Q, O, C> (M: DataModel, Q: ?DataQuery, O: ?DataOptions, C: ?DataConnection): Promise<DataDocument>`
+`function findMany<M, Q> (
+  M: DataModel,
+  Q: ?DataQuery,
+  ...options: Array<number | number[] | {[field: string]: 1 | -1} | DataConnection>
+  ): Promise<DataDocument>`
 
 ```javascript
 import {connect, findMany, limit, model, skip, sort} from 'maeva';
-const players = model('players', {name: String});
+const players = model('players', {name: String, score: Number});
 
 // Find all within default limits
 await findMany(players);
 
-// Search by query
-await findMany(players, {name: 'Joe'});
+// Find 100 players
+await findMany(players, {});
 
-// Search with options
-await findMany(players, {name: 'Joe'}, {
-  ...limit(100),
-  ...skip(100),
-  ...sort('name')
-});
+// Limit
+await findMany(players, {}, 100);
+
+// Limit with skip
+await findMany(players, {}, [50, 100]);
+
+// Skip only
+await findMany(players, {}, [50]);
+
+// Sort
+await findMany(players, {}, {name: 1, score: -1});
 
 // Use specific connection
-await findMany(players, {name: 'Joe'}, {
-  ...limit(100),
-  ...skip(100),
-  ...sort('name')
-}, connect(DataConnector));
+await findMany(players, {}, DataConnection);
 ```
 
 - `await DataDocument` [findOne](doc/actions/Count.md)
