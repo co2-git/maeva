@@ -223,21 +223,90 @@ await findOne(players, {}, {name: 1, score: -1});
 await findOne(players, {}, DataConnection);
 ```
 
+- `await DataDocument[]` [insertById](doc/actions/Count.md)
 - `await DataDocument[]` [insertMany](doc/actions/Count.md)
 - `await DataDocument` [insertOne](doc/actions/Count.md)
-- `DataValue` [like](doc/actions/Count.md)
-- `DataProjection` [limit](doc/actions/Count.md)
-- `DataValue` [match](doc/actions/Count.md)
-- `DataType` [mixed](doc/actions/Count.md)
+
+## like => `DataValue`
+
+Look for a value which is a string and is like another string.
+
+`function like<S> (S: string): DataValue<'like', S>`
+
+```javascript
+import {findOne, like, model} from 'maeva';
+const players = model('players', {name: String});
+await findOne(players, {name: like('jo*')});
+```
+
+## match => `DataValue`
+
+Look for a value which is a string and matches another string.
+
+`function match<S> (S: string): DataValue<'match', S>`
+
+```javascript
+import {findOne, match, model} from 'maeva';
+const players = model('players', {name: String});
+await findOne(players, {name: match(/^jo/)});
+```
+
+## mixed => `DataType`
+
+A type that accepts mixed types.
+
+`function mixed<O> (...O: Array<Function | DataType>): DataType<Function, Function>`
+
+```javascript
+import {mixed, model} from 'maeva';
+model('data', {value: mixed(String, Number, Boolean)});
+```
+
 - `DataModel` [model](doc/actions/Count.md)
 - `DataConnection` [reconnect](doc/actions/Count.md)
+- `await void` [removeById](doc/actions/Count.md)
 - `await void` [removeMany](doc/actions/Count.md)
 - `await void` [removeOne](doc/actions/Count.md)
-- `DataValue` [shape](doc/actions/Count.md)
-- `DataProjection` [skip](doc/actions/Count.md)
-- `DataProjection` [sort](doc/actions/Count.md)
-- `DataType` [tuple](doc/actions/Count.md)
-- `DataType` [type](doc/actions/Count.md)
+
+
+## shape => `DataType`
+
+A type that accepts objects.
+
+`function shape<O> (O: DataFields): DataType<Function, Function>`
+
+```javascript
+import {model, shape} from 'maeva';
+model('team', {players: shape({name: String, score: Number})});
+```
+
+## tuple => `DataType`
+
+A type that accepts a tuple of types.
+
+`function tuple<...T> (...T: Array<Function | DataType>): DataType<Function, Function>`
+
+```javascript
+import {model, tuple} from 'maeva';
+model('data', {value: tuple(String, Number, Boolean)});
+```
+
+
+## type => `DataType`
+
+Create a custom type.
+
+`function type<T> (T: Function | DataType): DataType<Function, Function>`
+
+```javascript
+import {model, type} from 'maeva';
+const validate = value => typeof value === 'string';
+const format = value => validate(value) && value.trim();
+model('users', {email: type({format, validate}));
+```
+
+
+- `await DataResponse` [updateById](doc/actions/Count.md)
 - `await DataResponse` [updateMany](doc/actions/Count.md)
 - `await DataResponse` [updateOne](doc/actions/Count.md)
 
