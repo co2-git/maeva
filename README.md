@@ -34,13 +34,16 @@ await data.removeOne(players, {name: 'Joe'});
 
 # API
 
-## above
+## `value` above
+
+Define a value which is a number and is above other number.
 
 `function above<N> (N: number): DataValue<'above', N>`
 
 ```javascript
-import {above, findOne, model} from 'maeva';
-findOne(model('foo', {number: Number}), {number: above(10)});
+import {above, findOne, limit} from 'maeva';
+const players = model('players', {score: Number});
+await findOne(players, {score: above(10)});
 ```
 
 ## after
