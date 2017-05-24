@@ -382,19 +382,24 @@ A type that accepts objects.
 `function shape<O> (O: DataFields): DataType<Function, Function>`
 
 ```javascript
-import {model, shape} from 'maeva';
-model('team', {players: shape({name: String, score: Number})});
+// @example
+data.model('players', {location: data.shape({
+  latitude: Number,
+  longitude: Number,
+  elevation: Number,
+  precision: Number,
+})});
 ```
 
-## tuple => `DataType`
+## tuple
 
 A type that accepts a tuple of types.
 
 `function tuple<...T> (...T: Array<Function | DataType>): DataType<Function, Function>`
 
 ```javascript
-import {model, tuple} from 'maeva';
-model('data', {value: tuple(String, Number, Boolean)});
+// @example
+data.model('data', {value: data.tuple(String, Number, Boolean)});
 ```
 
 
