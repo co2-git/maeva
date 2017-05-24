@@ -38,9 +38,13 @@ await data.removeOne(players, {name: 'Joe'});
 
 Look for a value which is a number and is above another number.
 
-`function above<N> (N: number): DataValue<'above', N>`
+```javascript
+// @flow
+function above<N> (N: number): DataValue<'above', N>
+```
 
 ```javascript
+// @example
 import {above, findOne, limit} from 'maeva';
 const players = model('players', {score: Number});
 await findOne(players, {score: above(10)});
@@ -143,11 +147,14 @@ await disconnect(DataConnection);
 
 Find a single document by id in collection.
 
-`function findById<M, I> (
+```javascript
+// @flow
+function findById<M, I> (
   M: DataModel,
   I: any,
   C: DataConnection
-  ): Promise<DataDocument>`
+  ): Promise<DataDocument>
+```
 
 ```javascript
 import {above, connect, findById, model} from 'maeva';
@@ -161,11 +168,14 @@ await findById(players, id);
 
 Find documents in collection.
 
-`function findMany<M, Q> (
+```javascript
+// @flow
+function findMany<M, Q> (
   M: DataModel,
   Q: ?DataQuery,
   ...options: Array<number | number[] | {[field: string]: 1 | -1} | DataConnection>
-  ): Promise<DataDocument>`
+  ): Promise<DataDocument>
+```
 
 ```javascript
 import {connect, findMany, model} from 'maeva';
