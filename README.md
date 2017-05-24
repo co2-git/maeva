@@ -154,7 +154,7 @@ await count(players, {score: above(100)});
 
 ## disconnect
 
-Disconnect a collection
+Disconnect a connection
 
 `function disconnect<C> (C: DataConnection): Promise<void>`
 
@@ -199,62 +199,65 @@ function findMany<M, Q> (
 ```
 
 ```javascript
-import {connect, findMany, model} from 'maeva';
-const players = model('players', {name: String, score: Number});
+// @example
+const players = data.model('players', {name: String, score: Number});
 
 // Find all within default limits
-await findMany(players);
+await data.findMany(players);
 
 // Find 100 players
-await findMany(players, {});
+await data.findMany(players, {});
 
 // Limit
-await findMany(players, {}, 100);
+await data.findMany(players, {}, 100);
 
 // Limit with skip
-await findMany(players, {}, [50, 100]);
+await data.findMany(players, {}, [50, 100]);
 
 // Skip only
-await findMany(players, {}, [50]);
+await data.findMany(players, {}, [50]);
 
 // Sort
-await findMany(players, {}, {name: 1, score: -1});
+await data.findMany(players, {}, {name: 1, score: -1});
 
 // Use specific connection
-await findMany(players, {}, DataConnection);
+await data.findMany(players, {}, DataConnection);
 ```
 
-## findOne => `await DataDocument`
+## findOne
 
 Find a single document in collection.
 
-`function findOne<M, Q> (
+```javascript
+// @flow
+function findOne<M, Q> (
   M: DataModel,
   Q: ?DataQuery,
   ...options: Array<number[] | {[field: string]: 1 | -1} | DataConnection>
-  ): Promise<DataDocument>`
-
-```javascript
-import {above, connect, findOne, model} from 'maeva';
-const players = model('players', {name: String, score: Number});
-
-// Find first document
-await findOne(players);
-
-// Find first matching query
-await findOne(players, {score: above(100)});
-
-// Set Offset
-await findOne(players, {}, [50]);
-
-// Sort
-await findOne(players, {}, {name: 1, score: -1});
-
-// Use specific connection
-await findOne(players, {}, DataConnection);
+  ): Promise<DataDocument>
 ```
 
-## insertMany => `await DataDocument`
+```javascript
+// @example
+const players = data.model('players', {name: String, score: Number});
+
+// Find first document
+await data.findOne(players);
+
+// Find first matching query
+await data.findOne(players, {score: above(100)});
+
+// Set Offset
+await data.findOne(players, {}, [50]);
+
+// Sort
+await data.findOne(players, {}, {name: 1, score: -1});
+
+// Use specific connection
+await data.findOne(players, {}, DataConnection);
+```
+
+## insertMany
 
 Insert documents in collection.
 
@@ -367,7 +370,17 @@ model(
  );
 ```
 
-- `DataConnection` [reconnect](doc/actions/Count.md)
+
+## reconnect
+
+Reconnect a connection
+
+`function reconnect<C> (C: DataConnection): Promise<void>`
+
+```javascript
+await data.reconnect(DataConnection);
+```
+
 - `await void` [removeById](doc/actions/Count.md)
 - `await void` [removeMany](doc/actions/Count.md)
 - `await void` [removeOne](doc/actions/Count.md)
