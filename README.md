@@ -262,7 +262,46 @@ import {mixed, model} from 'maeva';
 model('data', {value: mixed(String, Number, Boolean)});
 ```
 
-- `DataModel` [model](doc/actions/Count.md)
+
+## model => `DataModel`
+
+Create a new data model.
+
+`// @flow function model<name, fields, options> (
+  name: string,
+  fields: {[field: string]: Function | DataType},
+  options: {
+    default?: {[field: string]: any | Function},
+    didInsert?: Promise<void>,
+    didRemove?: Promise<void>,
+    didUpdate?: Promise<void>,
+    required?: string[],
+    validate?: {[field: string]: RegExp | Function},
+    willInsert?: Promise<Object>,
+    willRemove?: Promise<Object>,
+    willUpdate?: Promise<Object>,
+  }
+): DataModel<name, fields, options>`
+
+```javascript
+import {model} from 'maeva';
+model(
+  'players',
+  {score: Number},
+  {
+    default: {score: 0},
+    didInsert: (player) => Promise.resolve(),
+    didRemove: (player) => Promise.resolve(),
+    didUpdate: (player) => Promise.resolve(),
+    required: ['score'],
+    validate: {score: score => score < 100},
+    willInsert: (player) => Promise.resolve(player),
+    willRemove: (player) => Promise.resolve(player),
+    willUpdate: (player) => Promise.resolve(player),
+  }
+ );
+```
+
 - `DataConnection` [reconnect](doc/actions/Count.md)
 - `await void` [removeById](doc/actions/Count.md)
 - `await void` [removeMany](doc/actions/Count.md)
@@ -299,9 +338,10 @@ Create a custom type.
 `function type<T> (T: Function | DataType): DataType<Function, Function>`
 
 ```javascript
+import {isString} from 'lodash;
 import {model, type} from 'maeva';
-const validate = value => typeof value === 'string';
-const format = value => validate(value) && value.trim();
+const format = value => isString(value) && value.trim();
+const validate = value => isString(value) && /^.+@.+$/.test(value);
 model('users', {email: type({format, validate}));
 ```
 
