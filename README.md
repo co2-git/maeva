@@ -38,9 +38,8 @@ await data.removeOne(players, {name: 'Joe'});
 
 Look for a value which is a number and is above another number.
 
-`above(N)`
+`above(N)` => [DataValue](#DataValue)`<'above', N>`
 - number
-=> [DataValue](#DataValue)`<'above', N>`
 
 ```javascript
 // @example
@@ -53,9 +52,8 @@ await data.findOne(data.model('foo', {bar: Number}), {
 
 Look for a value which is a date and is after another date.
 
-`after(D)`
+`after(D)` => [DataValue](#DataValue)`<'after', D>`
 - Date
-=> [DataValue](#DataValue)`<'after', D>`
 
 ```javascript
 // @example
@@ -68,8 +66,7 @@ await findOne(players, {created: after(new Date())});
 
 A type that accepts anything.
 
-`any()`
-=> [DataType](#DataType)`<Function, Function>`
+`any()` => [DataType](#DataType)`<Function, Function>`
 
 ```javascript
 // @example
@@ -81,9 +78,8 @@ model('foo', {value: any});
 
 A type that accepts arrays.
 
-`array(T)`
+`array(T)` => [DataType](#DataType)`<Function, Function>`
 - Function | [DataType](#DataType)
-=> [DataType](#DataType)`<Function, Function>`
 
 ```javascript
 // @example
@@ -95,10 +91,8 @@ model('foo', {numbers: array(Number)});
 
 Look for a value which is a date and is before another date.
 
-```javascript
-// @flow
-function before<D> (D: Date): DataValue<'before', D>
-```
+`before(D)` => [DataValue](#DataValue)`<'before', D>`
+- Date
 
 ```javascript
 // @example
@@ -111,10 +105,8 @@ await findOne(players, {created: before(new Date())});
 
 Look for a value which is a date and is after another date.
 
-```javascript
-// @flow
-function below<D> (D: Date): DataValue<'before', D>
-```
+`below(N)` => [DataValue](#DataValue)`<'below', N>`
+- number
 
 ```javascript
 // @example
@@ -127,7 +119,8 @@ await findOne(players, {score: below(10)});
 
 Create a new connection and connect to its connector.
 
-`function connect<C> (C: DataConnector): DataConnection<C>`
+`connect(C)` => [DataConnection](#DataConnection)`<S, C>`
+- [DataConnector](#DataConnector)
 
 ```javascript
 import {connect} from 'maeva';
