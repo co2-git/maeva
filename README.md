@@ -291,14 +291,14 @@ function model<name, fields, options> (
 import {model} from 'maeva';
 model(
   'players',
-  {score: Number},
+  {created: Date, name: String, score: Number},
   {
-    default: {score: 0},
+    default: {score: 0, created: () => new Date()},
     didInsert: (player) => Promise.resolve(),
     didRemove: (player) => Promise.resolve(),
     didUpdate: (player) => Promise.resolve(),
     required: ['score'],
-    validate: {score: score => score < 100},
+    validate: {score: score => score < 100, name: /^\w/},
     willInsert: (player) => Promise.resolve(player),
     willRemove: (player) => Promise.resolve(player),
     willUpdate: (player) => Promise.resolve(player),
@@ -342,7 +342,7 @@ Create a custom type.
 `function type<T> (T: Function | DataType): DataType<Function, Function>`
 
 ```javascript
-import {isString} from 'lodash;
+import {isString} from 'lodash';
 import {model, type} from 'maeva';
 const format = value => isString(value) && value.trim();
 const validate = value => isString(value) && /^.+@.+$/.test(value);
