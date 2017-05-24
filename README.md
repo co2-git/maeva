@@ -46,7 +46,9 @@ function above<N> (N: number): DataValue<'above', N>
 ```javascript
 // @example
 import {above, findOne, model} from 'maeva';
+
 const players = model('players', {score: Number});
+
 await findOne(players, {score: above(10)});
 ```
 
