@@ -34,9 +34,9 @@ await data.removeOne(players, {name: 'Joe'});
 
 # API
 
-## `value` above
+## above => `DataValue`
 
-Define a value which is a number and is above other number.
+Look for a value which is a number and is above another number.
 
 `function above<N> (N: number): DataValue<'above', N>`
 
@@ -46,49 +46,81 @@ const players = model('players', {score: Number});
 await findOne(players, {score: above(10)});
 ```
 
-## after
+## after => `DataValue`
+
+Look for a value which is a date and is after another date.
 
 `function after<D> (D: Date): DataValue<'after', D>`
 
 ```javascript
 import {after, findOne, model} from 'maeva';
-data.findOne(
-  data.model('foo', {created: Date}),
-  {created: data.after(new Date())},
-);
+const players = model('players', {created: Date});
+await findOne(players, {created: after(new Date())});
 ```
 
-## any
+## any => `DataType`
 
-`(): DataType<void, void>`
+A type that accepts anything.
+
+`function any(): DataType<void, void>`
 
 ```javascript
-data.model('foo', {value: data.any});
+import {any, model} from 'maeva';
+model('foo', {value: any});
 ```
 
-## array
+## array => `DataType`
 
-`(T: Function | DataType): DataType<Function, Function>`
+A type that accepts arrays.
+
+`function array<T> (T: Function | DataType): DataType<Function, Function>`
 
 ```javascript
-data.model('foo', {numbers: data.array(Number)});
+import {array, model} from 'maeva';
+model('foo', {numbers: array(Number)});
 ```
 
-## before
+## before => `DataValue`
 
-`(D: Date): DataValue<'before', D>`
+Look for a value which is a date and is before another date.
+
+`function before<D> (D: Date): DataValue<'before', D>`
 
 ```javascript
-data.findOne(
-  data.model('foo', {created: Date}),
-  {created: data.before(new Date())},
-);
+import {before, findOne, model} from 'maeva';
+const players = model('players', {created: Date});
+await findOne(players, {before: after(new Date())});
 ```
 
-- `DataType` [boolean](doc/actions/Count.md)
-- `DataConnection` [connect](doc/actions/Count.md)
+## below => `DataValue`
+
+Look for a value which is a date and is after another date.
+
+`function below<D> (D: Date): DataValue<'before', D>`
+
+```javascript
+import {below, findOne, limit} from 'maeva';
+const players = model('players', {score: Number});
+await findOne(players, {score: below(10)});
+```
+
+## connect => `DataConnection`
+
+Create a new connection and connect to its connector.
+
+`function connect<C> (C: DataConnector): DataConnection<C>`
+
+```javascript
+import {connect} from 'maeva';
+const connector = new DataConnector({...});
+const connection = connect(connector);
+connection.connected(() => {...});
+connection.disconnected(connection.reconnect);
+```
+
 - `await number` [count](doc/actions/Count.md)
 - `DataType` [date](doc/actions/Count.md)
+- `DataConnection` [disconnect](doc/actions/Count.md)
 - `await DataDocument[]` [findMany](doc/actions/Count.md)
 - `await DataDocument` [findOne](doc/actions/Count.md)
 - `await DataDocument[]` [insertMany](doc/actions/Count.md)
@@ -98,6 +130,7 @@ data.findOne(
 - `DataValue` [match](doc/actions/Count.md)
 - `DataType` [mixed](doc/actions/Count.md)
 - `DataModel` [model](doc/actions/Count.md)
+- `DataConnection` [reconnect](doc/actions/Count.md)
 - `await void` [removeMany](doc/actions/Count.md)
 - `await void` [removeOne](doc/actions/Count.md)
 - `DataValue` [shape](doc/actions/Count.md)
