@@ -114,11 +114,21 @@ Create a new connection and connect to its connector.
 import {connect} from 'maeva';
 const connector = new DataConnector({...});
 const connection = connect(connector);
-connection.connected(() => {...});
-connection.disconnected(connection.reconnect);
 ```
 
-- `await number` [count](doc/actions/Count.md)
+## count => `await number`
+
+Count documents in collection.
+
+`function count<M, Q, O> (M: DataModel, Q: ?DataQuery, O: ?DataOptions): Promise<number>`
+
+```javascript
+import {above, count, model} from 'maeva';
+const players = model('players', {score: Number});
+await count(players, {score: above(100)});
+```
+
+
 - `DataType` [date](doc/actions/Count.md)
 - `DataConnection` [disconnect](doc/actions/Count.md)
 - `await DataDocument[]` [findMany](doc/actions/Count.md)
