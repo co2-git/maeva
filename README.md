@@ -223,9 +223,40 @@ await findOne(players, {}, {name: 1, score: -1});
 await findOne(players, {}, DataConnection);
 ```
 
-- `await DataDocument[]` [insertById](doc/actions/Count.md)
-- `await DataDocument[]` [insertMany](doc/actions/Count.md)
-- `await DataDocument` [insertOne](doc/actions/Count.md)
+## insertMany => `await DataDocument`
+
+Insert documents in collection.
+
+`function insertMany<M, ...O> (
+  M: DataModel,
+  ...O: Object | DataConnection,
+  ): Promise<DataDocument>`
+
+```javascript
+import {connect, insertMany, model} from 'maeva';
+const players = model(
+  'players',
+  {name: String, score: Number},
+  {default: {score: 0}}
+ );
+await insertMany(players, {name: 'A'}, {name: 'B', score: 100});
+```
+
+## insertOne => `await DataDocument`
+
+Insert a single document in collection.
+
+`function insertOne<M, O> (
+  M: DataModel,
+  O: Object,
+  DataConnection
+  ): Promise<DataDocument>`
+
+```javascript
+import {insertOne, model} from 'maeva';
+const players = model('players', {name: String, score: Number});
+await insertOne(players, {name: 'A'});
+```
 
 ## like => `DataValue`
 
@@ -269,7 +300,6 @@ Create a new data model.
 
 ```javascript
 // @flow
-
 function model<name, fields, options> (
   name: string,
   fields: {[field: string]: Function | DataType},
@@ -299,9 +329,9 @@ model(
     didUpdate: (player) => Promise.resolve(),
     required: ['score'],
     validate: {score: score => score < 100, name: /^\w/},
-    willInsert: (player) => Promise.resolve(player),
-    willRemove: (player) => Promise.resolve(player),
-    willUpdate: (player) => Promise.resolve(player),
+    willInsert: (player) => Promise.resolve({...player}),
+    willRemove: (player) => Promise.resolve({...player}),
+    willUpdate: (player) => Promise.resolve({...player}),
   }
  );
 ```
