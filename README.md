@@ -139,6 +139,24 @@ import {disconnect} from 'maeva';
 await disconnect(DataConnection);
 ```
 
+## findById => `await DataDocument`
+
+Find a single document by id in collection.
+
+`function findById<M, I> (
+  M: DataModel,
+  I: any,
+  C: DataConnection
+  ): Promise<DataDocument>`
+
+```javascript
+import {above, connect, findById, model} from 'maeva';
+const players = model('players', {name: String});
+
+// Find document by id
+await findById(players, id);
+```
+
 ## findMany => `await DataDocument`
 
 Find documents in collection.
@@ -150,7 +168,7 @@ Find documents in collection.
   ): Promise<DataDocument>`
 
 ```javascript
-import {connect, findMany, limit, model, skip, sort} from 'maeva';
+import {connect, findMany, model} from 'maeva';
 const players = model('players', {name: String, score: Number});
 
 // Find all within default limits
@@ -175,7 +193,36 @@ await findMany(players, {}, {name: 1, score: -1});
 await findMany(players, {}, DataConnection);
 ```
 
-- `await DataDocument` [findOne](doc/actions/Count.md)
+## findOne => `await DataDocument`
+
+Find a single document in collection.
+
+`function findOne<M, Q> (
+  M: DataModel,
+  Q: ?DataQuery,
+  ...options: Array<number[] | {[field: string]: 1 | -1} | DataConnection>
+  ): Promise<DataDocument>`
+
+```javascript
+import {above, connect, findOne, model} from 'maeva';
+const players = model('players', {name: String, score: Number});
+
+// Find first document
+await findOne(players);
+
+// Find first matching query
+await findOne(players, {score: above(100)});
+
+// Set Offset
+await findOne(players, {}, [50]);
+
+// Sort
+await findOne(players, {}, {name: 1, score: -1});
+
+// Use specific connection
+await findOne(players, {}, DataConnection);
+```
+
 - `await DataDocument[]` [insertMany](doc/actions/Count.md)
 - `await DataDocument` [insertOne](doc/actions/Count.md)
 - `DataValue` [like](doc/actions/Count.md)
