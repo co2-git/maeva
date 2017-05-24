@@ -120,7 +120,7 @@ const connection = connect(connector);
 
 Count documents in collection.
 
-`function count<M, Q, O> (M: DataModel, Q: ?DataQuery, O: ?DataOptions): Promise<number>`
+`function count<M, Q, O, C> (M: DataModel, Q: ?DataQuery, O: ?DataOptions, C: ?DataConnection): Promise<number>`
 
 ```javascript
 import {above, count, model} from 'maeva';
@@ -128,10 +128,48 @@ const players = model('players', {score: Number});
 await count(players, {score: above(100)});
 ```
 
+## disconnect => `await void`
 
-- `DataType` [date](doc/actions/Count.md)
-- `DataConnection` [disconnect](doc/actions/Count.md)
-- `await DataDocument[]` [findMany](doc/actions/Count.md)
+Disconnect a collection
+
+`function disconnect<C> (C: DataConnection): Promise<void>`
+
+```javascript
+import {disconnect} from 'maeva';
+await disconnect(DataConnection);
+```
+
+## findMany => `await DataDocument`
+
+Find documents in collection.
+
+`function findMany<M, Q, O, C> (M: DataModel, Q: ?DataQuery, O: ?DataOptions, C: ?DataConnection): Promise<DataDocument>`
+
+```javascript
+import {connect, findMany, limit, model, skip, sort} from 'maeva';
+const players = model('players', {name: String});
+
+// Find all within default limits
+await findMany(players);
+
+// Search by query
+await findMany(players, {name: 'Joe'});
+
+// Search with options
+await findMany(players, {name: 'Joe'}, {
+  ...limit(100),
+  ...skip(100),
+  ...sort('name')
+});
+
+// Use specific connection
+await findMany(players, {name: 'Joe'}, {
+  ...limit(100),
+  ...skip(100),
+  ...sort('name')
+}, connect(DataConnector));
+```
+
 - `await DataDocument` [findOne](doc/actions/Count.md)
 - `await DataDocument[]` [insertMany](doc/actions/Count.md)
 - `await DataDocument` [insertOne](doc/actions/Count.md)
