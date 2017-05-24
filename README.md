@@ -34,7 +34,7 @@ await data.removeOne(players, {name: 'Joe'});
 
 # API
 
-## above => `DataValue`
+## above
 
 Look for a value which is a number and is above another number.
 
@@ -50,41 +50,53 @@ const players = model('players', {score: Number});
 await findOne(players, {score: above(10)});
 ```
 
-## after => `DataValue`
+## after
 
 Look for a value which is a date and is after another date.
 
-`function after<D> (D: Date): DataValue<'after', D>`
+```javascript
+// @flow
+function after<D> (D: Date): DataValue<'after', D>
+```
 
 ```javascript
+// @example
 import {after, findOne, model} from 'maeva';
 const players = model('players', {created: Date});
 await findOne(players, {created: after(new Date())});
 ```
 
-## any => `DataType`
+## any
 
 A type that accepts anything.
 
-`function any(): DataType<void, void>`
+```javascript
+// @flow
+function any(): DataType<void, void>
+```
 
 ```javascript
+// @example
 import {any, model} from 'maeva';
 model('foo', {value: any});
 ```
 
-## array => `DataType`
+## array
 
 A type that accepts arrays.
 
-`function array<T> (T: Function | DataType): DataType<Function, Function>`
+```javascript
+// @flow
+function array<T> (T: Function | DataType): DataType<Function, Function>
+```
 
 ```javascript
+// @example
 import {array, model} from 'maeva';
 model('foo', {numbers: array(Number)});
 ```
 
-## before => `DataValue`
+## before
 
 Look for a value which is a date and is before another date.
 
@@ -96,7 +108,7 @@ const players = model('players', {created: Date});
 await findOne(players, {before: after(new Date())});
 ```
 
-## below => `DataValue`
+## below
 
 Look for a value which is a date and is after another date.
 
@@ -108,7 +120,7 @@ const players = model('players', {score: Number});
 await findOne(players, {score: below(10)});
 ```
 
-## connect => `DataConnection`
+## connect
 
 Create a new connection and connect to its connector.
 
@@ -120,7 +132,7 @@ const connector = new DataConnector({...});
 const connection = connect(connector);
 ```
 
-## count => `await number`
+## count
 
 Count documents in collection.
 
@@ -132,7 +144,7 @@ const players = model('players', {score: Number});
 await count(players, {score: above(100)});
 ```
 
-## disconnect => `await void`
+## disconnect
 
 Disconnect a collection
 
@@ -143,7 +155,7 @@ import {disconnect} from 'maeva';
 await disconnect(DataConnection);
 ```
 
-## findById => `await DataDocument`
+## findById
 
 Find a single document by id in collection.
 
@@ -157,6 +169,7 @@ function findById<M, I> (
 ```
 
 ```javascript
+// @example
 import {above, connect, findById, model} from 'maeva';
 const players = model('players', {name: String});
 
