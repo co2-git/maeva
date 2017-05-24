@@ -267,7 +267,10 @@ model('data', {value: mixed(String, Number, Boolean)});
 
 Create a new data model.
 
-`// @flow function model<name, fields, options> (
+```javascript
+// @flow
+
+function model<name, fields, options> (
   name: string,
   fields: {[field: string]: Function | DataType},
   options: {
@@ -281,7 +284,8 @@ Create a new data model.
     willRemove?: Promise<Object>,
     willUpdate?: Promise<Object>,
   }
-): DataModel<name, fields, options>`
+): DataModel<name, fields, options>
+```
 
 ```javascript
 import {model} from 'maeva';
