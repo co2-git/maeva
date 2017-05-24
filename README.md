@@ -46,9 +46,9 @@ await data.removeOne(players, {name: 'Joe'});
   - [DataType](#DataType)
   - [DataValue](#DataValue)
 
-<a id="Guide"></a># Guide
+# <a id="Guide"></a>Guide
 
-<a id="API"></a># API
+# <a id="API"></a>API
 
 ## above
 
@@ -532,5 +532,5 @@ model('users', {email: type({format, validate}));
 - `await DataResponse` [updateMany](doc/actions/Count.md)
 - `await DataResponse` [updateOne](doc/actions/Count.md)
 
-<a id="defs"></a># Definitions
+# <a id="defs"></a>Definitions
 
