@@ -8,7 +8,7 @@ Look for a value which is a date and is after another date.
 ```javascript
 const users = data.model('users', {created: Date}, {default: {created: new Date()}});
 await data.insertOne(users, {});
-await data.findMany(users, {created: after(new Date())}); // returns null
+await data.findMany(users, {created: data.after(new Date())}); // returns null
 ```
 
 # Arguments

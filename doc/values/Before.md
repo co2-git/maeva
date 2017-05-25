@@ -12,7 +12,7 @@ const users = data.model(
   {default: {created: new Date()}}
 );
 await data.insertOne(users, {name: 'foo'});
-await data.findMany(users, {created: before(new Date())}); // returns {name: foo, created: Date}
+await data.findMany(users, {created: data.before(new Date())}); // returns {name: foo, created: Date}
 ```
 
 # Arguments

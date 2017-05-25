@@ -8,7 +8,7 @@ Look for a value which is a number and is above another number.
 ```javascript
 const bars = data.model('bars', {bar: Number});
 await data.insertMany(bars, [{bar: 10}, {bar: 20}, {bar: 30}]);
-await data.findMany(bars, {bar: above(10)}); // returns [{bar: 20}, {bar: 30}]
+await data.findMany(bars, {bar: data.above(10)}); // returns [{bar: 20}, {bar: 30}]
 ```
 
 # Arguments
