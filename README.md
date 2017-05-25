@@ -16,10 +16,15 @@ const model = data.model(collection, fields);
 
 // Use a data connector to connect to a database server
 const connector = sockets('ws://mysockets.com');
-data.connect(connector);
+const connection = data.connect(connector);
 
 // Now you can fire requests to the database server
 await data.insertOne(players, {name: 'Joe', score: 100});
+
+// Or listen to database server events
+await data.onInsert(connection, (document, {name}) => {
+  console.log(`new document inserted into ${name}`, {document});
+});
 ```
 
 - [Guide](#Guide)
