@@ -9,38 +9,27 @@ JS models. Database agnostic.
 import * as data from 'maeva';
 import sockets from 'maeva-sockets';
 
-// Define a data model
-const players = data.model(
-  'players', // model name
-  {name: String, score: Number}, // model fields
- );
+// Define a model
+const collection = 'players';
+const fields = {name: String, score: Number};
+const model = data.model(collection, fields);
 
 // Use a data connector to connect to a database server
 const connector = sockets('ws://mysockets.com');
 data.connect(connector);
 
-// Insert one player whose name is "Joe" and whose score is 100
+// Now you can fire requests to the database server
 await data.insertOne(players, {name: 'Joe', score: 100});
-
-// Find one player whose name is "Joe"
-await data.findOne(players, {name: 'Joe'});
-
-// Update one player whose name is "Joe" to have score 0
-await data.updateOne(players, {name: 'Joe'}, {score: 0});
-
-// Remove one player whose name is "Joe"
-await data.removeOne(players, {name: 'Joe'});
 ```
 
 - [Guide](#Guide)
-  - [Install](doc/Model.md)
   - [Model](doc/Type.md)
     - [Field](doc/Type.md)
     - [Hooks](doc/Type.md)
   - [Connect](doc/Type.md)
   - [Query](doc/Type.md)
 - [API](#API)
-  - [above](#above)
+  - [above](./doc/actions/Above.md)
   - [after](#after)
   - [any](#any)
   - [before](#before)
@@ -76,20 +65,6 @@ await data.removeOne(players, {name: 'Joe'});
 # <a id="Guide"></a>Guide
 
 # <a id="API"></a>API
-
-## <a id="above"></a>above
-
-Look for a value which is a number and is above another number.
-
-`above(N)` => [DataValue](#DataValue)`<'above', N>`
-- number
-
-```javascript
-// @example
-await data.findOne(data.model('foo', {bar: Number}), {
-  bar: data.above(10)
-});
-```
 
 [back to top](#top)
 

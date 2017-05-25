@@ -7,7 +7,7 @@ Model holds the structure definition for your data. It looks like this:
 {
   name,
   fields,
-  
+
 }
 ```
 
@@ -23,36 +23,6 @@ const rawData = {foo: true, bar: 2};
 const dataModel = data.model('rawData', {foo: Boolean, bar: Number});
 ```
 
-You have 2 ways of calling model:
-
-- with an object
-
-```javascript
-data.model({
-  name: 'players',
-  fields: {score: Number},
-  required: ['score'],
-  default: {score: 0},
-  validate: {score: (score) => score > 0 && score < 100},
-});
-```
-
-- with function arguments
-
-```javascript
-data.model(name, fields, options);
-
-data.model(
-  'players',
-  {score: Number},
-  {
-    required: ['score'],
-    default: {score: 0},
-    validate: {score: (score) => score > 0 && score < 100}
-  }
-);
-```
-
 # Name
 
 `name` is a required field. It matches the collection/table name.
@@ -62,6 +32,8 @@ Here's a MySQL example:
 ```javascript
 // Data
 const playerModel = data.model('players', {name: String});
+
+data.connect(mysql('mysql://localhost'));
 
 await data.findOne(playerModel, {name: 'Joe'});
 
