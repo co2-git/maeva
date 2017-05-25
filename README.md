@@ -30,10 +30,10 @@ await data.insertOne(players, {name: 'Joe', score: 100});
   - [Query](doc/Type.md)
 - [API](#API)
   - [above](./doc/values/Above.md)
-  - [after](#after)
+  - [after](./doc/values/After.md)
   - [any](#any)
-  - [before](#before)
-  - [below](#below)
+  - [before](./doc/values/Before.md)
+  - [below](./doc/values/Below.md)
   - [connect](#connect)
   - [count](#count)
   - [disconnect](#disconnect)
@@ -42,8 +42,8 @@ await data.insertOne(players, {name: 'Joe', score: 100});
   - [findOne](#findOne)
   - [insertMany](#insertMany)
   - [insertOne](#insertOne)
-  - [like](#like)
-  - [match](#match)
+  - [like](./doc/values/Like.md)
+  - [match](./doc/values/Match.md)
   - [mixed](#mixed)
   - [model](#model)
   - [reconnect](#reconnect)
@@ -66,21 +66,6 @@ await data.insertOne(players, {name: 'Joe', score: 100});
 
 # <a id="API"></a>API
 
-[back to top](#top)
-
-## <a id="after"></a>after
-
-Look for a value which is a date and is after another date.
-
-`after(D)` => [DataValue](#DataValue)`<'after', D>`
-- Date
-
-```javascript
-// @example
-await data.findOne(players, {created: data.after(new Date())});
-```
-
-[back to top](#top)
 
 ## <a id="any"></a>any
 
@@ -107,34 +92,6 @@ A type that accepts arrays.
 // @example
 import {array, model} from 'maeva';
 model('foo', {numbers: array(Number)});
-```
-
-## before
-
-Look for a value which is a date and is before another date.
-
-`before(D)` => [DataValue](#DataValue)`<'before', D>`
-- Date
-
-```javascript
-// @example
-import {before, findOne, model} from 'maeva';
-const players = model('players', {created: Date});
-await findOne(players, {created: before(new Date())});
-```
-
-## below
-
-Look for a value which is a date and is after another date.
-
-`below(N)` => [DataValue](#DataValue)`<'below', N>`
-- number
-
-```javascript
-// @example
-import {below, findOne, limit} from 'maeva';
-const players = model('players', {score: Number});
-await findOne(players, {score: below(10)});
 ```
 
 ## connect
@@ -300,30 +257,6 @@ Insert a single document in collection.
 import {insertOne, model} from 'maeva';
 const players = model('players', {name: String, score: Number});
 await insertOne(players, {name: 'A'});
-```
-
-## like
-
-Look for a value which is a string and is like another string.
-
-`function like<S> (S: string): DataValue<'like', S>`
-
-```javascript
-import {findOne, like, model} from 'maeva';
-const players = model('players', {name: String});
-await findOne(players, {name: like('jo*')});
-```
-
-## match
-
-Look for a value which is a string and matches another string.
-
-`function match<S> (S: string): DataValue<'match', S>`
-
-```javascript
-import {findOne, match, model} from 'maeva';
-const players = model('players', {name: String});
-await findOne(players, {name: match(/^jo/)});
 ```
 
 ## mixed
