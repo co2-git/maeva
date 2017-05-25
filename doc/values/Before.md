@@ -21,4 +21,4 @@ await data.findMany(users, {created: before(new Date())}); // returns {name: foo
 
 # Return
 
-[DataValue](../definitions/DataValue)<'before', number>
+[DataValue](../definitions/DataValue)<'before', Date>
