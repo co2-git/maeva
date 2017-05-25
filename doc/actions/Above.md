@@ -17,4 +17,4 @@ await data.findMany(model, {bar: above(10)}); // returns [{bar: 20}, {bar: 30}]
 
 # Return
 
-[DataValue](../definitions/DataValue);
+[DataValue](../definitions/DataValue)
