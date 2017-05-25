@@ -42,6 +42,7 @@ await data.removeOne(players, {name: 'Joe'});
 - [API](#API)
   - [above](#above)
   - [after](#after)
+  - [any](#any)
   - [before](#before)
   - [below](#below)
   - [connect](#connect)
@@ -63,6 +64,9 @@ await data.removeOne(players, {name: 'Joe'});
   - [shape](#shape)
   - [tuple](#tuple)
   - [type](#type)
+  - [updateById](#updateById)
+  - [updateMany](#updateMany)
+  - [updateOne](#updateOne)
 - [Definitions](#defs)
   - [DataConnection](#DataConnection)
   - [DataConnector](#DataConnector)
@@ -89,7 +93,7 @@ await data.findOne(data.model('foo', {bar: Number}), {
 
 [back to top](#top)
 
-## after
+## <a id="after"></a>after
 
 Look for a value which is a date and is after another date.
 
@@ -103,7 +107,7 @@ await data.findOne(players, {created: data.after(new Date())});
 
 [back to top](#top)
 
-## any
+## <a id="any"></a>any
 
 A type that accepts anything.
 
