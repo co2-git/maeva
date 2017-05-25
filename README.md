@@ -29,7 +29,7 @@ await data.insertOne(players, {name: 'Joe', score: 100});
   - [Connect](doc/Type.md)
   - [Query](doc/Type.md)
 - [API](#API)
-  - [above](./doc/actions/Above.md)
+  - [above](./doc/types/Above.md)
   - [after](#after)
   - [any](#any)
   - [before](#before)
