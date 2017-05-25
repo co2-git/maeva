@@ -22,7 +22,7 @@ const connection = data.connect(connector);
 await data.insertOne(players, {name: 'Joe', score: 100});
 
 // Or listen to database server events
-await data.onInsert(connection, (document, {name}) => {
+data.onInsert(connection, (document, {name}) => {
   console.log(`new document inserted into ${name}`, {document});
 });
 ```
