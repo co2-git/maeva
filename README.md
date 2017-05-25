@@ -40,6 +40,29 @@ await data.removeOne(players, {name: 'Joe'});
   - [Connect](doc/Type.md)
   - [Query](doc/Type.md)
 - [API](#API)
+  - [above](#above)
+  - [after](#after)
+  - [before](#before)
+  - [below](#below)
+  - [connect](#connect)
+  - [count](#count)
+  - [disconnect](#disconnect)
+  - [findById](#findById)
+  - [findMany](#findMany)
+  - [findOne](#findOne)
+  - [insertMany](#insertMany)
+  - [insertOne](#insertOne)
+  - [like](#like)
+  - [match](#match)
+  - [mixed](#mixed)
+  - [model](#model)
+  - [reconnect](#reconnect)
+  - [removeById](#removeById)
+  - [removeMany](#removeMany)
+  - [removeOne](#removeOne)
+  - [shape](#shape)
+  - [tuple](#tuple)
+  - [type](#type)
 - [Definitions](#defs)
   - [DataConnection](#DataConnection)
   - [DataConnector](#DataConnector)
@@ -50,7 +73,7 @@ await data.removeOne(players, {name: 'Joe'});
 
 # <a id="API"></a>API
 
-## above
+## <a id="above"></a>above
 
 Look for a value which is a number and is above another number.
 
@@ -64,6 +87,8 @@ await data.findOne(data.model('foo', {bar: Number}), {
 });
 ```
 
+[back to top](#top)
+
 ## after
 
 Look for a value which is a date and is after another date.
@@ -73,10 +98,10 @@ Look for a value which is a date and is after another date.
 
 ```javascript
 // @example
-import {after, findOne, model} from 'maeva';
-const players = model('players', {created: Date});
-await findOne(players, {created: after(new Date())});
+await data.findOne(players, {created: data.after(new Date())});
 ```
+
+[back to top](#top)
 
 ## any
 
@@ -89,6 +114,8 @@ A type that accepts anything.
 import {any, model} from 'maeva';
 model('foo', {value: any});
 ```
+
+[back to top](#top)
 
 ## array
 
@@ -533,4 +560,3 @@ model('users', {email: type({format, validate}));
 - `await DataResponse` [updateOne](doc/actions/Count.md)
 
 # <a id="defs"></a>Definitions
-
