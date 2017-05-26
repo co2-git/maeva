@@ -27,7 +27,12 @@ await data.insertOne(players, {name: 'Joe', score: 100});
     - [Field](doc/Type.md)
     - [Hooks](doc/guides/Hooks.md)
   - [Connect](doc/Type.md)
+  - [Connector](doc/Connector.md)
+    - [Ids](doc/Ids.md)
   - [Query](doc/Type.md)
+- Connectors
+  - [maeva-mongodb](https://npmjs.org/packages/maeva-mongodb)
+  - [maeva-sockets](https://npmjs.org/packages/maeva-sockets)
 - API
   - [Actions](./doc/actions)
     - [count](./doc/actions/count)
@@ -65,10 +70,11 @@ await data.insertOne(players, {name: 'Joe', score: 100});
     - [below](./doc/values/Below.md)
     - [like](./doc/values/Like.md)
     - [match](./doc/values/Match.md)
-  
+
 - [Definitions](#defs)
   - [DataConnection](#DataConnection)
   - [DataConnector](#DataConnector)
+  - [DataDocument](./doc/definitions/DataDocument.md)
   - [DataType](#DataType)
   - [DataValue](#DataValue)
 
