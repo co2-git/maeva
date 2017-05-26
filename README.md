@@ -34,10 +34,10 @@ await data.insertOne(players, {name: 'Joe', score: 100});
   - [maeva-sockets](https://npmjs.org/packages/maeva-sockets)
 - API
   - [Actions](./doc/actions)
-    - [count](./doc/actions/count)
+    - [count](./doc/actions/Count.md)
     - [findById](./doc/actions/findById)
     - [findMany](./doc/actions/findMany)
-    - [findOne](./doc/actions/findOne)
+    - [findOne](./doc/actions/FindOne.md)
     - [insertMany](./doc/actions/insertMany)
     - [insertOne](./doc/actions/insertOne)
     - [removeById](./doc/actions/removeById)
