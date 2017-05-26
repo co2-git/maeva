@@ -1,4 +1,4 @@
-findOne()
+findMany()
 ===
 
 Find a single document by its id in collection.
@@ -9,13 +9,13 @@ Find a single document by its id in collection.
 const model = data.model('foo', {name: String});
 
 // Find first document
-await data.findOne(model);
+await data.findMany(model);
 
 // Find nth document
-await data.findOne(model, 50);
+await data.findMany(model, 50);
 
 // Find document by query
-await data.findOne(model, {name: 'Joe'});
+await data.findMany(model, {name: 'Joe'});
 ```
 
 # Arguments

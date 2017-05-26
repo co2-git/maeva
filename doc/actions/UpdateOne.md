@@ -1,0 +1,33 @@
+updateOne()
+===
+
+Find a single document by its id in collection.
+
+# Usage
+
+```javascript
+const model = data.model('foo', {score: Number});
+
+// Update first document
+await data.updateOne(model, {}, {score: 100});
+
+// Update nth document
+await data.updateOne(model, {}, {score: 100}, 50);
+
+// Update value
+await data.updateOne(model, {score: 100}, ({score, ...fields}) => ({...fields, score: score + 100}));
+```
+
+# Arguments
+
+- string
+
+# Return
+
+Promise<[DataDocument](../definitions/DataDocument)>
+
+# Notes
+
+## Find by id
+
+View [Ids](../guides/Ids.md) for more information.

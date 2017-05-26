@@ -28,8 +28,22 @@ You usually don't need the id at all on your side. maeva handles retrieving meta
 
 ```javascript
 // get a data document
-const joe = await data.insertOne(users, {name: 'Joe'});
-await data.findOne(users, joe); // joe meta id will be used by connector to find joe by its id
+await data.findOne(users, joe);
+await data.findMany(users, [joe]);
+
+await data.updateOne(users, joe, {field: 'new value'});
+await data.updateMany(users, [joe], {field: 'new value'});
+
+await data.removeOne(users, joe);
+await data.removeMany(users, joe);
+```
+
+If ever you have just the id, pass it as is:
+
+```javascript
+const id = 12345;
+await data.findOne(users, id); // connector will use id to find user
+await data.findMany(users, [id]);
 ```
 
 # Meta
