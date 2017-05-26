@@ -48,6 +48,7 @@ await data.insertOne(players, {name: 'Joe', score: 100});
     - [reconnect](./doc/connections/reconnect)
   - [Events](./doc/events)
     - [on](./doc/events/On.md)
+    - [once](./doc/events/Once.md)
     - [off](./doc/events/Off.md)
   - [Models](./doc/models)
     - [model](#model)
