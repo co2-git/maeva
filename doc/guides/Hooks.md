@@ -12,8 +12,8 @@ A model will emit the following events:
 
 ```javascript
 // Encrypt password before insertion
-const users = data.model('users', {name: String, password: String});
-data.on('willInsert', users, (user) => new Promise(async (resolve, reject) => {
+const userData = data.model('users', {name: String, password: String});
+data.on('willInsert', userData, (user) => new Promise(async (resolve, reject) => {
   let password;
   try {
     password = await encrypt(user.password);
