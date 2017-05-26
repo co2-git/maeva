@@ -61,6 +61,7 @@ data.onInsert(connection, (document, {name}) => {
     - [model](#model)
   - [Types](./doc/types)
     - [any](#any)
+    - [array](#array)
     - [mixed](#mixed)
     - [shape](#shape)
     - [tuple](#tuple)
