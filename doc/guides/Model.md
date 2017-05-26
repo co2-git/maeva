@@ -37,7 +37,7 @@ const rawData = {foo: true, bar: 2};
 const dataModel = data.model('rawData', {foo: Boolean, bar: Number});
 ```
 
-# Name
+# Name `string`
 
 `name` is a required field. It matches the collection/table name.
 
@@ -54,11 +54,11 @@ await data.findOne(playerModel, {name: 'Joe'});
 // SELECT * FROM `players` WHERE `name`="Joe";
 ```
 
-# Fields
+# Fields `{[fieldName: string]: Function | DataType}`
 
 `fields` is a required field. It is an object which keys are field names and values its type.
 
-Value must be an instance of `MaevaType` or a native type.
+Value must be an instance of `DataType` or a native type.
 
 ## Native types
 
@@ -80,11 +80,16 @@ data.model('players', {
 
 ## Advanced types
 
-The following advanced types are also made available to you via `data.type`
+The following advanced types are also made available to you:
 
-- [any](../types/Any.js)
+- [any](../types/Any.md)
+- [array](../types/Array.md)
+- [mixed](../types/Mixed.md)
+- [shape](../types/Shape.md)
+- [tuple](../types/Tuple.md)
+- [type](../types/Type.md)
 
-# Required
+# Required `string[]`
 
 A collection of field names that are required upon insertion.
 
@@ -95,7 +100,7 @@ data.model('users', {
 }, {required: ['email', 'password']})
 ```
 
-# Default
+# Default `{[fieldName: string]: Function | any}`
 
 You can set default values. If default value is a function, it will be executed.
 
@@ -104,7 +109,7 @@ data.model('players', {score: Number}, [], {score: 0});
 data.model('players', {joined: Date}, [], {joined: () => new Date()});
 ```
 
-# Validation
+# Validation `{[fieldName: string]: Function | RegExp}`
 
 You can set validations for fields that should return a boolean.
 

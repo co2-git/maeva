@@ -1,63 +1,57 @@
 Hooks
 ===
 
-The following definitions have emitters:
-
-- `DataConnection`
-- `DataConnector`
-- `DataModel`
-
-# DataModel
-
-Data models emit before each write and after each write.
-
-Events:
-
-- `inserted`
-- `inserting`
-- `removed`
-- `removing`
-- `updated`
-- `updating`
-
 ```javascript
 const users = data.model('users', {password: String}, {
-  inserting: (user) => new Promise(async (resolve, reject) => {
-    let password;
-    try {
-      password = await encrypt(user.password);
-    } catch (error) {
-      reject(error);
-    } finally {
-      resolve({
-        ...user,
-        password,
-      });
-    }
-  })
-});
-
-model.insertOne({foo: 1});
-data.onAfter('insert', model, ({foo}) => {
-  console.log(foo); // 1
+  before: {
+    insert: (user) => new Promise(async (resolve, reject) => {
+      let password;
+      try {
+        password = await encrypt(user.password);
+      } catch (error) {
+        reject(error);
+      } finally {
+        resolve({
+          ...user,
+          password,
+        });
+      }
+    })
+  },
+  after: {
+    remove: (user) => console.log('bye', {user})
+  }
 });
 ```
 
-A model will emit the following events:
+# Events
 
+- insert
+- remove
+- update
+
+# Before
+
+A `before` hook will receive as an argument the object to be inserted, removed or updated. It should return a promise with a transformed object.
 
 ```javascript
-// Encrypt password before insertion
-const userData = data.model('users', {name: String, password: String});
-data.on('willInsert', userData, (user) => new Promise(async (resolve, reject) => {
-  let password;
-  try {
-    password = await encrypt(user.password);
-   } catch (error) { reject(error) } finally {
-   resolve({
-    ...user,
-    password,
-   });
-  }
-}));
+const model = data.model('model', {syncInfo: String, asyncInfo: String}, {
+  before: {
+    insert: (document) => new Promise(async (resolve, reject) => {
+      let asyncInfo;
+      try {
+        asyncInfo = await getAsyncInfo();
+      } catch (error) {
+        reject(error);
+      } finally {
+        resolve({
+          ...document,
+          asyncInfo,
+        });
+      }
+    })
+  },
+});
+
+await data.insertOne(model, {syncInfo: 'abc'}); // {syncInfo: 'abc', asyncInfo: 'something'}
 ```
