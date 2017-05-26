@@ -23,9 +23,8 @@ await data.insertOne(players, {name: 'Joe', score: 100});
 ```
 
 - [Guide](#Guide)
-  - [Model](doc/Type.md)
-    - [Field](doc/Type.md)
-    - [Hooks](doc/guides/Hooks.md)
+  - [Model](doc/guides/Model.md)
+  - [Listeners](doc/guides/Listeners.md)
   - [Connect](doc/Type.md)
   - [Connector](doc/Connector.md)
     - [Ids](doc/guides/Ids.md)
