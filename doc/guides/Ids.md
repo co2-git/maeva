@@ -20,7 +20,7 @@ SELECT * FROM `table`
 you get `{id: 1, name: 'joe'}`, but in maeva **you only get `{name: 'joe'}`**. maeva attaches a non-enumerable property called `[[maevaMetaData]]` which contains such id. You could retrieve like this:
 
 ```javascript
-const joe = data.findOne(users);
+const joe = await data.findOne(users);
 const {id} = data.meta(joe);
 ```
 
@@ -28,7 +28,8 @@ You usually don't need the id at all on your side. maeva handles retrieving meta
 
 ```javascript
 // get a data document
-const joe = data.insertOne(users, {name: 'Joe'});
+const joe = await data.insertOne(users, {name: 'Joe'});
+await data.findOne(users, joe); // joe meta id will be used by connector to find joe by its id
 ```
 
 # Meta
