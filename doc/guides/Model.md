@@ -7,7 +7,21 @@ Model holds the structure definition for your data. It looks like this:
 {
   name,
   fields,
-
+  options?: {
+    after?: {
+      insert?,
+      remove?,
+      update?,
+    },
+    before?: {
+      insert?,
+      remove?,
+      update?,
+    },
+    default?,
+    required?,
+    validate?,
+  }
 }
 ```
 
@@ -68,87 +82,7 @@ data.model('players', {
 
 The following advanced types are also made available to you via `data.type`
 
-### Any
-
-Value can be of any type.
-
-```javascript
-data.model('data', {value: data.any});
-```
-
-### Array
-
-Value can be arrays:
-
-```javascript
-data.model('data', {value: data.array(Number)})
-```
-
-### Custom
-
-You can create a custom type. View [Type](./Type.md) for more information.
-
-```javascript
-const validateEmail = (email) => /^https?/.test(email);
-
-data.model('data', {
-  email: data.type({validate: validateEmail})
-})
-```
-
-### Enum
-
-Value can be restricted to pure values:
-
-```javascript
-const langs = ['en', 'es', 'fr'];
-data.model('data', {
-  lang: data.values(...langs)
-})
-```
-
-### Links
-
-Value can be links to other data models:
-
-```javascript
-data.model('players', {
-  team: data.model({
-    name: 'teams',
-    field: {name: String}
-  })
-})
-```
-
-### Mixed
-
-Value can be mixed:
-
-```javascript
-data.model('data', {
-  stringOrNumber: data.mixed(String, Number)
-})
-```
-
-### Object
-
-Value can be objects:
-
-```javascript
-data.model('users',{
-  location: data.shape({latitude: Number, longitude: Number}),
-})
-```
-
-### Tuples
-
-Value can be tuples:
-
-```javascript
-data.model('data', {
-  value: data.tuple(String, Number)
-})
-```
+- [any](../types/Any.js)
 
 # Required
 
@@ -191,3 +125,7 @@ data.model({
   validate: {password: (password) => password.length >= 4 && password.length <= 16},
 })
 ```
+
+# Hooks (before and after)
+
+See [Hooks](./Hooks.md)

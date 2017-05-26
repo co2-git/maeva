@@ -21,7 +21,22 @@ Events:
 - `updating`
 
 ```javascript
-const model = data.model('model', {foo: data.any});
+const users = data.model('users', {password: String}, {
+  inserting: (user) => new Promise(async (resolve, reject) => {
+    let password;
+    try {
+      password = await encrypt(user.password);
+    } catch (error) {
+      reject(error);
+    } finally {
+      resolve({
+        ...user,
+        password,
+      });
+    }
+  })
+});
+
 model.insertOne({foo: 1});
 data.onAfter('insert', model, ({foo}) => {
   console.log(foo); // 1
