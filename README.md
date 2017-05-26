@@ -28,7 +28,7 @@ await data.insertOne(players, {name: 'Joe', score: 100});
     - [Hooks](doc/guides/Hooks.md)
   - [Connect](doc/Type.md)
   - [Connector](doc/Connector.md)
-    - [Ids](doc/Ids.md)
+    - [Ids](doc/guides/Ids.md)
   - [Query](doc/Type.md)
 - Connectors
   - [maeva-mongodb](https://npmjs.org/packages/maeva-mongodb)

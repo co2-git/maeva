@@ -38,9 +38,11 @@ Since `id` field changes from a vendor to another, it is left to the connector's
 
 For example, imagine such SQL table:
 
+```
 + id + name +
 +----+------+
 + 1 + joe
+```
 
 If you do
 
@@ -48,4 +50,16 @@ If you do
 SELECT * FROM `table`
 ```
 
-you get `{id: 1, name: 'joe'}`, but in maeva **you only get `{name: 'joe'}`**
+you get `{id: 1, name: 'joe'}`, but in maeva **you only get `{name: 'joe'}`**. maeva attaches a non-enumerable property called `[[maevaMetaData]]` which contains such id. You could retrieve like this:
+
+```javascript
+const joe = data.findOne(model);
+const {id} = joe['[[maevaMetaData]]'];
+```
+
+Or easier, like this:
+
+```javascript
+const joe = data.findOne(model);
+const {id} = data.meta(joe);
+```
