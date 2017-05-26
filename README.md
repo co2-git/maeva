@@ -25,7 +25,7 @@ await data.insertOne(players, {name: 'Joe', score: 100});
 - [Guide](#Guide)
   - [Model](doc/Type.md)
     - [Field](doc/Type.md)
-    - [Hooks](doc/Type.md)
+    - [Hooks](doc/guides/Hooks.md)
   - [Connect](doc/Type.md)
   - [Query](doc/Type.md)
 - API
@@ -46,6 +46,9 @@ await data.insertOne(players, {name: 'Joe', score: 100});
     - [connect](./doc/connections/connect)
     - [disconnect](./doc/connections/disconnect)
     - [reconnect](./doc/connections/reconnect)
+  - [Events](./doc/events)
+    - [on](./doc/events/On.md)
+    - [off](./doc/events/Off.md)
   - [Models](./doc/models)
     - [model](#model)
   - [Types](./doc/types)
