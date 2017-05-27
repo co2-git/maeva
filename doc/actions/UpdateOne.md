@@ -28,6 +28,10 @@ Promise<[DataDocument](../definitions/DataDocument)>
 
 # Notes
 
-## Find by id
+## Update by id
 
 View [Ids](../guides/Ids.md) for more information.
+
+## Updaters
+
+[List of updaters](../updaters)
