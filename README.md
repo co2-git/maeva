@@ -53,7 +53,7 @@ await data.insertOne(players, {name: 'Joe', score: 100});
     - [disconnected](./doc/connections/Disconnected.md)
     - [reconnect](./doc/connections/Reconnect.md)
   - Models
-    - [model](./guides/Model.md)
+    - [model](./doc/guides/Model.md)
   - [Types](./doc/types)
     - [any](./doc/types/Any.md)
     - [array](./doc/types/Array.md)
