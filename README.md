@@ -25,7 +25,10 @@ await data.insertOne(players, {name: 'Joe', score: 100});
 # Connectors
 
 - [maeva-mongodb](https://npmjs.org/packages/maeva-mongodb)
+- [maeva-mysql](https://npmjs.org/packages/maeva-mysql)
+- [maeva-postgresql](https://npmjs.org/packages/maeva-postgresql)
 - [maeva-sockets](https://npmjs.org/packages/maeva-sockets)
+- [maeva-http](https://npmjs.org/packages/maeva-http)
 
 # Docs
 
