@@ -14,11 +14,8 @@ await data.updateOne(model, {}, {score: 100});
 // Update nth document
 await data.updateOne(model, {}, {score: 100}, 50);
 
-// Use a setter (view below for list of setters)
+// Use a setter (view below for list of updaters)
 await data.updateOne(model, {}, {score: data.sum(100)});
-
-// Use a custom setter
-await data.updateOne(model, {score: 100}, {score: data.set(score => score + 50)});
 ```
 
 # Arguments
