@@ -36,10 +36,10 @@ await data.insertOne(players, {name: 'Joe', score: 100});
   - [Model](doc/guides/Model.md)
   - [Hooks](doc/guides/Hooks.md)
   - [Connect](doc/guides/Connect.md)
-  - [Create your own connector](doc/guides/Create your own connector.md)
+  - [Create your own connector](doc/guides/Create%20your%20own%20connector.md)
   - [Ids](doc/guides/Ids.md)
-  - [Coding styles](doc/guides/Coding styles.md)
-  - [Back and front ends integrations](doc/guides/Back and front ends integrations.md)
+  - [Coding styles](doc/guides/Coding%20styles.md)
+  - [Back and front ends integrations](doc/guides/Back%20and%20front%20ends%20integrations.md)
 - API
   - [Actions](./doc/actions)
     - [count](./doc/actions/Count.md)
