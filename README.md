@@ -38,6 +38,8 @@ await data.insertOne(players, {name: 'Joe', score: 100});
   - [Connect](doc/guides/Connect.md)
   - [Create your own connector](doc/guides/Create your own connector.md)
   - [Ids](doc/guides/Ids.md)
+  - [Coding styles](doc/guides/Coding styles.md)
+  - [Back and front ends integrations](doc/guides/Back and front ends integrations.md)
 - API
   - [Actions](./doc/actions)
     - [count](./doc/actions/Count.md)

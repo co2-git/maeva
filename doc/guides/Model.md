@@ -28,8 +28,6 @@ Model holds the structure definition for your data. It looks like this:
 For example, this is how you could model the following data:
 
 ```javascript
-import * as data from 'maeva';
-
 // Data
 const rawData = {foo: true, bar: 2};
 
