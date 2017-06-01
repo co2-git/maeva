@@ -1,6 +1,6 @@
 // @flow
 import DataType from '../defs/DataType';
 
-const anyType = () => new MaevaType();
+const any = new DataType();
 
-export default anyType;
+export default any;

@@ -1,9 +1,9 @@
 // @flow
 import DataType from '../defs/DataType';
 
-const booleanType = () => new MaevaType({
+const boolean = new DataType({
   convert: (value: any): boolean | any => Boolean(value),
   validate: (value: any): boolean => typeof value === 'boolean',
 });
 
-export default booleanType;
+export default boolean;

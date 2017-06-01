@@ -1,13 +1,7 @@
 // @flow
-import Type from './Type';
+import DataType from '../defs/DataType';
 
-export default class MaevaTypeString extends Type {
-
-  name = 'String';
-
-  validate(value: any): boolean {
-    return (typeof value === 'string');
-  }
+const string = new DataType({
 
   convert(value: any): string | any {
     if (value === null || typeof value === 'undefined') {
@@ -17,6 +11,10 @@ export default class MaevaTypeString extends Type {
       return value.toString();
     }
     return value;
-  }
+  },
 
-}
+  validate: (value: any): boolean => (typeof value === 'string'),
+
+});
+
+export default string;

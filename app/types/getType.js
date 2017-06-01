@@ -1,25 +1,25 @@
 // @flow
-import MaevaTypeString from './type/String';
-import MaevaTypeNumber from './type/Number';
-import MaevaTypeBoolean from './type/Boolean';
-import MaevaTypeDate from './type/Date';
-import MaevaType from './type/Type';
+import string from './string';
+import number from './number';
+import boolean from './boolean';
+import date from './date';
+import DataType from '../defs/DataType';
 
 export type DataTypeCandidate = Function | DataType;
 
-export default function getType(type: DataTypeCandidate): MaevaType {
-  if (type instanceof MaevaType) {
+export default function getType(type: DataTypeCandidate): DataType {
+  if (type instanceof DataType) {
     return type;
   }
   switch (type) {
   case String:
-    return new MaevaTypeString();
+    return string;
   case Number:
-    return new MaevaTypeNumber();
+    return number;
   case Boolean:
-    return new MaevaTypeBoolean();
+    return boolean;
   case Date:
-    return new MaevaTypeDate();
+    return date;
   default:
     return type;
   }

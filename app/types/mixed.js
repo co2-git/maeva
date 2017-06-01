@@ -5,9 +5,9 @@ import every from 'lodash/every';
 import DataType from '../defs/DataType';
 import getType from './getType';
 
-const mixedType = (...types) => {
+const mixedType = (...types: Array<Function | DataType>) => {
   const mixedTypes = map(types, getType);
-  return new MaevaType({
+  return new DataType({
     convert: (items: any): any[] | any =>{
       if (!isArray(items)) {
         return items;

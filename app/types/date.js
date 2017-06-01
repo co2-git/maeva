@@ -1,27 +1,25 @@
 // @flow
-import Type from './Type';
+import DataType from '../defs/DataType';
 
-export default class MaevaTypeDate extends Type {
+const date = new DataType({
 
-  name = 'Date';
-
-  flags = ['date'];
-
-  validate(value: any): boolean {
-    return value instanceof Date && value.toString() !== 'Invalid Date';
-  }
-
-  convert (value: any): Date | any {
+  convert(value: any): Date | any {
     try {
-      const date = new Date(value);
+      const _date = new Date(value);
 
-      if (this.validate(date)) {
+      if (this.vali_date(_date)) {
         return date;
       }
       return value;
     } catch (error) {
       return value;
     }
-  }
+  },
 
-}
+  validate: (value: any): boolean => (
+    value instanceof Date && value.toString() !== 'Invalid Date'
+  ),
+
+});
+
+export default date;
