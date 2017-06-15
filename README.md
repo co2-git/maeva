@@ -35,7 +35,7 @@ data.inserted(connection, (model, document) => {
 
 # Docs
 
-- [Guide](#Guide)
+- [Guide](doc/guides/)
   - [Model](doc/guides/Model.md)
   - [Hooks](doc/guides/Hooks.md)
   - [Connect](doc/guides/Connect.md)

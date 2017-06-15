@@ -1,31 +1,24 @@
 Mavea - Model
 ===
 
-Model holds the structure definition for your data. It looks like this:
+Model holds the structure definition for your data. Mainly this means setting a type per field. An example of a type could be a string or a number. These are the other options to model your data:
 
-```javascript
-{
-  name,
-  fields,
-  options?: {
-    after?: {
-      insert?,
-      remove?,
-      update?,
-    },
-    before?: {
-      insert?,
-      remove?,
-      update?,
-    },
-    default?,
-    required?,
-    validate?,
-  }
-}
-```
+- **[name](#name)**
+- **[fields](#fields)**
+- [default](#default)
+- [required](#required)
+- [validate](#validate)
+- [hooks](#hooks)
+    - [before](#before)
+        - [insert](#insert)
+        - [remove](#remove)
+        - [update](#update)
+    - [after](#after)
+        - [insert](#insert)
+        - [remove](#remove)
+        - [update](#update)
 
-For example, this is how you could model the following data:
+# Usage
 
 ```javascript
 // Data
@@ -35,9 +28,9 @@ const rawData = {foo: true, bar: 2};
 const dataModel = data.model('rawData', {foo: Boolean, bar: Number});
 ```
 
-# Name `string`
+# <a id="name"></a>Name
 
-`name` is a required field. It matches the collection/table name.
+`name` is required. It points to a collection/table name.
 
 Here's a MySQL example:
 
@@ -52,7 +45,7 @@ await data.findOne(playerModel, {name: 'Joe'});
 // SELECT * FROM `players` WHERE `name`="Joe";
 ```
 
-# Fields `{[fieldName: string]: Function | DataType}`
+# <a id="fields"></a>Fields
 
 `fields` is a required field. It is an object which keys are field names and values its type.
 
@@ -87,7 +80,7 @@ The following advanced types are also made available to you:
 - [tuple](../types/Tuple.md)
 - [type](../types/Type.md)
 
-# Required `string[]`
+# <a id="required"></a>Required
 
 A collection of field names that are required upon insertion.
 
@@ -98,7 +91,7 @@ data.model('users', {
 }, {required: ['email', 'password']})
 ```
 
-# Default `{[fieldName: string]: Function | any}`
+# <a id="default"></a>Default
 
 You can set default values. If default value is a function, it will be executed.
 
@@ -107,7 +100,7 @@ data.model('players', {score: Number}, [], {score: 0});
 data.model('players', {joined: Date}, [], {joined: () => new Date()});
 ```
 
-# Validation `{[fieldName: string]: Function | RegExp}`
+# <a id="validate"></a>Validation
 
 You can set validations for fields that should return a boolean.
 
