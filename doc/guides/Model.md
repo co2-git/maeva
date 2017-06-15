@@ -3,7 +3,7 @@ Mavea - Model
 
 Model holds the structure definition for your data. Mainly this means setting a type per field. An example of a type could be a string or a number. These are the other options to model your data:
 
-- **[name](#name)**
+- **[name](#maeva-name)**
 - **[fields](#fields)**
 - [default](#default)
 - [required](#required)
@@ -28,7 +28,7 @@ const rawData = {foo: true, bar: 2};
 const dataModel = data.model('rawData', {foo: Boolean, bar: Number});
 ```
 
-# <a id="name"></a>Name
+# <a id="maeva-name"></a>Name
 
 `name` is required. It points to a collection/table name.
 
