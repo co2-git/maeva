@@ -10,16 +10,19 @@ import * as data from 'maeva';
 import sockets from 'maeva-sockets';
 
 // Define a model
-const collection = 'players';
-const fields = {name: String, score: Number};
-const model = data.model(collection, fields);
+const model = data.model('players', {name: String, score: Number});
 
 // Use a data connector to connect to a database server
 const connector = sockets('ws://mysockets.com');
-data.connect(connector);
+const connection = data.connect(connector);
 
 // Now you can fire requests to the database server
 await data.insertOne(players, {name: 'Joe', score: 100});
+
+// Or listen to events
+data.inserted(connection, (model, document) => {
+  console.log(`inserted #${document.id} into ${model}`);
+});
 ```
 
 # Connectors
@@ -85,3 +88,25 @@ await data.insertOne(players, {name: 'Joe', score: 100});
   - [DataDocument](./doc/definitions/DataDocument.md)
   - [DataType](./doc/definitions/DataType.md)
   - [DataValue](./doc/definitions/DataValue.md)
+
+```javascript
+const states = data.model('states', {name: String});
+const cities = data.model('cities', {name: String, state: states});
+const streets = data.model('streets', {name: String, city: cities, state: states});
+
+const state = await data.insertOne(states, {name: 'CA'});
+// {id: 1, name: 'CA'}
+const city = await data.insertOne(cities, {name: 'Oakland', state});
+// {id: 1, name: 'Oakland', state: 1}
+const street = await data.insertOne(streets, {name: '1st Street', city, state});
+// {id: 1, name: '1st Street', city: 1, state: 1}
+
+await data.findOne(streets);
+// {id: 1, name: '1st Street', city: 1, state: 1}
+
+await data.findOne(streets, {}, {link: ['city', 'state']});
+// {id: 1, name: '1st Street', city: {id:1, name: 'Oakland'}, state: {id: 1, name: 'CA'}}
+
+await data.findOne(streets, {}, {link: ['city']});
+// {id: 1, name: '1st Street', city: {id:1, name: 'Oakland'}, state: 1}
+```
