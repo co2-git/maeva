@@ -125,3 +125,25 @@ data.model({
 # Hooks (before and after)
 
 See [Hooks](./Hooks.md)
+
+# Class style
+
+You can define your models as classes if you want:
+
+```javascript
+import {Model} from 'maeva';
+
+class UserModel extends Model {
+
+  static modelName = 'users';
+
+  static fields = {email: String, created: Date};
+
+  static required = ['email'];
+
+  static default = {created: () => new Date()};
+
+  static validate = {email: /.+@.+/};
+
+}
+```
