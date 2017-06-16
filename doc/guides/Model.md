@@ -137,13 +137,28 @@ class UserModel extends Model {
 
   static modelName = 'users';
 
-  static fields = {email: String, created: Date};
+  static fields = {
+    active: Boolean,
+    created: Date,
+    email: String,
+  };
 
   static required = ['email'];
 
-  static default = {created: () => new Date()};
+  static default = {
+    active: true,
+    created: () => new Date()
+  };
 
   static validate = {email: /.+@.+/};
+
+  static before = {
+    update: user => (user.active ? Promise.resolve(user) : Promise.reject(new Error('Cannot update inactive user'))),
+  };
+
+  static after = {
+    remove: user => notify(user.email, 'Your account has been removed', 'Bye 👋')
+  };
 
 }
 ```
