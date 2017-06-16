@@ -153,7 +153,11 @@ class UserModel extends Model {
   static validate = {email: /.+@.+/};
 
   static before = {
-    update: user => (user.active ? Promise.resolve(user) : Promise.reject(new Error('Cannot update inactive user'))),
+    update: user => (
+      user.active
+        ? Promise.resolve(user)
+        : Promise.reject(new Error('Cannot update inactive user'))
+      ),
   };
 
   static after = {
