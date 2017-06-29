@@ -10,7 +10,7 @@ import * as data from 'maeva';
 import sockets from 'maeva-sockets';
 
 // Define a model
-const model = data.model('players', {name: String, score: Number});
+const players = data.model('players', {name: String, score: Number});
 
 // Use a data connector to connect to a database server
 const connector = sockets('ws://mysockets.com');

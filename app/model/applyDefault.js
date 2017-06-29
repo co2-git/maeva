@@ -3,14 +3,14 @@ import isFunction from 'lodash/isFunction';
 
 export type DataDefault = Function | any;
 
-const applyDefaults = (document: Object, model: Object) => {
+const applyDefault = (document: Object, model: Object) => {
   const defaults = {};
 
   let field: string;
 
   for (field in model.fields) {
-    if (!(field in document) && (field in model.defaults)) {
-      const defaultValue = model.defaults[field];
+    if (!(field in document) && (field in model.default)) {
+      const defaultValue = model.default[field];
       defaults[field] = isFunction(defaultValue) ?
         defaultValue() : defaultValue;
     } else if (field in document) {
@@ -24,4 +24,4 @@ const applyDefaults = (document: Object, model: Object) => {
   };
 };
 
-export default applyDefaults;
+export default applyDefault;

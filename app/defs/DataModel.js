@@ -1,15 +1,22 @@
 // @flow
-import isString from 'lodash/isString';
-
 export default class DataModel {
 
-  defaults: {[field: string]: DataDefault} = {};
+  static ERROR_MISSING_VALID_NAME = 'ERROR_MISSING_VALID_NAME';
+  static ERROR_MISSING_VALID_FIELDS = 'ERROR_MISSING_VALID_FIELDS';
 
-  did: {
+  after: {
     insert?: Promise<*>,
     remove?: Promise<*>,
     update?: Promise<*>,
   } = {};
+
+  before: {
+    insert?: Promise<*>,
+    remove?: Promise<*>,
+    update?: Promise<*>,
+  } = {};
+
+  default: {[field: string]: DataDefault} = {};
 
   fields: {[field: string]: DataTypeCandidate} = {};
 
@@ -19,21 +26,25 @@ export default class DataModel {
 
   validate: {[field: string]: DataValidator} = {};
 
-  will: {
-    insert?: Promise<*>,
-    remove?: Promise<*>,
-    update?: Promise<*>,
-  } = {};
-
   constructor(name: string, fields: Object = {}, options: Object = {}) {
-    this.name = name;
-    this.fields = fields;
-    this.required = options.required || [];
-    this.defaults = options.defaults || {};
-    this.validate = options.validate || {};
-
-    if (!isString(this.name) || !this.name) {
-      throw new Error('DataModel is missing name');
+    if (typeof name === 'string' && name) {
+      this.name = name;
+    } else {
+      throw new Error(DataModel.ERROR_MISSING_VALID_NAME);
+    }
+    if (typeof fields === 'object' && fields) {
+      this.fields = fields;
+    } else {
+      throw new Error(DataModel.ERROR_MISSING_VALID_FIELDS);
+    }
+    if (options.required && Array.isArray(options.required)) {
+      this.required = options.required;
+    }
+    if (options.default && typeof fields === 'object') {
+      this.default = options.default;
+    }
+    if (options.validate && typeof fields === 'object') {
+      this.validate = options.validate;
     }
   }
 

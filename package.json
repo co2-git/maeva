@@ -4,7 +4,7 @@
   "description": "Agnostic database models in JavaScript",
   "main": "__dist__/index.js",
   "scripts": {
-    "test": "yarn eslint && yarn flow && yarn mocha",
+    "test": "node /Users/francois/Dev/lib/specs/dist/cli.js app/index.spec.js",
     "babel": "rm -rf __dist__; babel --out-dir __dist__ app",
     "babel:test": "rm -rf __mocha__; babel --out-dir __mocha__ __test__",
     "babel:test:watch": "rm -rf __mocha__; babel --watch --out-dir __mocha__ __test__",

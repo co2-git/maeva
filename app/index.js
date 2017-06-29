@@ -11,3 +11,4 @@ export {default as removeOne} from './actions/removeOne';
 export {default as type} from './types/type';
 export {default as updateMany} from './actions/updateMany';
 export {default as updateOne} from './actions/updateOne';
+export {default as onConnect} from './events/onConnect';
