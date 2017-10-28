@@ -9,7 +9,12 @@ const applyDefault = (document: Object, model: Object) => {
   let field: string;
 
   for (field in model.fields) {
-    if (!(field in document) && (field in model.default)) {
+    const missingField = (
+      !(field in document) ||
+      typeof document[field] === 'undefined' ||
+      document[field] === null
+    );
+    if (missingField && (field in model.default)) {
       const defaultValue = model.default[field];
       defaults[field] = isFunction(defaultValue) ?
         defaultValue() : defaultValue;

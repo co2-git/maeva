@@ -143,6 +143,34 @@ export default () => ({
           should(inserted).have.property('field').which.eql('2');
         }
       },
+      'should apply default': {
+        'send request': () => new Promise(async (resolve, reject) => {
+          try {
+            let num;
+            const model = dataModel(
+              'foo',
+              {number: Number},
+              {default: {number: 42}}
+            );
+            inserted = await insertOne(model, {number: num}, {
+              connection: {
+                connector,
+                status: 'connected',
+              }
+            });
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        }),
+        'connector received correct document': () => {
+          should(sent).have.property('number').which.eql(42);
+        },
+        'connector sends correct response': () => {
+          should(inserted.constructor.name).eql('DataDocument');
+          should(inserted).have.property('number').which.eql(42);
+        }
+      },
     }
   }
 });
