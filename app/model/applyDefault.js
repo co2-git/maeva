@@ -3,7 +3,7 @@ import isFunction from 'lodash/isFunction';
 
 export type DataDefault = Function | any;
 
-const applyDefault = (document: Object, model: Object) => {
+const applyDefault = (document: Object, model: MaevaModel) => {
   const defaults = {};
 
   let field: string;
@@ -14,8 +14,12 @@ const applyDefault = (document: Object, model: Object) => {
       typeof document[field] === 'undefined' ||
       document[field] === null
     );
-    if (missingField && (field in model.default)) {
-      const defaultValue = model.default[field];
+    if (
+      missingField &&
+      model.options.default &&
+      (field in model.options.default)
+    ) {
+      const defaultValue = model.options.default[field];
       defaults[field] = isFunction(defaultValue) ?
         defaultValue() : defaultValue;
     } else if (field in document) {

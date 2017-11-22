@@ -20,4 +20,19 @@ describe('Insert One', () => {
       throw error;
     }
   });
+
+  it('should apply default value', async () => {
+    try {
+      const inserted = await insertOne(
+        model('foo', {foo: String}, {default: {foo: 'abc'}}),
+        {},
+        {connection}
+      );
+      should(_.keys(inserted)).eql(['foo', 'id']);
+      should(inserted.foo).eql('abc');
+      should(inserted.id).be.a.Number();
+    } catch (error) {
+      throw error;
+    }
+  });
 });
