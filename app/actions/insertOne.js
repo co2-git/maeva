@@ -28,10 +28,10 @@ const insertOne = (
       doc = pick(document, keys(model.fields));
 
       doc = applyDefault(doc, model);
-      //
-      // doc = convertFields(doc, model);
-      //
-      // doc = applyValidators(doc, model);
+
+      doc = convertFields(doc, model);
+
+      doc = applyValidators(doc, model);
       //
       // doc = validateFields(doc, model);
 

@@ -7,6 +7,9 @@ declare type MaevaModelOptions = {|
     +[fieldName: string]: any,
   |},
   +required?: string[],
+  +validate: {|
+    +[fieldName: string]: RegExp | (value: any) => boolean,
+  |},
 |};
 
 declare type MaevaModel = {|

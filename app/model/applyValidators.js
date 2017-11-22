@@ -1,16 +1,14 @@
 // @flow
 import maevaError from '../error';
 
-export type DataValidator = RegExp | (value: any) => boolean;
-
-const applyValidators = (doc: Object, model: Object) => {
+const applyValidators = (doc: Object, model: MaevaModel) => {
   const converted = {};
 
   let field: string;
 
   for (field in model.fields) {
-    if ((field in model.validate)) {
-      const validator: DataValidator = model.validate[field];
+    if (model.options.validate && (field in model.options.validate)) {
+      const validator = model.options.validate[field];
       if (
         (typeof validator === 'function' && !validator(doc[field])) ||
         (validator instanceof RegExp && !validator.test(doc[field]))

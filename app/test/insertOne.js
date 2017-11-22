@@ -35,4 +35,43 @@ describe('Insert One', () => {
       throw error;
     }
   });
+
+  it('should convert fields', async () => {
+    try {
+      const inserted = await insertOne(
+        model('foo', {foo: String}),
+        {foo: 1},
+        {connection}
+      );
+      should(_.keys(inserted)).eql(['foo', 'id']);
+      should(inserted.foo).eql('1');
+      should(inserted.id).be.a.Number();
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it('should validate regular expressions', async () => {
+    try {
+      await insertOne(
+        model('foo', {foo: String}, {validate: {foo: /^a/}}),
+        {foo: 'abc'},
+        {connection}
+      );
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it('should validate functions', async () => {
+    try {
+      await insertOne(
+        model('foo', {foo: Number}, {validate: {foo: value => value < 2}}),
+        {foo: 1},
+        {connection}
+      );
+    } catch (error) {
+      throw error;
+    }
+  });
 });

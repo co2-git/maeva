@@ -1,7 +1,7 @@
 // @flow
 import getType from '../types/getType';
 
-const convertFields = (doc: Object, model: Object) => {
+const convertFields = (doc: Object, model: MaevaModel) => {
   const converted = {};
 
   let field: string;
