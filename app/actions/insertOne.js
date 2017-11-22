@@ -15,30 +15,25 @@ import validateFields from '../model/validateFields';
 import willInsert from '../model/willInsert';
 
 const insertOne = (
-  _model: DataModel = {},
+  model: MaevaModel = {},
   document: Object = {},
-  options: Object = {}
+  options: MaevaActionOptions = {}
 ): Promise<DataDocument> =>
   new Promise(async (resolve, reject) => {
     let doc: Object = {};
 
     try {
-      let model = _model;
-      if (!(model instanceof DataModel)) {
-        model = new DataModel(_model);
-      }
-
       const {connector} = options.connection || await requestConnection();
 
       doc = pick(document, keys(model.fields));
 
-      doc = applyDefault(doc, model);
-
-      doc = convertFields(doc, model);
-
-      doc = applyValidators(doc, model);
-
-      doc = validateFields(doc, model);
+      // doc = applyDefault(doc, model);
+      //
+      // doc = convertFields(doc, model);
+      //
+      // doc = applyValidators(doc, model);
+      //
+      // doc = validateFields(doc, model);
 
       for (const field in model.fields) {
         if (!(field in doc) && includes(model.required, field)) {
@@ -52,15 +47,13 @@ const insertOne = (
 
       // doc = await willInsert(doc, model);
 
-      const {connectorResponse} = await connector.actions.insertOne(doc, model);
+      const response = await connector.actions.insertOne(doc, model);
 
-      doc = connectorResponse.response[0];
-
-      doc = convertFields(doc, model);
+      // doc = convertFields(doc, model);
 
       // await didInsert(doc, model);
 
-      resolve(new DataDocument(doc));
+      resolve(response);
     } catch (error) {
       reject(error);
     }
