@@ -35,7 +35,7 @@ const insertOne = (
       validateFields(doc, model);
 
       for (const field in model.fields) {
-        if (!(field in doc) && includes(model.required, field)) {
+        if (!(field in doc) && includes(model.options.required, field)) {
           throw maevaError(
             'insertOne',
             'Missing required field',
