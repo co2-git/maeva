@@ -90,9 +90,10 @@ data.inserted(connection, (model, document) => {
   - [DataValue](./doc/definitions/DataValue.md)
 
 ```javascript
-const states = data.model('states', {name: String});
-const cities = data.model('cities', {name: String, state: states});
-const streets = data.model('streets', {name: String, city: cities, state: states});
+const id = {id: Number};
+const states = data.model('states', {...id, name: String});
+const cities = data.model('cities', {...id, name: String, state: states});
+const streets = data.model('streets', {...id, name: String, city: cities, state: states});
 
 const state = await data.insertOne(states, {name: 'CA'});
 // {id: 1, name: 'CA'}

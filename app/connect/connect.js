@@ -1,15 +1,26 @@
 // @flow
 import EventEmitter from 'events';
 
-import DataConnection from '../defs/DataConnection';
 import connections from './connections';
 import emitter from '../emitter';
 
-const connect = (connector: DataConnector): DataConnection => {
-  const connection = new DataConnection({
+const connect = (connector: MaevaConnector): MaevaConnection => {
+  const connection: MaevaConnection = {
     connector,
     emitter: new EventEmitter(),
     status: 'connecting',
+  };
+
+  connection.awaitConnection = () => new Promise((resolve, reject) => {
+    try {
+      if (connection.status === 'connected') {
+        resolve();
+      } else {
+        connection.connector.emitter.on('connected', resolve);
+      }
+    } catch (error) {
+      reject(error);
+    }
   });
 
   connections.push(connection);
