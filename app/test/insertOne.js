@@ -74,4 +74,72 @@ describe('Insert One', () => {
       throw error;
     }
   });
+
+  it('should validate fields', async () => {
+    try {
+      const Foo = () => {};
+      Foo.convert = v => v;
+      Foo.validate = v => {
+        if (v !== 3) {
+          throw new Error('v should be 3');
+        }
+      };
+      await insertOne(
+        model('foo', {foo: Foo}),
+        {foo: 3},
+        {connection}
+      );
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it('should apply before hooks', async () => {
+    try {
+      const inserted = await insertOne(
+        model('foo', {foo: Number}, {
+          before: {
+            insert: (doc) => new Promise((resolve, reject) => {
+              try {
+                doc.foo ++;
+                resolve(doc);
+              } catch (error) {
+                reject(error);
+              }
+            }),
+          }
+        }),
+        {foo: 1},
+        {connection}
+      );
+      should(inserted.foo).eql(2);
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it('should apply after hooks', async () => {
+    try {
+      let g = 0;
+      await insertOne(
+        model('foo', {foo: Number}, {
+          after: {
+            insert: (doc) => new Promise((resolve, reject) => {
+              try {
+                g = doc.foo;
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            }),
+          }
+        }),
+        {foo: 1},
+        {connection}
+      );
+      should(g).eql(1);
+    } catch (error) {
+      throw error;
+    }
+  });
 });

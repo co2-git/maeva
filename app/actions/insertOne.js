@@ -4,7 +4,6 @@ import pick from 'lodash/pick';
 import includes from 'lodash/includes';
 
 import DataDocument from '../defs/DataDocument';
-import DataModel from '../defs/DataModel';
 import applyDefault from '../model/applyDefault';
 import applyValidators from '../model/applyValidators';
 import convertFields from '../model/convertFields';
@@ -32,8 +31,8 @@ const insertOne = (
       doc = convertFields(doc, model);
 
       doc = applyValidators(doc, model);
-      //
-      // doc = validateFields(doc, model);
+
+      validateFields(doc, model);
 
       for (const field in model.fields) {
         if (!(field in doc) && includes(model.required, field)) {
@@ -45,13 +44,15 @@ const insertOne = (
         }
       }
 
-      // doc = await willInsert(doc, model);
+      doc = await willInsert(doc, model);
 
       const response = await connector.actions.insertOne(doc, model);
 
-      // doc = convertFields(doc, model);
+      doc = pick(response, keys(model.fields));
 
-      // await didInsert(doc, model);
+      doc = convertFields(doc, model);
+
+      await didInsert(doc, model);
 
       resolve(response);
     } catch (error) {
