@@ -21,7 +21,7 @@ await data.insertOne(players, {name: 'Joe', score: 100});
 
 // Or listen to events
 data.inserted(connection, (model, document) => {
-  console.log(`inserted #${document.id} into ${model}`);
+  console.log(`inserted #${document.id} into ${model.name}`);
 });
 ```
 
