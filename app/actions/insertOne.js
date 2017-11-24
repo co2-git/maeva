@@ -52,9 +52,13 @@ const insertOne = (
 
       doc = convertFields(doc, model);
 
+      if (connector.id) {
+        doc[connector.id.name] = response[connector.id.name];
+      }
+
       await didInsert(doc, model);
 
-      resolve(response);
+      resolve(doc);
     } catch (error) {
       reject(error);
     }

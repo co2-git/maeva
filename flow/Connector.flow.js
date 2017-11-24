@@ -7,4 +7,8 @@ declare type MaevaConnector = {|
     +insertOne: (document: Object, model: MaevaModel) => Promise<Object>,
   |},
   +emitter: EventEmitter,
+  +id: {
+    +name: string,
+    +type: Function,
+  },
 |};
