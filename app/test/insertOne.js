@@ -94,7 +94,7 @@ describe('Insert One', () => {
     }
   });
 
-  it('should apply before hooks', async () => {
+  it('should apply before hook', async () => {
     try {
       const inserted = await insertOne(
         model('foo', {foo: Number}, {
@@ -113,6 +113,40 @@ describe('Insert One', () => {
         {connection}
       );
       should(inserted.foo).eql(2);
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  it('should apply before hooks', async () => {
+    try {
+      const inserted = await insertOne(
+        model('foo', {foo: Number}, {
+          before: {
+            insert: [
+              (doc) => new Promise((resolve, reject) => {
+                try {
+                  doc.foo ++;
+                  resolve(doc);
+                } catch (error) {
+                  reject(error);
+                }
+              }),
+              (doc) => new Promise((resolve, reject) => {
+                try {
+                  doc.foo ++;
+                  resolve(doc);
+                } catch (error) {
+                  reject(error);
+                }
+              })
+            ],
+          }
+        }),
+        {foo: 1},
+        {connection}
+      );
+      should(inserted.foo).eql(3);
     } catch (error) {
       throw error;
     }
