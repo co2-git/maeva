@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import should from 'should';
 import _ from 'lodash';
 
