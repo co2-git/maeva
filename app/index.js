@@ -5,6 +5,7 @@ export {default as findMany} from './actions/findMany';
 export {default as findOne} from './actions/findOne';
 export {default as insertMany} from './actions/insertMany';
 export {default as insertOne} from './actions/insertOne';
+export {default as link} from './types/link';
 export {default as model} from './model/model';
 export {default as removeMany} from './actions/removeMany';
 export {default as removeOne} from './actions/removeOne';

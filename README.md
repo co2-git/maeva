@@ -65,6 +65,7 @@ data.inserted(connection, (model, document) => {
   - [Types](./doc/types)
     - [any](./doc/types/Any.md)
     - [array](./doc/types/Array.md)
+    - [link](./doc/types/Link.md)
     - [mixed](./doc/types/Mixed.md)
     - [shape](./doc/types/Shape.md)
     - [tuple](./doc/types/Tuple.md)

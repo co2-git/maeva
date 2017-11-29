@@ -4,6 +4,8 @@ import * as data from '../';
 import should from 'should';
 
 const model = data.model('findOne', {foo: Number});
+const modelB = data.model('modelB', {name: String});
+const modelA = data.model('modelA', {name: String, b: data.link(modelB)});
 
 describe('Find One', () => {
   let found;
@@ -22,6 +24,18 @@ describe('Find One', () => {
       await data.insertOne(model, {foo: 100}, {connection});
       await data.insertOne(model, {foo: 1000}, {connection});
       found = await data.findOne(model, {foo: 100}, {connection});
+    });
+    it('should find inserted document', () => {
+      should(found).have.property('id');
+      should(found).have.property('foo').which.eql(100);
+    });
+  });
+  describe('Find with link', () => {
+    before(async () => {
+      const b = await data.insertOne(modelB, {name: 'B'}, {connection});
+      await data.insertOne(modelA, {name: 'A', b}, {connection});
+      found = await data.findOne(modelA, {b}, {connection});
+      console.log({found});
     });
     it('should find inserted document', () => {
       should(found).have.property('id');
