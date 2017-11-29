@@ -28,11 +28,11 @@ const insertOne = (
 
       doc = applyDefault(doc, model);
 
-      doc = convertFields(doc, model);
+      doc = convertFields(doc, model, {connector});
 
       doc = applyValidators(doc, model);
 
-      validateFields(doc, model);
+      validateFields(doc, model, {connector});
 
       for (const field in model.fields) {
         if (!(field in doc) && includes(model.options.required, field)) {

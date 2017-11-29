@@ -1,14 +1,16 @@
 // @flow
 import getType from '../types/getType';
 
-const convertFields = (doc: Object, model: MaevaModel) => {
+const convertFields = (doc: Object, model: MaevaModel, options = {}) => {
   const converted = {};
 
   let field: string;
 
   for (field in model.fields) {
-    const type = getType(model.fields[field]);
-    converted[field] = type.convert(doc[field]);
+    if ((field in doc)) {
+      const type = getType(model.fields[field]);
+      converted[field] = type.convert(doc[field], options);
+    }
   }
 
   return {

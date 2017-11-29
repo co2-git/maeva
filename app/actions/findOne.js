@@ -15,7 +15,7 @@ const findOne = (
       const {connector} = options.connection || await requestConnection();
 
       if (keys(query).length) {
-        query = convertFields(query, model);
+        query = convertFields(query, model, {connector});
       }
 
       const results = await connector.actions.findOne(query, model);

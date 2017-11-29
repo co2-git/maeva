@@ -31,15 +31,16 @@ describe('Find One', () => {
     });
   });
   describe('Find with link', () => {
+    let b;
     before(async () => {
-      const b = await data.insertOne(modelB, {name: 'B'}, {connection});
+      b = await data.insertOne(modelB, {name: 'B'}, {connection});
       await data.insertOne(modelA, {name: 'A', b}, {connection});
+      console.log(connection.data);
       found = await data.findOne(modelA, {b}, {connection});
-      console.log({found});
     });
     it('should find inserted document', () => {
       should(found).have.property('id');
-      should(found).have.property('foo').which.eql(100);
+      should(found).have.property('b').which.eql(b.id);
     });
   });
 });
