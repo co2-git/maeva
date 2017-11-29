@@ -28,11 +28,11 @@ const insertOne = (
 
       doc = applyDefault(doc, model);
 
-      doc = convertFields(doc, model, {connector});
+      doc = await convertFields(doc, model, {connector});
 
       doc = applyValidators(doc, model);
 
-      validateFields(doc, model, {connector});
+      await validateFields(doc, model, {connector});
 
       for (const field in model.fields) {
         if (!(field in doc) && includes(model.options.required, field)) {
@@ -50,7 +50,7 @@ const insertOne = (
 
       doc = pick(response, keys(model.fields));
 
-      doc = convertFields(doc, model);
+      doc = await convertFields(doc, model);
 
       if (connector.id) {
         doc[connector.id.name] = response[connector.id.name];

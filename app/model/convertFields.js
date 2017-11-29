@@ -1,7 +1,7 @@
 // @flow
 import getType from '../types/getType';
 
-const convertFields = (doc: Object, model: MaevaModel, options = {}) => {
+const convertFields = async (doc: Object, model: MaevaModel, options = {}) => {
   const converted = {};
 
   let field: string;
@@ -9,7 +9,16 @@ const convertFields = (doc: Object, model: MaevaModel, options = {}) => {
   for (field in model.fields) {
     if ((field in doc)) {
       const type = getType(model.fields[field]);
-      converted[field] = type.convert(doc[field], options);
+      const convertedField = type.convert(doc[field], options);
+      if (convertedField instanceof Promise) {
+        try {
+          converted[field] = await convertedField;
+        } catch (error) {
+          converted[field] = doc[field];
+        }
+      } else {
+        converted[field] = convertedField;
+      }
     }
   }
 
