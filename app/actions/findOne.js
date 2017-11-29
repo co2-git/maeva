@@ -11,7 +11,6 @@ const findOne = (
   options: Object = {}
 ): Promise<DataDocument> =>
   new Promise(async (resolve, reject) => {
-    let doc: Object = {};
     try {
       const {connector} = options.connection || await requestConnection();
 

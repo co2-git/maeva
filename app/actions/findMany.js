@@ -1,6 +1,9 @@
 // @flow
+import keys from 'lodash/keys';
 import DataDocument from '../defs/DataDocument';
+import DataModel from '../defs/DataModel';
 import requestConnection from '../connect/requestConnection';
+import convertFields from '../model/convertFields';
 
 const findMany = (
   model: DataModel,
@@ -8,16 +11,18 @@ const findMany = (
   options: Object = {}
 ): Promise<DataDocument> =>
   new Promise(async (resolve, reject) => {
-    let docs: Object[] = [];
     try {
       const {connector} = options.connection || await requestConnection();
+
+      if (keys(query).length) {
+        query = convertFields(query, model);
+      }
+
       const results = await connector.actions.findMany(query, model);
 
-      docs = results.connectorResponse.response;
+      resolve(results);
     } catch (error) {
       reject(error);
-    } finally {
-      resolve(docs.map(doc => new DataDocument(doc)));
     }
   });
 

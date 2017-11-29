@@ -22,6 +22,14 @@ export default {
         } catch (error) {
           reject(error);
         }
+      }),
+      findMany: query => new Promise((resolve, reject) => {
+        try {
+          const doc = _.filter(data, query);
+          resolve(doc);
+        } catch (error) {
+          reject(error);
+        }
       })
     },
     id: {

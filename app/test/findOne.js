@@ -24,7 +24,7 @@ describe('Find One', () => {
       found = await data.findOne(model, {foo: 100}, {connection});
     });
     it('should find inserted document', () => {
-      should(found).have.property('id').which.eql(1);
+      should(found).have.property('id');
       should(found).have.property('foo').which.eql(100);
     });
   });
