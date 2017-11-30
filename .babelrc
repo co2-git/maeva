@@ -5,6 +5,7 @@
   ],
   "plugins": [
     "transform-flow-strip-types",
+    "transform-async-to-generator",
     [
       "babel-plugin-transform-builtin-extend",
       {

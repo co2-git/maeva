@@ -1,4 +1,5 @@
 // @flow
+import 'babel-polyfill';
 import getType from '../types/getType';
 
 const convertFields = async (doc: Object, model: MaevaModel, options = {}) => {
