@@ -1,4 +1,3 @@
-// @flow
 import 'babel-polyfill';
 import getType from '../types/getType';
 

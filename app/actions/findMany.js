@@ -1,4 +1,3 @@
-// @flow
 import keys from 'lodash/keys';
 import DataDocument from '../defs/DataDocument';
 import DataModel from '../defs/DataModel';

@@ -1,4 +1,3 @@
-// @flow
 import keys from 'lodash/keys';
 import pick from 'lodash/pick';
 import includes from 'lodash/includes';

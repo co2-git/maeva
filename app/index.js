@@ -1,4 +1,3 @@
-// @flow
 import 'babel-polyfill';
 export {default as connect} from './connect/connect';
 export {default as count} from './actions/count';

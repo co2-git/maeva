@@ -1,4 +1,3 @@
-// @flow
 import getType from '../types/getType';
 
 const validateFields = async (doc: Object, model: MaevaModel, options) => {
