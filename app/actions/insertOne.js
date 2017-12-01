@@ -2,7 +2,6 @@ import keys from 'lodash/keys';
 import pick from 'lodash/pick';
 import includes from 'lodash/includes';
 
-import DataDocument from '../defs/DataDocument';
 import applyDefault from '../model/applyDefault';
 import applyValidators from '../model/applyValidators';
 import convertFields from '../model/convertFields';
@@ -12,11 +11,7 @@ import requestConnection from '../connect/requestConnection';
 import validateFields from '../model/validateFields';
 import willInsert from '../model/willInsert';
 
-const insertOne = (
-  model: MaevaModel = {},
-  document: Object = {},
-  options: MaevaActionOptions = {}
-): Promise<DataDocument> =>
+const insertOne = (model = {}, document = {}, options = {}) =>
   new Promise(async (resolve, reject) => {
     let doc: Object = {};
 

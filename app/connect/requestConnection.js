@@ -1,4 +1,3 @@
-// @flow
 import filter from 'lodash/filter';
 import first from 'lodash/first';
 import shuffle from 'lodash/shuffle';

@@ -1,5 +1,4 @@
 /* globals describe it before */
-import connection from '../test-util/connector';
 import * as data from '../';
 import should from 'should';
 
@@ -8,10 +7,10 @@ const model = data.model('findMany', {foo: Number});
 describe('Find many', () => {
   let found;
   before(async () => {
-    await data.insertOne(model, {foo: 42}, {connection});
-    await data.insertOne(model, {foo: 43}, {connection});
-    await data.insertOne(model, {foo: 44}, {connection});
-    found = await data.findMany(model, {}, {connection});
+    await data.insertOne(model, {foo: 42});
+    await data.insertOne(model, {foo: 43});
+    await data.insertOne(model, {foo: 44});
+    found = await data.findMany(model, {});
   });
   describe('Find without query', () => {
     it('should find inserted document', () => {
