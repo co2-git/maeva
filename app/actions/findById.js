@@ -2,7 +2,7 @@ import requestConnection from '../connect/requestConnection';
 import getType from '../types/getType';
 import convertId from '../connect/convertId';
 
-const updateById = (model, _id, _updater, options = {}) =>
+const findById = (model, _id, options = {}) =>
   new Promise(async (resolve, reject) => {
     try {
       const connection = options.connection || await requestConnection();
@@ -12,7 +12,7 @@ const updateById = (model, _id, _updater, options = {}) =>
 
       getType(connector.id.type).validate(id);
 
-      const results = await connector.actions.updateById(id, _updater, model);
+      const results = await connector.actions.findById(id, model);
 
       resolve(results);
     } catch (error) {
@@ -20,4 +20,4 @@ const updateById = (model, _id, _updater, options = {}) =>
     }
   });
 
-export default updateById;
+export default findById;
