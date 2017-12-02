@@ -14,7 +14,19 @@ const updateById = (model, _id, _updater, options = {}) =>
         __id = _id;
       }
 
-      const id = getType(connector.id.type).convert(__id);
+      let id;
+
+      const convertedId = getType(connector.id.type).convert(__id);
+
+      if (convertedId instanceof Promise) {
+        try {
+          id = await convertedId;
+        } catch (error) {
+          throw error;
+        }
+      } else {
+        id = convertedId;
+      }
 
       getType(connector.id.type).validate(id);
 

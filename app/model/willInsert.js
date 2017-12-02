@@ -1,4 +1,3 @@
-// @flow
 import get from 'lodash/get';
 
 const willInsert = (doc: any, model: MaevaModel) =>

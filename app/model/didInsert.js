@@ -1,4 +1,3 @@
-// @flow
 import get from 'lodash/get';
 
 const didInsert = (doc: any, model: MaevaModel) =>
@@ -6,11 +5,16 @@ const didInsert = (doc: any, model: MaevaModel) =>
     try {
       const hook: ?MaevaHook = get(model, 'options.after.insert');
       if (Array.isArray(hook)) {
-        await Promise.all(hook.map(h => h(doc, model)))
+        for (const _hook of hook) {
+          doc = await _hook(doc, model);
+        }
+        resolve();
       } else if (typeof hook === 'function') {
         await hook(doc, model);
+        resolve();
+      } else {
+        resolve();
       }
-      resolve();
     } catch (error) {
       reject(error);
     }
