@@ -18,6 +18,15 @@ export default () => ({
         reject(error);
       }
     }),
+    insertMany: docs => new Promise((resolve, reject) => {
+      try {
+        const $docs = docs.map(doc => ({...doc, id: id++}));
+        data.push(...$docs);
+        resolve($docs);
+      } catch (error) {
+        reject(error);
+      }
+    }),
     findOne: query => new Promise((resolve, reject) => {
       try {
         const doc = _.find(data, query);
