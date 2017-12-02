@@ -3,6 +3,7 @@ import should from 'should';
 import _ from 'lodash';
 
 import * as data from '..';
+import requestConnection from '../connect/requestConnection';
 
 describe('Insert One', () => {
   it('should only take registered fields', async () => {
@@ -166,4 +167,17 @@ describe('Insert One', () => {
       throw error;
     }
   });
+
+  it('should emit', () => new Promise(async (resolve, reject) => {
+    try {
+      const connection = await requestConnection();
+      connection.emitter.on('inserted', resolve);
+      await data.insertOne(
+        data.model('emitOnInsertOne', {foo: Number}),
+        {foo: 1}
+      );
+    } catch (error) {
+      reject(error);
+    }
+  }));
 });

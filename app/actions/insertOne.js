@@ -16,7 +16,8 @@ const insertOne = (model = {}, document = {}, options = {}) =>
     let doc: Object = {};
 
     try {
-      const {connector} = options.connection || await requestConnection();
+      const connection = options.connection || await requestConnection();
+      const {connector} = connection;
 
       doc = pick(document, keys(model.fields));
 
@@ -53,6 +54,8 @@ const insertOne = (model = {}, document = {}, options = {}) =>
       await didInsert(doc, model);
 
       resolve(doc);
+
+      connection.emitter.emit('inserted', {document: doc, model});
     } catch (error) {
       reject(error);
     }
