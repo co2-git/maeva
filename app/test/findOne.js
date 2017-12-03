@@ -15,7 +15,7 @@ describe('Find One', () => {
   describe('Find without query', () => {
     it('should find inserted document', () => {
       should(found).have.property(data.getId().name).which.eql(0);
-      should(found).have.property('foo').which.eql(42);
+      should(found).have.property('foo').which.is.a.Number();
     });
   });
   describe('Find with query', () => {

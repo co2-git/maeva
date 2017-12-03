@@ -3,6 +3,7 @@ import 'babel-polyfill';
 export {default as connect} from './connect/connect';
 export {default as count} from './actions/count';
 export {default as findById} from './actions/findById';
+export {default as findByIds} from './actions/findByIds';
 export {default as findMany} from './actions/findMany';
 export {default as findOne} from './actions/findOne';
 export {default as getDocumentId} from './connect/getDocumentId';

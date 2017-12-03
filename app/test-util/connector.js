@@ -51,6 +51,14 @@ export default () => ({
         reject(error);
       }
     }),
+    findByIds: queryIds => new Promise((resolve, reject) => {
+      try {
+        const docs = _.filter(data, item => _.includes(queryIds, item.id));
+        resolve(docs);
+      } catch (error) {
+        reject(error);
+      }
+    }),
     updateById: (_id, updater) => new Promise((resolve, reject) => {
       try {
         const doc = _.find(data, {id: _id});
