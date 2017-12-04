@@ -1,25 +1,20 @@
-// @flow
-import DataType from '../defs/DataType';
+const validate = value => {
+  if (!(value instanceof Date && value.toString() !== 'Invalid Date')) {
+    throw new Error('Expected valid date');
+  }
+};
 
-const date = new DataType({
-
-  convert(value: any): Date | any {
+const date = {
+  convert(value) {
     try {
       const _date = new Date(value);
-
-      if (this.vali_date(_date)) {
-        return date;
-      }
-      return value;
+      validate(_date);
+      return _date;
     } catch (error) {
       return value;
     }
   },
-
-  validate: (value: any): boolean => (
-    value instanceof Date && value.toString() !== 'Invalid Date'
-  ),
-
-});
+  validate,
+};
 
 export default date;

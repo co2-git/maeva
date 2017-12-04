@@ -5,19 +5,19 @@ import should from 'should';
 const model = data.model('findMany', {foo: Number});
 
 describe('Find many', () => {
-  let found;
-  before(async () => {
-    await data.insertOne(model, {foo: 42});
-    await data.insertOne(model, {foo: 43});
-    await data.insertOne(model, {foo: 44});
-    found = await data.findMany(model, {});
-  });
-  describe('Find without query', () => {
-    it('should find inserted document', () => {
-      should(found).be.an.Array();
-      should(found[0]).have.property('foo').which.is.a.Number();
-    });
-  });
+  // let found;
+  // before(async () => {
+  //   await data.insertOne(model, {foo: 42});
+  //   await data.insertOne(model, {foo: 43});
+  //   await data.insertOne(model, {foo: 44});
+  //   found = await data.findMany(model, {});
+  // });
+  // describe('Find without query', () => {
+  //   it('should find inserted document', () => {
+  //     should(found).be.an.Array();
+  //     should(found[0]).have.property('foo').which.is.a.Number();
+  //   });
+  // });
   // describe('Find with query', () => {
   //   before(async () => {
   //     found = await data.findOne(model, {foo: {below: 44}}, {connection});

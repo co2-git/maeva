@@ -1,9 +1,10 @@
-// @flow
-import DataType from '../defs/DataType';
-
-const boolean = new DataType({
-  convert: (value: any): boolean | any => Boolean(value),
-  validate: (value: any): boolean => typeof value === 'boolean',
-});
+const boolean = {
+  convert: (value) => Boolean(value),
+  validate: (value) => {
+    if (typeof value !== 'boolean') {
+      throw new Error('Expected a boolean value');
+    }
+  },
+};
 
 export default boolean;

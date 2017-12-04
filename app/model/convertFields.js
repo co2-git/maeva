@@ -1,23 +1,71 @@
 import 'babel-polyfill';
 import getType from '../types/getType';
+import isPrimitive from '../types/isPrimitive';
+
+export const convertValue = (value, type, options) =>
+new Promise(async (resolve, reject) => {
+  try {
+    let converted;
+    const convertedField = type.convert(value, options);
+    if (convertedField instanceof Promise) {
+      try {
+        converted = await convertedField;
+      } catch (error) {
+        converted = value;
+      }
+    } else {
+      converted = convertedField;
+    }
+    resolve(converted);
+  } catch (error) {
+    reject(error);
+  }
+});
 
 const convertFields = async (doc: Object, model: MaevaModel, options = {}) => {
   const converted = {};
 
-  let field: string;
-
-  for (field in model.fields) {
-    if ((field in doc)) {
+  for (const field in doc) {
+    if (field in model.fields) {
       const type = getType(model.fields[field]);
-      const convertedField = type.convert(doc[field], options);
-      if (convertedField instanceof Promise) {
-        try {
-          converted[field] = await convertedField;
-        } catch (error) {
-          converted[field] = doc[field];
-        }
+      const value = doc[field];
+      if (isPrimitive(value) || type.acceptObjects) {
+        converted[field] = await convertValue(value, type, options);
       } else {
-        converted[field] = convertedField;
+        for (const meta in value) {
+          switch (meta) {
+          case 'in':
+          case 'out': {
+            const values = await Promise.all(value[meta].map(
+              async (_value) => convertValue(_value, type, options)
+            ));
+            converted[field] = {
+              [meta]: values
+            };
+          } break;
+          case 'not':
+          case 'above':
+          case 'below':
+          case 'hasLength':
+          case 'hasNotLength':
+          case 'hasLengthAbove':
+          case 'hasLengthBelow':
+            converted[field] = {
+              [meta]: await convertValue(value[meta], type, options)
+            };
+            break;
+          case 'before':
+          case 'after':
+            break;
+          case 'matches':
+          case 'matchesNot':
+          case 'includes':
+          case 'excludes':
+            break;
+          default:
+            throw new Error(`Unknown operator: ${meta}`);
+          }
+        }
       }
     }
   }

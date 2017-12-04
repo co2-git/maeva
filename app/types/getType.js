@@ -1,26 +1,35 @@
-// @flow
-import string from './string';
-import number from './number';
-import boolean from './boolean';
-import date from './date';
-import DataType from '../defs/DataType';
+import first from 'lodash/first';
+import arrayType from './array';
+import booleanType from './boolean';
+import dateType from './date';
+import numberType from './number';
+import stringType from './string';
 
-export type DataTypeCandidate = Function | DataType;
-
-export default function getType(type: DataTypeCandidate): DataType {
-  if (type instanceof DataType) {
-    return type;
-  }
+export default function getType(type) {
   switch (type) {
+  case null:
+    throw new Error('Type can not be null');
   case String:
-    return string;
+    return stringType;
   case Number:
-    return number;
+    return numberType;
   case Boolean:
-    return boolean;
+    return booleanType;
   case Date:
-    return date;
+    return dateType;
   default:
+    if (Array.isArray(type)) {
+      return arrayType(first(type));
+    }
+    if (typeof type === 'undefined') {
+      throw new Error('Type can not be undefined');
+    }
+    if (typeof type.convert !== 'function') {
+      throw new Error('Type must have a convert function');
+    }
+    if (typeof type.validate !== 'function') {
+      throw new Error('Type must have a validate function');
+    }
     return type;
   }
 }

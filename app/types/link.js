@@ -1,18 +1,16 @@
 import getType from './getType';
 
 const linkType = () => ({
-  convert: (value: any, options = {}): any => {
+  acceptObjects: true,
+  convert: (value, options = {}) => {
     if (!options.connector) {
       return value;
     }
-    if (typeof value === 'object' && (options.connector.id.name in value)) {
-      return value[options.connector.id.name];
-    }
-    return value;
+    return options.connector.id.type.convert(value);
   },
-  validate: (value: any, options = {}): boolean => {
+  validate: (value, options = {}) => {
     const idType = getType(options.connector.id.type);
-    return idType.validate(value);
+    idType.validate(value);
   },
 });
 

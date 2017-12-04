@@ -1,40 +1,44 @@
-// @flow
-import isObject from 'lodash/isObject';
-import DataType from '../defs/DataType';
 import getType from './getType';
 
-const shape = (_shape: Object) => {
-  const __shape = {};
-  for (const key in _shape) {
-    __shape[key] = getType(shape[key]);
-  }
-  return new DataType({
-
-    convert(object: any): Object | any {
-      if (!isObject(object)) {
-        return object;
-      }
-      const converted = {};
-      for (const field in __shape) {
-        converted[field] = __shape[field].convert(object[field]);
-      }
-      return converted;
-    },
-
-    validate(object: any): boolean {
-      if (!isObject(object)) {
-        return false;
-      }
-      let isValid = true;
-      for (const field in this.shape) {
-        if (!this.shape[field].validate(object[field])) {
-          isValid = false;
+const shape = (object) => {
+  return {
+    convert: (value, options = {}) => new Promise(async (resolve, reject) => {
+      try {
+        if (!value || typeof value !== 'object') {
+          return value;
         }
+        const converted = {};
+        for (const key in value) {
+          const type = getType(object[key]);
+          converted[key] = type.convert(value[key], options);
+          if (converted[key] instanceof Promise) {
+            await converted[key];
+          }
+        }
+        resolve(converted);
+      } catch (error) {
+        reject(error);
       }
-      return isValid;
-    }
+    }),
 
-  });
+    validate: (value, options = {}) => new Promise(async (resolve, reject) => {
+      try {
+        if (!value || typeof value !== 'object') {
+          return value;
+        }
+        for (const key in value) {
+          const type = getType(object[key]);
+          const validated = type.convert(value[key], options);
+          if (validated instanceof Promise) {
+            await validated;
+          }
+        }
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    }),
+  };
 };
 
 export default shape;

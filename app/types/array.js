@@ -1,19 +1,19 @@
-// @flow
-import {every, isArray, map} from 'lodash';
-import DataType from '../defs/DataType';
+import every from 'lodash/every';
+import isArray from 'lodash/isArray';
+import map from 'lodash/map';
 import getType from './getType';
 
-const arrayType = (type: Function | DataType) => new DataType({
-
-  convert: (array: any): any => (
+const arrayType = (type) => ({
+  convert: (array) => (
     (isArray(array) && map(array, getType(type).convert)) ||
     array
   ),
-
-  validate: (array: any): boolean => (
-    isArray(array) && every(array, getType(type).validate)
-  )
-
+  validate: (array) => {
+    if (!isArray(array)) {
+      throw new Error('Expecting an array');
+    }
+    every(array, getType(type).validate);
+  }
 });
 
 export default arrayType;

@@ -1,17 +1,15 @@
-// @flow
-import DataType from '../defs/DataType';
-
-const string = new DataType({
-
-  convert(value: any): string | any {
+const string = {
+  convert(value) {
     if (value && typeof value.toString === 'function') {
       return value.toString();
     }
     return value;
   },
-
-  validate: (value: any): boolean => (typeof value === 'string'),
-
-});
+  validate: (value) => {
+    if (typeof value !== 'string') {
+      throw new TypeError('String type is expecting a string');
+    }
+  },
+};
 
 export default string;

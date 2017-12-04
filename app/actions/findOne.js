@@ -1,14 +1,8 @@
 import keys from 'lodash/keys';
-import DataDocument from '../defs/DataDocument';
-import DataModel from '../defs/DataModel';
 import requestConnection from '../connect/requestConnection';
 import convertFields from '../model/convertFields';
 
-const findOne = (
-  model: DataModel,
-  query: Object = {},
-  options: Object = {}
-): Promise<DataDocument> =>
+const findOne = (model, query = {}, options = {}) =>
   new Promise(async (resolve, reject) => {
     try {
       const {connector} = options.connection || await requestConnection();
