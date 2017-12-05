@@ -4,9 +4,9 @@ import includes from 'lodash/includes';
 
 import applyDefault from './applyDefault';
 import applyValidators from './applyValidators';
-import convertFields from './convertFields';
+import convertFieldsForInsert from './convertFieldsForInsert';
 import maevaError from '../error';
-import validateFields from './validateFields';
+import validateFieldsForInsert from './validateFieldsForInsert';
 import willInsert from './willInsert';
 
 const formatPreInsertDocument = (model, document, connection) =>
@@ -19,11 +19,11 @@ new Promise(async (resolve, reject) => {
 
     doc = applyDefault(doc, model);
 
-    doc = await convertFields(doc, model, {connector});
+    doc = await convertFieldsForInsert(doc, model, {connector});
 
     doc = applyValidators(doc, model);
 
-    await validateFields(doc, model, {connector});
+    await validateFieldsForInsert(doc, model, {connector});
 
     for (const field in model.fields) {
       if (!(field in doc) && includes(model.options.required, field)) {

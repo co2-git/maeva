@@ -10,18 +10,28 @@ import * as data from 'maeva';
 import sockets from 'maeva-sockets';
 
 // Define a model
-const players = data.model('players', {name: String, score: Number});
+const players = data.model('players', {
+  name: String,
+  score: Number,
+  isCaptain: Boolean
+});
 
 // Use a data connector to connect to a database server
 const connector = sockets('ws://mysockets.com');
 const connection = data.connect(connector);
 
 // Now you can fire requests to the database server
-await data.insertOne(players, {name: 'Joe', score: 100});
+await data.insertOne(players, {
+  name: 'Joe',
+  score: 100,
+  isCaptain: true
+});
 
 // Or listen to events
-data.inserted(connection, (model, document) => {
-  console.log(`inserted #${document.id} into ${model.name}`);
+await data.findOne(players, {
+  isCaptain: true,
+  name: /jo/,
+  score: data.above(0)
 });
 ```
 

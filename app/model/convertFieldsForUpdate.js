@@ -2,26 +2,6 @@ import 'babel-polyfill';
 import getType from '../types/getType';
 import isPrimitive from '../types/isPrimitive';
 
-export const convertValue = (value, type, options) =>
-new Promise(async (resolve, reject) => {
-  try {
-    let converted;
-    const convertedField = type.convert(value, options);
-    if (convertedField instanceof Promise) {
-      try {
-        converted = await convertedField;
-      } catch (error) {
-        converted = value;
-      }
-    } else {
-      converted = convertedField;
-    }
-    resolve(converted);
-  } catch (error) {
-    reject(error);
-  }
-});
-
 const convertFields = async (doc: Object, model: MaevaModel, options = {}) => {
   const converted = {};
 

@@ -1,6 +1,6 @@
 import keys from 'lodash/keys';
 import requestConnection from '../connect/requestConnection';
-import convertFields from '../model/convertFields';
+import convertFieldsForFind from '../model/convertFieldsForFind';
 
 const findMany = (model, query = {}, options = {}) =>
   new Promise(async (resolve, reject) => {
@@ -8,7 +8,7 @@ const findMany = (model, query = {}, options = {}) =>
       const {connector} = options.connection || await requestConnection();
 
       if (keys(query).length) {
-        query = await convertFields(query, model, {connector});
+        query = await convertFieldsForFind(query, model, {connector});
       }
 
       const results = await connector.actions.findMany(query, model);
