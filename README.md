@@ -7,7 +7,7 @@ JS models. Database agnostic.
 
 ```js
 import * as data from 'maeva';
-import sockets from 'maeva-sockets';
+import mongodb from 'maeva-mongodb';
 
 // Define a model
 const players = data.model('players', {
@@ -17,7 +17,7 @@ const players = data.model('players', {
 });
 
 // Use a data connector to connect to a database server
-const connector = sockets('ws://mysockets.com');
+const connector = mongodb('mongodb://localhost');
 const connection = data.connect(connector);
 
 // Now you can fire requests to the database server
@@ -27,8 +27,8 @@ await data.insertOne(players, {
   isCaptain: true
 });
 
-// Or listen to events
-await data.findOne(players, {
+// Find players
+await data.findMany(players, {
   isCaptain: true,
   name: /jo/,
   score: data.above(0)
