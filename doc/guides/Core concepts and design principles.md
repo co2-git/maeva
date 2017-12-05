@@ -13,9 +13,11 @@ Being database-agnostic has inherent limitations. The most obvious ones are:
 
 # Ids and keys
 
-`maeva` ignores ids. Instead, it is the responsibility of the `maeva` connector to implement it.
-For example, `mysql` uses a numeric `id` it increments on each row insertion, when `mongodb` will use an object, `ObjectID`. Actually, even in `mysql`, you could decide not to use an `id`. A key based database will have no id, instead it will have unique keys paired to a value.
-`maeva` ignores ids. It is up to the connector of implementing it.
+`maeva` ignores `id`s. Instead, it is the responsibility of the `maeva` connector to implement it.
+For example, `mysql` uses a numeric `id` it increments on each row insertion, when `mongodb` will use an object, `ObjectID`.
+Actually, even in `mysql`, you could decide not to use an `id`.
+A key based database for example will have no `id` - instead it will have unique keys paired to a value.
+`maeva` ignores `id`s. It is up to the connector of implementing it.
 
 ```js
 import * as data from 'maeva';
