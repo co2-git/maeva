@@ -37,15 +37,26 @@ await data.findMany(players, {
 
 # Connectors
 
-- [maeva-http](https://npmjs.org/packages/maeva-http)
-- [maeva-mongodb](https://npmjs.org/packages/maeva-mongodb)
-- [maeva-mysql](https://npmjs.org/packages/maeva-mysql)
-- [maeva-postgresql](https://npmjs.org/packages/maeva-postgresql)
-- [maeva-sockets](https://npmjs.org/packages/maeva-sockets)
+## Most popular databases
+
+- [maeva-mongodb](https://npmjs.org/packages/maeva-mongodb) MongoDB connector
+- [maeva-mysql](https://npmjs.org/packages/maeva-mysql) MySQL connector
+- [maeva-postgresql](https://npmjs.org/packages/maeva-postgresql) PostGreSQL connector
+
+## JavaScript databases
+
+- [maeva-json](https://npmjs.org/packages/maeva-json) A json database that lives in memory - with an option to persist data in storage
+
+## Client APIs
+
+- [maeva-http](https://npmjs.org/packages/maeva-http) A built-in HTTP API you can plug to any maeva connector
+- [maeva-sockets](https://npmjs.org/packages/maeva-sockets) A built-in Web Socket API you can plug to any maeva connector
 
 # Docs
 
 - [Guide](doc/guides/)
+  - [Quick start](doc/guides/Quick%20start.md)
+  - [Core concepts and design principles](doc/guides/Core%20concepts%20and%20design%20principles.md)
   - [Model](doc/guides/Model.md)
   - [Hooks](doc/guides/Hooks.md)
   - [Connect](doc/guides/Connect.md)
