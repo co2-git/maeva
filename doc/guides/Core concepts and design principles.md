@@ -3,7 +3,7 @@ Core concepts and design principles
 
 # Database agnostic
 
-`maeva` is database-agnostic. This means you _should_ be apply to run your `maeva` models against any database vendor - provided there is an existing `maeva` connector for that database vendor.
+`maeva` is database-agnostic. This means you _should_ be able to run your `maeva` models against any database vendor - provided there is an existing `maeva` connector for that database vendor.
 
 Being database-agnostic has inherent limitations. The most obvious ones are:
 
