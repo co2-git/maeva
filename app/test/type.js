@@ -4,7 +4,7 @@ import should from 'should';
 import * as data from '..';
 import * as models from '../test-util/models';
 import getType from '../types/getType';
-import connector from '../test-util/connector';
+import connector from 'maeva-json';
 
 describe('Type', () => {
   describe('Get type', () => {

@@ -6,7 +6,7 @@ import * as models from '../test-util/models';
 import convertFieldsForFind from '../model/convertFieldsForFind';
 import convertValue from '../model/convertValue';
 import getType from '../types/getType';
-import connector from '../test-util/connector';
+import connector from 'maeva-json';
 
 describe('Model', () => {
   describe('Define model', () => {

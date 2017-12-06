@@ -39,6 +39,7 @@ await data.findMany(players, {
 
 ## Most popular databases
 
+- [maeva-firebase](https://npmjs.org/packages/maeva-firebase) FireBase connector
 - [maeva-mongodb](https://npmjs.org/packages/maeva-mongodb) MongoDB connector
 - [maeva-mysql](https://npmjs.org/packages/maeva-mysql) MySQL connector
 - [maeva-postgresql](https://npmjs.org/packages/maeva-postgresql) PostGreSQL connector
@@ -67,12 +68,18 @@ await data.findMany(players, {
 - API
   - [Actions](./doc/actions)
     - [count](./doc/actions/Count.md)
+    - [findById](./doc/actions/findById.md)
+    - [findByIds](./doc/actions/findByIds.md)
     - [findMany](./doc/actions/FindMany.md)
     - [findOne](./doc/actions/FindOne.md)
     - [insertMany](./doc/actions/InsertMany.md)
     - [insertOne](./doc/actions/InsertOne.md)
+    - [removeById](./doc/actions/removeById.md)
+    - [removeByIds](./doc/actions/removeByIds.md)
     - [removeMany](./doc/actions/RemoveMany.md)
     - [removeOne](./doc/actions/RemoveOne.md)
+    - [updateById](./doc/actions/updateById.md)
+    - [updateByIds](./doc/actions/updateByIds.md)
     - [updateMany](./doc/actions/UpdateMany.md)
     - [updateOne](./doc/actions/UpdateOne.md)
   - [Connections](./doc/connections)
@@ -103,33 +110,4 @@ await data.findMany(players, {
     - [below](./doc/values/Below.md)
     - [like](./doc/values/Like.md)
     - [match](./doc/values/Match.md)
-
-- [Definitions](./doc/definitions)
-  - [DataConnection](./doc/definitions/DataConnection.md)
-  - [DataConnector](./doc/definitions/DataConnector.md)
-  - [DataDocument](./doc/definitions/DataDocument.md)
-  - [DataType](./doc/definitions/DataType.md)
-  - [DataValue](./doc/definitions/DataValue.md)
-
-```javascript
-const id = {id: Number};
-const states = data.model('states', {...id, name: String});
-const cities = data.model('cities', {...id, name: String, state: states});
-const streets = data.model('streets', {...id, name: String, city: cities, state: states});
-
-const state = await data.insertOne(states, {name: 'CA'});
-// {id: 1, name: 'CA'}
-const city = await data.insertOne(cities, {name: 'Oakland', state});
-// {id: 1, name: 'Oakland', state: 1}
-const street = await data.insertOne(streets, {name: '1st Street', city, state});
-// {id: 1, name: '1st Street', city: 1, state: 1}
-
-await data.findOne(streets);
-// {id: 1, name: '1st Street', city: 1, state: 1}
-
-await data.findOne(streets, {}, {link: ['city', 'state']});
-// {id: 1, name: '1st Street', city: {id:1, name: 'Oakland'}, state: {id: 1, name: 'CA'}}
-
-await data.findOne(streets, {}, {link: ['city']});
-// {id: 1, name: '1st Street', city: {id:1, name: 'Oakland'}, state: 1}
-```
+    - [not](./doc/values/Not.md)

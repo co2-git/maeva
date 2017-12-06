@@ -1,7 +1,7 @@
 /* globals describe it */
 import 'babel-polyfill';
 import * as data from '..';
-import connector from '../test-util/connector';
+import connector from 'maeva-json';
 import should from 'should';
 
 describe('Connection', () => {

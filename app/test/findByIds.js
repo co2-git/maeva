@@ -1,20 +1,25 @@
-/* globals describe it before */
+/* globals describe it before after */
 import * as data from '../';
 import should from 'should';
 
-const model = data.model('findOne', {foo: Number});
+import * as models from '../test-util/models';
 
 describe('Find by ids', () => {
-  // let inserted;
-  // it('should insert documents', async () => {
-  //   inserted = await data.insertMany(model, [
-  //     {foo: 1},
-  //     {foo: 2},
-  //     {foo: 3}
-  //   ]);
-  // });
-  // it('should find documents by Ids', async () => {
-  //   const found = await data.findByIds(model, inserted);
-  //   should(found).be.an.Array().and.have.length(3);
-  // });
+  let teams;
+  it('should insert teams', async () => {
+    teams = await data.insertMany(models.teamModel, [
+      {name: 'Barca'},
+      {name: 'Madrid'},
+      {name: 'Atletico'}
+    ]);
+  });
+  it('should find documents by Ids', async () => {
+    const found = await data.findByIds(models.teamModel, teams);
+    should(found).be.an.Array().and.have.length(3);
+    should(found).eql(teams);
+  });
+  after(async () => {
+    await data.removeMany(models.teamModel);
+    await data.removeMany(models.playerModel);
+  });
 });

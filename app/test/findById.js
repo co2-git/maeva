@@ -1,39 +1,31 @@
-/* globals describe it before */
+/* globals describe it before after */
 import should from 'should';
 
 import * as data from '..';
 import * as models from '../test-util/models';
 
 describe('Find by id', () => {
-  // let team;
-  // let inserted;
-  // before(async () => {
-  //   team = await data.insertOne(models.teamModel, {name: 'Barca'});
-  // });
-  // it('should insert a new player', async () => {
-  //   inserted = await data.insertOne(models.playerModel, {
-  //     name: 'Messi',
-  //     team,
-  //     goals: 10000
-  //   });
-  // });
-  // it('should find player by id using document', async () => {
-  //   const found = await data.findById(models.playerModel, inserted);
-  //   should(found).be.an.Object();
-  //   should(found).have.property('name').which.eql('Messi');
-  //   should(found).have.property('team').which.eql(data.getDocumentId(team));
-  //   should(found).have.property('isCaptain').which.eql(false);
-  //   should(found).have.property('goals').which.eql(10000);
-  // });
-  // it('should find player by id using document id', async () => {
-  //   const found = await data.findById(
-  //     models.playerModel,
-  //     data.getDocumentId(inserted)
-  //   );
-  //   should(found).be.an.Object();
-  //   should(found).have.property('name').which.eql('Messi');
-  //   should(found).have.property('team').which.eql(data.getDocumentId(team));
-  //   should(found).have.property('isCaptain').which.eql(false);
-  //   should(found).have.property('goals').which.eql(10000);
-  // });
+  let team;
+  it('should insert a team', async () => {
+    team = await data.insertOne(models.teamModel, {name: 'PSG'});
+  });
+  it('should find by document', async () => {
+    const found = await data.findById(models.teamModel, team);
+    should(found).be.an.Object();
+    should(found).have.property('id').which.eql(data.getDocumentId(team));
+    should(found).have.property('name').which.eql(team.name);
+  });
+  it('should find by id', async () => {
+    const found = await data.findById(
+      models.teamModel,
+      data.getDocumentId(team)
+    );
+    should(found).be.an.Object();
+    should(found).have.property('id').which.eql(data.getDocumentId(team));
+    should(found).have.property('name').which.eql(team.name);
+  });
+  after(async () => {
+    await data.removeMany(models.teamModel);
+    await data.removeMany(models.playerModel);
+  });
 });

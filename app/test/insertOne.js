@@ -4,7 +4,7 @@ import should from 'should';
 import * as data from '..';
 import * as models from '../test-util/models';
 
-describe.skip('Insert One', () => {
+describe('Insert One', () => {
   let team;
   it('should insert one team', async () => {
     team = await data.insertOne(models.teamModel, {name: 'Barca'});
