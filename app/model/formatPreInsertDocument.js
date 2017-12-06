@@ -29,7 +29,7 @@ new Promise(async (resolve, reject) => {
       if (!(field in doc) && includes(model.options.required, field)) {
         throw maevaError(
           'insertOne',
-          'Missing required field',
+          `Missing required field "${field}" from model "${model.name}"`,
           {field, model, document: doc}
         );
       }

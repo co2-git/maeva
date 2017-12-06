@@ -1,8 +1,8 @@
 import getType from '../types/getType';
 import isPrimitive from '../types/isPrimitive';
 
-const validateFields = async (doc: Object, model: MaevaModel, options) => {
-  let field: string;
+const validateFields = async (doc, model, options) => {
+  let field;
 
   for (field in doc) {
     const type = getType(model.fields[field]);
@@ -17,7 +17,7 @@ const validateFields = async (doc: Object, model: MaevaModel, options) => {
         }
       }
     } else {
-      
+
     }
   }
 };

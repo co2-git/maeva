@@ -1,18 +1,13 @@
 {
   "presets": [
-    "es2015",
+    "env",
+    "react",
     "stage-0"
   ],
   "plugins": [
-    "transform-flow-strip-types",
-    "transform-async-to-generator",
-    [
-      "babel-plugin-transform-builtin-extend",
-      {
-        "globals": [
-          "Error"
-        ]
-      }
-    ]
+    "transform-class-properties",
+    "transform-decorators",
+    "transform-react-constant-elements",
+    "transform-react-inline-elements"
   ]
 }

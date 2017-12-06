@@ -1,6 +1,4 @@
 /node_modules/*
 /app/*
 !/dist/*
-/dev_notes/*
 /npm-debug.log
-.babelrc

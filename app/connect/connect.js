@@ -3,8 +3,8 @@ import EventEmitter from 'events';
 import connections from './connections';
 import emitter from '../emitter';
 
-const connect = (connector: MaevaConnector): MaevaConnection => {
-  const connection: MaevaConnection = {
+const connect = (connector) => {
+  const connection = {
     connector,
     emitter: new EventEmitter(),
     status: 'connecting',

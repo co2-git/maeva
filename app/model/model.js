@@ -1,10 +1,4 @@
-// @flow
-
-const model: MaevaModelMaker = (
-  name: string,
-  fields: MaevaSchema = {},
-  options: MaevaModelOptions = {},
-): MaevaModel => {
+const model = (name, fields = {}, options = {}) => {
   const _model = {fields, name, options};
 
   if (typeof name !== 'string' || !name) {

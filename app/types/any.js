@@ -1,6 +1,7 @@
-// @flow
-import DataType from '../defs/DataType';
-
-const any = new DataType();
-
+const any = () => ({
+  convert: value => value,
+  validate: () => {
+    // ...
+  },
+});
 export default any;

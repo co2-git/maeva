@@ -1,4 +1,5 @@
 const string = {
+  name: 'String',
   convert(value) {
     if (value && typeof value.toString === 'function') {
       return value.toString();

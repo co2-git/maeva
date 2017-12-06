@@ -1,7 +1,6 @@
-// @flow
 import maevaError from '../error';
 
-const applyValidators = (doc: Object, model: MaevaModel) => {
+const applyValidators = (doc, model) => {
   const converted = {};
 
   let field: string;

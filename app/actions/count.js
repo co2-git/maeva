@@ -1,17 +1,32 @@
-import keys from 'lodash/keys';
+import cloneDeep from 'lodash/cloneDeep';
 import requestConnection from '../connect/requestConnection';
-import convertFieldsForFind from '../model/convertFieldsForFind';
+import formatFindQuery from '../queries/formatFindQuery';
 
-const count = (model, query = {}, options = {}) =>
+const count = (model, _query = {}, _options = {}) =>
   new Promise(async (resolve, reject) => {
     try {
-      const {connector} = options.connection || await requestConnection();
+      const options = cloneDeep(_options);
 
-      if (keys(query).length) {
-        query = await convertFieldsForFind(query, model, {connector});
+      if (!options.connection) {
+        options.connection = await requestConnection();
       }
 
-      const results = await connector.actions.count(query, model);
+      if (!options.connection.connector) {
+        throw new Error('Connection has no connector');
+      }
+
+      const query = await formatFindQuery(_query, model, options);
+
+      if (!options.connection.connector.actions) {
+        throw new Error('Connector has no actions');
+      }
+
+      if (typeof options.connection.connector.actions.count !== 'function') {
+        throw new Error('Connector has no count action');
+      }
+
+      const results = await options.connection.connector.actions
+        .count(query, model);
 
       resolve(results);
     } catch (error) {

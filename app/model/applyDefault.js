@@ -1,9 +1,6 @@
-// @flow
 import isFunction from 'lodash/isFunction';
 
-export type DataDefault = Function | any;
-
-const applyDefault = (document: Object, model: MaevaModel) => {
+const applyDefault = (document, model) => {
   const defaults = {};
 
   let field: string;

@@ -1,9 +1,9 @@
 import get from 'lodash/get';
 
-const didInsert = (doc: any, model: MaevaModel) =>
+const didInsert = (doc, model) =>
   new Promise(async (resolve, reject) => {
     try {
-      const hook: ?MaevaHook = get(model, 'options.after.insert');
+      const hook = get(model, 'options.after.insert');
       if (Array.isArray(hook)) {
         for (const _hook of hook) {
           doc = await _hook(doc, model);
