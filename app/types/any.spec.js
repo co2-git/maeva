@@ -3,7 +3,7 @@ import should from 'should';
 
 import * as data from '..';
 
-describe.only('Any', () => {
+describe('Any', () => {
   const type = data.any();
   it('should return a data type', () => {
     should(type).be.an.Object();
