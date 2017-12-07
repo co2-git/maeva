@@ -1,6 +1,7 @@
 import isNumber from 'lodash/isNumber';
 
 const number = {
+  name: 'number',
   convert: (value) => Number(value),
   validate: (value) => {
     if (!(isNumber(value) && isFinite(value))) {

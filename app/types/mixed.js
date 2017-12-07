@@ -1,23 +1,20 @@
-import map from 'lodash/map';
-import isArray from 'lodash/isArray';
-import every from 'lodash/every';
-
 import getType from './getType';
 
-const mixedType = (...types) => {
-  const mixedTypes = map(types, getType);
-  return {
-    convert: (items) =>{
-      if (!isArray(items)) {
-        return items;
-      }
-      return map(items, (value, index) => mixedTypes[index].convert(value));
-    },
-    validate: (items) => (
-      isArray(items) &&
-      every(items, (item, index) => mixedTypes[index].validate(item))
-    ),
-  };
-};
+const mixed = (...types) => ({
+  convert: value => value,
+  validate: value => {
+    let passed = 0;
+    for (const type of types) {
+      const $type = getType(type);
+      try {
+        $type.validate(value);
+        passed++;
+      } catch (error) {}
+    }
+    if (!passed) {
+      throw new Error('Expected value to match at least one of mixed type');
+    }
+  },
+});
 
-export default mixedType;
+export default mixed;

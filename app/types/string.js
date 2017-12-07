@@ -1,5 +1,5 @@
 const string = {
-  name: 'String',
+  name: 'string',
   convert(value) {
     if (value && typeof value.toString === 'function') {
       return value.toString();

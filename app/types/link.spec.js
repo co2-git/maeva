@@ -3,7 +3,6 @@ import should from 'should';
 
 import * as data from '..';
 import getType from '../types/getType';
-import connector from 'maeva-json';
 
 describe('Links', () => {
   let type;
@@ -19,7 +18,7 @@ describe('Links', () => {
   it('should convert ids', () => {
     should(type.convert(
       '1',
-      {connector: connector()}
+      {connection: data.connections[0]}
     )).eql(1);
   });
   it('should skip converting if no connector', () => {
@@ -28,7 +27,7 @@ describe('Links', () => {
   it('should convert documents', () => {
     should(type.convert(
       {foo: 22, id: 42},
-      {connector: connector()}
+      {connection: data.connections[0]}
     )).eql(42);
   });
   it('should have a validater', () => {
@@ -36,8 +35,8 @@ describe('Links', () => {
   });
   it('should validate ids', () => {
     type.validate(
-      '1',
-      {connector: connector()}
+      1,
+      {connection: data.connections[0]}
     );
   });
   it('should fail to validate if not valid', () => {
@@ -51,8 +50,8 @@ describe('Links', () => {
   });
   it('should validate documents', () => {
     type.validate(
-      type.convert({foo: 22, id: 42}, {connector: connector()}),
-      {connector: connector()}
+      type.convert({foo: 22, id: 42}, {connection: data.connections[0]}),
+      {connection: data.connections[0]}
     );
   });
 });

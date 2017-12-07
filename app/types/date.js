@@ -5,6 +5,7 @@ const validate = value => {
 };
 
 const date = {
+  name: 'date',
   convert(value) {
     try {
       const _date = new Date(value);

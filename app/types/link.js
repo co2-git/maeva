@@ -1,15 +1,36 @@
 import getType from './getType';
 
 const linkType = () => ({
-  acceptObjects: true,
+  name: 'link',
   convert: (value, options = {}) => {
-    if (!options.connector) {
+    if (
+      !options.connection ||
+      !options.connection.connector ||
+      !options.connection.connector.id ||
+      typeof options.connection.connector.id.type !== 'function'
+    ) {
       return value;
     }
-    return options.connector.id.type.convert(value);
+    const type = getType(options.connection.connector.id.type);
+    if (
+      value &&
+      typeof value === 'object' &&
+      options.connection.connector.id.name in value
+    ) {
+      return type.convert(value[options.connection.connector.id.name]);
+    }
+    return type.convert(value);
   },
   validate: (value, options = {}) => {
-    const idType = getType(options.connector.id.type);
+    if (
+      !options.connection ||
+      !options.connection.connector ||
+      !options.connection.connector.id ||
+      typeof options.connection.connector.id.type !== 'function'
+    ) {
+      throw new Error('Missing connector info to retrieve id from');
+    }
+    const idType = getType(options.connection.connector.id.type);
     idType.validate(value);
   },
 });
