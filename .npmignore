@@ -2,3 +2,6 @@
 /app/*
 !/dist/*
 /npm-debug.log
+*.spec.js
+/test/*
+/doc/*

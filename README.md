@@ -27,12 +27,12 @@ await data.insertOne(players, {
   isCaptain: true
 });
 
-// Find players
+// Find first 100 players sorted by score
 await data.findMany(players, {
   isCaptain: true,
   name: /jo/,
   score: data.above(0)
-});
+}, {sort: 'score', range: 100});
 ```
 
 # Connectors

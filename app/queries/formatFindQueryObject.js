@@ -33,11 +33,18 @@ const formatFindQueryObject = (query, model, options = {}) => {
     let convertedValue;
     if (field in model.fields) {
       const type = getType(model.fields[field]);
-      const formattedValue = formatFindQueryValue(value, type, options);
-      convertedValue = {
-        field, operator: 'is',
-        value: formattedValue,
-      };
+      if (value instanceof RegExp) {
+        convertedValue = {
+          field, operator: 'matches',
+          value: value.toString(),
+        };
+      } else {
+        const formattedValue = formatFindQueryValue(value, type, options);
+        convertedValue = {
+          field, operator: 'is',
+          value: formattedValue,
+        };
+      }
     } else if (/\./.test(field)) {
       const formattedValue = destructureShape(field, value, model);
       convertedValue = {

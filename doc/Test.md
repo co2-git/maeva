@@ -1,6 +1,14 @@
 Run tests
 ===
 
+You need to clone `maeva` from github in order to get tests:
+
+```bash
+git clone https://github.com/co2-git/maeva
+cd maeva
+yarn
+```
+
 To run tests, you need a connector installed. For example, you can use `maeva-json`:
 
 ```bash

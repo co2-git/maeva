@@ -180,5 +180,22 @@ describe('Format find query object', () => {
         should(formatted).eql(expected);
       });
     });
+    describe('Regular expressions', () => {
+      it('should format query', () => {
+        const formatted = formatFindQueryObject(
+          {foo: /hello/i},
+          data.model('foo', {foo: String}),
+        );
+        const expected = [
+          {
+            field: 'foo',
+            operator: 'matches',
+            value: '/hello/i',
+          }
+        ];
+        console.log(JSON.stringify({expected, formatted}, null, 2));
+        should(formatted).eql(expected);
+      });
+    });
   });
 });
