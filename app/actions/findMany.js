@@ -19,7 +19,8 @@ const findMany = (model, query = {}, _options = {}) =>
 
       const results = await options.connection.connector.actions.findMany(
         query,
-        model
+        model,
+        options,
       );
 
       resolve(results);

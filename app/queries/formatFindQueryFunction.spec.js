@@ -46,27 +46,21 @@ describe('Format find query function', () => {
         const model = data.model('foo', {name: String, score: Number});
         const formatted = formatFindQueryFunction(condition, model);
         const expected = [
-          [
-            {
-              field: 'name',
-              operator: 'is',
-              value: '1',
-            },
-          ],
-          [
-            {
-              field: 'score',
-              operator: 'is',
-              value: 100,
-            },
-          ],
-          [
-            {
-              field: 'score',
-              operator: 'is',
-              value: 1000,
-            },
-          ],
+          {
+            field: 'name',
+            operator: 'is',
+            value: '1',
+          },
+          {
+            field: 'score',
+            operator: 'is',
+            value: 100,
+          },
+          {
+            field: 'score',
+            operator: 'is',
+            value: 1000,
+          },
         ];
         should(formatted).eql(expected);
       });
@@ -91,7 +85,6 @@ describe('Format find query function', () => {
             ],
           },
         ];
-        console.log(JSON.stringify({formatted, expected}, null, 2));
         should(formatted).eql(expected);
       });
     });

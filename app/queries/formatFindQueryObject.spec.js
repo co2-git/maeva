@@ -97,4 +97,88 @@ describe('Format find query object', () => {
       should(formatted).eql(expected);
     });
   });
+  describe('Operators', () => {
+    describe('above', () => {
+      it('should format query', () => {
+        const formatted = formatFindQueryObject(
+          {foo: data.above(10)},
+          data.model('foo', {foo: Number}),
+        );
+        const expected = [
+          {
+            field: 'foo',
+            operator: 'above',
+            value: 10,
+          }
+        ];
+        should(formatted).eql(expected);
+      });
+    });
+    describe('not', () => {
+      it('should format query', () => {
+        const formatted = formatFindQueryObject(
+          {foo: data.not(10)},
+          data.model('foo', {foo: Number}),
+        );
+        const expected = [
+          {
+            field: 'foo',
+            operator: 'not',
+            value: 10,
+          }
+        ];
+        should(formatted).eql(expected);
+      });
+    });
+    describe('below', () => {
+      it('should format query', () => {
+        const formatted = formatFindQueryObject(
+          {foo: data.below(10)},
+          data.model('foo', {foo: Number}),
+        );
+        const expected = [
+          {
+            field: 'foo',
+            operator: 'below',
+            value: 10,
+          }
+        ];
+        should(formatted).eql(expected);
+      });
+    });
+    describe('after', () => {
+      it('should format query', () => {
+        const date = new Date();
+        const formatted = formatFindQueryObject(
+          {foo: data.after(date)},
+          data.model('foo', {foo: Date}),
+        );
+        const expected = [
+          {
+            field: 'foo',
+            operator: 'after',
+            value: date,
+          }
+        ];
+        should(formatted).eql(expected);
+      });
+    });
+    describe('before', () => {
+      it('should format query', () => {
+        const date = new Date();
+        const formatted = formatFindQueryObject(
+          {foo: data.before(date)},
+          data.model('foo', {foo: Date}),
+        );
+        const expected = [
+          {
+            field: 'foo',
+            operator: 'before',
+            value: date,
+          }
+        ];
+        should(formatted).eql(expected);
+      });
+    });
+  });
 });

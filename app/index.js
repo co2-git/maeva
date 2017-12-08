@@ -32,6 +32,7 @@ export {default as updateOne} from './actions/updateOne';
 export {
   _in as in,
   above,
+  after,
   and,
   before,
   below,

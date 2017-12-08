@@ -50,7 +50,7 @@ describe('Format post insert document', () => {
     }
     should(err).be.an.Error();
   });
-  it.skip('should fail if messing required', async () => {
+  it('should fail if messing required', async () => {
     const model = data.model('foo', {foo: Number}, {
       required: ['foo'],
     });
@@ -62,21 +62,23 @@ describe('Format post insert document', () => {
     }
     should(err).be.an.Error();
   });
-  it.skip('should apply before hooks', async () => {
+  it('should apply after hooks', async () => {
+    let foo;
     const model = data.model('foo', {foo: Number}, {
-      before: {
-        insert: doc => new Promise((resolve, reject) => {
+      after: {
+        insert: (doc) => new Promise((resolve, reject) => {
           try {
-            doc.foo++;
-            resolve(doc);
+            foo = doc.foo;
+            resolve();
           } catch (error) {
             reject(error);
           }
         })
       },
     });
-    const results = await formatPostInsertDocument({foo: '1'}, model);
-    const expected = {foo: 2};
-    should(results).eql(expected);
+    await formatPostInsertDocument({foo: '200', id: 2}, model, {
+      connection: data.connections[0]
+    });
+    should(foo).eql(200);
   });
 });

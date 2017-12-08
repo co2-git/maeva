@@ -25,7 +25,7 @@ new Promise(async (resolve, reject) => {
 
     applyValidators(doc, model);
 
-    await didInsert(doc, model);
+    await didInsert({...doc}, model);
 
     resolve(doc);
   } catch (error) {

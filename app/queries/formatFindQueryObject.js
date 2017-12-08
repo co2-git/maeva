@@ -1,3 +1,5 @@
+import keys from 'lodash/keys';
+import first from 'lodash/first';
 import getType from '../types/getType';
 import formatFindQueryValue from './formatFindQueryValue';
 
@@ -13,7 +15,15 @@ const destructureShape = (field, value, model) => {
       getter = getter[fields[index]];
     }
   }
-  return type.convert(value);
+  let result;
+  if (typeof value === 'function') {
+    const resolved = value();
+    const resolvedKey = first(keys(resolved));
+    result = {[resolvedKey]: type.convert(resolved[resolvedKey])};
+  } else {
+    result = type.convert(value);
+  }
+  return result;
 };
 
 const formatFindQueryObject = (query, model, options = {}) => {
@@ -50,6 +60,21 @@ const formatFindQueryObject = (query, model, options = {}) => {
         } else if ('in' in convertedValue.value) {
           convertedValue.operator = 'in';
           convertedValue.value = convertedValue.value.in;
+        } else if ('not' in convertedValue.value) {
+          convertedValue.operator = 'not';
+          convertedValue.value = convertedValue.value.not;
+        } else if ('out' in convertedValue.value) {
+          convertedValue.operator = 'out';
+          convertedValue.value = convertedValue.value.out;
+        } else if ('below' in convertedValue.value) {
+          convertedValue.operator = 'below';
+          convertedValue.value = convertedValue.value.below;
+        } else if ('after' in convertedValue.value) {
+          convertedValue.operator = 'after';
+          convertedValue.value = convertedValue.value.after;
+        } else if ('before' in convertedValue.value) {
+          convertedValue.operator = 'before';
+          convertedValue.value = convertedValue.value.before;
         }
       }
       converted.push(convertedValue);

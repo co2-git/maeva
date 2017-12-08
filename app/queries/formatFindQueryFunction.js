@@ -13,21 +13,24 @@ const formatFindQueryFunction = (fn, model, options = {}) => {
   if (!conditions.length) {
     return [];
   }
-  if (conditions.length === 1) {
-    const formatted = formatFindQuery(conditions[0], model, options);
-    if (resolved.and) {
+  if (resolved.and) {
+    if (conditions.length === 1) {
+      const formatted = formatFindQuery(conditions[0], model, options);
       return formatted;
     }
-    if (resolved.or) {
-      return [{or: [formatted]}];
+    const formatted = [];
+    for (const condition of conditions) {
+      formatted.push(...formatFindQuery(condition, model, options));
     }
+    return formatted;
+  }
+  if (conditions.length === 1) {
+    const formatted = formatFindQuery(conditions[0], model, options);
+    return [{or: [formatted]}];
   }
   const formatted = [];
   for (const condition of conditions) {
     formatted.push(formatFindQuery(condition, model, options));
-  }
-  if (resolved.and) {
-    return formatted;
   }
   return [{or: formatted}];
 };
