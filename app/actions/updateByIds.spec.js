@@ -4,14 +4,14 @@ import should from 'should';
 
 import * as models from '../test/models';
 
-describe.skip('Update by ids', () => {
+describe('Update by ids', () => {
   let psg;
   let mbappe;
   let neymar;
   it('should insert a team', async () => {
     psg = await data.insertOne(models.teamModel, {name: 'PSG'});
   });
-  it('should insert players in team', async () => {
+  it.skip('should insert players in team', async () => {
     mbappe = await data.insertOne(models.playerModel, {
       name: 'M\'Bappe',
       team: psg,

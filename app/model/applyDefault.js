@@ -3,7 +3,7 @@ import isFunction from 'lodash/isFunction';
 const applyDefault = (document, model) => {
   const defaults = {};
 
-  let field: string;
+  let field;
 
   for (field in model.fields) {
     const missingField = (

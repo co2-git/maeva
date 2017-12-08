@@ -1,6 +1,7 @@
 import getType from './getType';
 
 const mixed = (...types) => ({
+  name: 'mixed',
   convert: value => value,
   validate: value => {
     let passed = 0;

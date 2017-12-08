@@ -1,23 +1,34 @@
+import cloneDeep from 'lodash/cloneDeep';
 import requestConnection from '../connect/requestConnection';
-import getType from '../types/getType';
 import convertId from '../connect/convertId';
+import validateId from '../connect/validateId';
 
-const findById = (model, _id, options = {}) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const connection = options.connection || await requestConnection();
-      const {connector} = connection;
+const findById = (model, _id, _options = {}) =>
+new Promise(async (resolve, reject) => {
+  try {
+    const options = cloneDeep(_options);
 
-      const id = await convertId(_id, connection);
-
-      getType(connector.id.type).validate(id);
-
-      const results = await connector.actions.findById(id, model);
-
-      resolve(results);
-    } catch (error) {
-      reject(error);
+    if (!options.connection) {
+      options.connection = await requestConnection();
     }
-  });
+
+    if (!options.connection.connector) {
+      throw new Error('Connection has no connector');
+    }
+
+    const id = convertId(_id, options);
+
+    validateId(id, options);
+
+    const results = await options.connection.connector.actions.findById(
+      id,
+      model
+    );
+
+    resolve(results);
+  } catch (error) {
+    reject(error);
+  }
+});
 
 export default findById;

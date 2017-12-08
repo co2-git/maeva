@@ -1,22 +1,31 @@
-import keys from 'lodash/keys';
+import cloneDeep from 'lodash/cloneDeep';
 import requestConnection from '../connect/requestConnection';
-import convertFieldsForFind from '../model/convertFieldsForFind';
+import formatFindQuery from '../queries/formatFindQuery';
 
-const findOne = (model, query = {}, options = {}) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const {connector} = options.connection || await requestConnection();
+const findOne = (model, _query = {}, _options = {}) =>
+new Promise(async (resolve, reject) => {
+  try {
+    const options = cloneDeep(_options);
 
-      if (keys(query).length) {
-        query = await convertFieldsForFind(query, model, {connector});
-      }
-
-      const results = await connector.actions.findOne(query, model);
-
-      resolve(results);
-    } catch (error) {
-      reject(error);
+    if (!options.connection) {
+      options.connection = await requestConnection();
     }
-  });
+
+    if (!options.connection.connector) {
+      throw new Error('Connection has no connector');
+    }
+
+    const query = await formatFindQuery(_query, model, options);
+
+    const results = await options.connection.connector.actions.findOne(
+      query,
+      model
+    );
+
+    resolve(results);
+  } catch (error) {
+    reject(error);
+  }
+});
 
 export default findOne;

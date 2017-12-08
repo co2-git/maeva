@@ -19,10 +19,9 @@ const formatFindQueryValue = (value, type, options = {}) => {
     case 'hasNotLength':
     case 'hasLengthAbove':
     case 'hasLengthBelow':
-      return {[operator]: type.convert(operatorValue, options)};
     case 'before':
     case 'after':
-      break;
+      return {[operator]: type.convert(operatorValue, options)};
     case 'matches':
     case 'matchesNot':
     case 'includes':

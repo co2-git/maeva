@@ -1,32 +1,42 @@
-import formatPostInsertDocument from '../model/formatPostInsertDocument';
-import formatPreInsertDocument from '../model/formatPreInsertDocument';
+import cloneDeep from 'lodash/cloneDeep';
+
+import formatPostInsertDocument from '../queries/formatPostInsertDocument';
+import formatPreInsertDocument from '../queries/formatPreInsertDocument';
 import requestConnection from '../connect/requestConnection';
 
-const insertMany = (model, documents, options = {}) =>
+const insertMany = (model, documents, _options = {}) =>
 new Promise(async (resolve, reject) => {
   try {
-    const connection = options.connection || await requestConnection();
-    const {connector} = connection;
+    const options = cloneDeep(_options);
+    if (!options.connection) {
+      options.connection = await requestConnection();
+    }
+    if (!options.connection.connector) {
+      throw new Error('Connection has no connector');
+    }
     const $documents = await Promise.all(
       documents.map(doc => formatPreInsertDocument(
-        model,
         doc,
-        connection,
+        model,
+        options,
       ))
     );
-    const response = await connector.actions.insertMany(
+    const response = await options.connection.connector.actions.insertMany(
       $documents,
       model,
     );
     const $$documents = await Promise.all(
       response.map(doc => formatPostInsertDocument(
-        model,
         doc,
-        connection,
+        model,
+        options,
       ))
     );
     resolve($$documents);
-    connection.emitter.emit('inserted', {documents: $$documents, model});
+    options.connection.emitter.emit('inserted', {
+      documents: $$documents,
+      model,
+    });
   } catch (error) {
     reject(error);
   }

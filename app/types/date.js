@@ -1,5 +1,5 @@
-const validate = value => {
-  if (!(value instanceof Date && value.toString() !== 'Invalid Date')) {
+const validate = date => {
+  if (!(date instanceof Date && date.toString() !== 'Invalid Date')) {
     throw new Error('Expected valid date');
   }
 };

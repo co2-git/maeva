@@ -4,7 +4,7 @@ import should from 'should';
 import * as data from '..';
 import * as models from '../test/models';
 
-describe.skip('Count', () => {
+describe('Count', () => {
   let barca;
   let madrid;
   let psg;
@@ -21,7 +21,7 @@ describe.skip('Count', () => {
     const count = await data.count(models.teamModel);
     should(count).eql(5);
   });
-  it('should insert players', async () => {
+  it.skip('should insert players', async () => {
     barca = await data.findOne(models.teamModel, {name: 'Barca'});
     madrid = await data.findOne(models.teamModel, {name: 'Madrid'});
     psg = await data.findOne(models.teamModel, {name: 'PSG'});
@@ -79,56 +79,66 @@ describe.skip('Count', () => {
       },
     ]);
   });
-  it('should count users by team', async () => {
+  it.skip('should count users by team', async () => {
+    // team=0
     const count = await data.count(models.playerModel, {team: barca});
     should(count).eql(3);
   });
-  it('should count users by who is captain', async () => {
+  it.skip('should count users by who is captain', async () => {
+    // isCaptain=true
     const count = await data.count(models.playerModel, {isCaptain: true});
     should(count).eql(1);
   });
-  it('should count users by goals', async () => {
+  it.skip('should count users by goals', async () => {
+    // stats.goals=1000
     const count = await data.count(models.playerModel, {'stats.goals': 1000});
     should(count).eql(1);
   });
-  it('should count users by team and is captain', async () => {
+  it.skip('should count users by team and is captain', async () => {
+    // team=0&isCaptain=false
     const count = await data.count(models.playerModel, {
       team: barca,
       isCaptain: false
     });
     should(count).eql(2);
   });
-  it('should count users by excluding team', async () => {
+  it.skip('should count users by excluding team', async () => {
+    // team!=1
     const count = await data.count(models.playerModel, {
       team: data.not(madrid),
     });
     should(count).eql(5);
   });
-  it('should count users by inclusive teams', async () => {
+  it.skip('should count users by inclusive teams', async () => {
+    // team=0,1
     const count = await data.count(models.playerModel, {
       team: data.in(madrid, barca),
     });
     should(count).eql(6);
   });
-  it('should count users by exclusive teams', async () => {
+  it.skip('should count users by exclusive teams', async () => {
+    // team!=0,1
     const count = await data.count(models.playerModel, {
       team: data.out(madrid, barca),
     });
     should(count).eql(2);
   });
-  it('should count users by above goals', async () => {
+  it.skip('should count users by above goals', async () => {
+    // stats.goals>500
     const count = await data.count(models.playerModel, {
       'stats.goals': data.above(500),
     });
     should(count).eql(3);
   });
-  it('should count users by below goals', async () => {
+  it.skip('should count users by below goals', async () => {
+    // stats.goals<500
     const count = await data.count(models.playerModel, {
       'stats.goals': data.below(500),
     });
     should(count).eql(2);
   });
-  it('should count users by between goals', async () => {
+  it.skip('should count users by between goals', async () => {
+    // stats.goals>500&stats.goals<1000
     const count = await data.count(models.playerModel, data.and(
       {'stats.goals': data.above(500)},
       {'stats.goals': data.below(1000)},
@@ -136,6 +146,7 @@ describe.skip('Count', () => {
     should(count).eql(2);
   });
   it.skip('should count users by either is capitain or goal', async () => {
+    // stats.goals>500|isCaptain=true
     const count = await data.count(models.playerModel, data.or(
       {'stats.goals': data.above(500)},
       {isCaptain: true},

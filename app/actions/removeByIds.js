@@ -1,22 +1,34 @@
-import requestConnection from '../connect/requestConnection';
-import getType from '../types/getType';
-import convertId from '../connect/convertId';
+import cloneDeep from 'lodash/cloneDeep';
 
-const removeByIds = (model, _ids, options = {}) =>
+import requestConnection from '../connect/requestConnection';
+import convertId from '../connect/convertId';
+import validateId from '../connect/validateId';
+
+const removeByIds = (model, _ids, _options = {}) =>
   new Promise(async (resolve, reject) => {
     try {
-      const connection = options.connection || await requestConnection();
-      const {connector} = connection;
+      const options = cloneDeep(_options);
+
+      if (!options.connection) {
+        options.connection = await requestConnection();
+      }
+
+      if (!options.connection.connector) {
+        throw new Error('Connection has no connector');
+      }
 
       const ids = await Promise.all(
-        _ids.map(_id => convertId(_id, connection))
+        _ids.map(_id => convertId(_id, options))
       );
 
       for (const id of ids) {
-        getType(connector.id.type).validate(id);
+        validateId(id, options);
       }
 
-      const results = await connector.actions.removeByIds(ids, model);
+      const results = await options.connection.connector.actions.removeByIds(
+        ids,
+        model
+      );
 
       resolve(results);
     } catch (error) {

@@ -19,14 +19,5 @@ describe('Define model', () => {
     should(models.teamModel.fields)
       .have.property('name')
       .which.is.a.Function();
-    should(models.teamModel.fields)
-      .have.property('custom')
-      .which.is.an.Object();
-    should(models.teamModel.fields.custom)
-      .have.property('convert')
-      .which.is.a.Function();
-    should(models.teamModel.fields.custom)
-      .have.property('validate')
-      .which.is.a.Function();
   });
 });

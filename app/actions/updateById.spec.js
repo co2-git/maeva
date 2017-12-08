@@ -4,7 +4,7 @@ import should from 'should';
 
 import * as models from '../test/models';
 
-describe.skip('Update by id', () => {
+describe('Update by id', () => {
   let psg;
   it('should insert teams', async () => {
     psg = await data.insertOne(models.teamModel, {name: 'PSG'});
@@ -13,7 +13,7 @@ describe.skip('Update by id', () => {
       {name: 'Manchester City'},
     ]);
   });
-  it('should update a team by its id', async () => {
+  it.skip('should update a team by its id', async () => {
     const updated = await data.updateById(
       models.teamModel,
       psg,

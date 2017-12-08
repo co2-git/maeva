@@ -4,10 +4,18 @@ import should from 'should';
 import * as data from '..';
 import * as models from '../test/models';
 
-describe.skip('Find by id', () => {
+describe('Find by id', () => {
   let team;
   it('should insert a team', async () => {
+    await data.insertMany(models.teamModel, [
+      {name: 'Liverpool'},
+      {name: 'Boca Juniors'}
+    ]);
     team = await data.insertOne(models.teamModel, {name: 'PSG'});
+    await data.insertMany(models.teamModel, [
+      {name: 'Monaco'},
+      {name: 'Milan AC'}
+    ]);
   });
   it('should find by document', async () => {
     const found = await data.findById(models.teamModel, team);

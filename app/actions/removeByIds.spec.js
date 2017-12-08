@@ -4,7 +4,7 @@ import should from 'should';
 
 import * as models from '../test/models';
 
-describe.skip('Remove by Ids', () => {
+describe('Remove by Ids', () => {
   let psg;
   let om;
   it('should insert teams', async () => {

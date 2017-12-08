@@ -12,7 +12,7 @@ describe('Format find query object', () => {
           text: 22,
           number: '4',
           boolean: 1,
-          date: Date.now(),
+          date: date,
         },
         data.model('shallow', {
           text: String,
@@ -21,21 +21,80 @@ describe('Format find query object', () => {
           date: Date,
         }),
       );
-      should(formatted).be.an.Object();
-      should(formatted).have.property('text').which.eql('22');
-      should(formatted).have.property('number').which.eql(4);
-      should(formatted).have.property('boolean').which.eql(true);
-      should(formatted).have.property('date').which.eql(date);
+      const expected = [
+        {
+          field: 'text',
+          operator: 'is',
+          value: '22',
+        },
+        {
+          field: 'number',
+          operator: 'is',
+          value: 4,
+        },
+        {
+          field: 'boolean',
+          operator: 'is',
+          value: true,
+        },
+        {
+          field: 'date',
+          operator: 'is',
+          value: date,
+        },
+      ];
+      should(formatted).eql(expected);
     });
   });
-  describe.only('Shapes', () => {
+  describe('Shapes', () => {
     it('should format query', () => {
       const formatted = formatFindQueryObject(
         {'stats.goals': '2'},
         data.model('shapes', {stats: data.shape({goals: Number})}),
       );
-      should(formatted).be.an.Object();
-      should(formatted).have.property('stats.goals').which.eql(2);
+      const expected = [
+        {
+          field: 'stats.goals',
+          operator: 'is',
+          value: 2,
+        }
+      ];
+      should(formatted).eql(expected);
+    });
+  });
+  describe('Nested shapes', () => {
+    it('should format query', () => {
+      const formatted = formatFindQueryObject(
+        {'stats.goals.rightFoot': '2'},
+        data.model(
+          'shapes',
+          {stats: data.shape({goals: data.shape({rightFoot: Number})})}
+        ),
+      );
+      const expected = [
+        {
+          field: 'stats.goals.rightFoot',
+          operator: 'is',
+          value: 2,
+        }
+      ];
+      should(formatted).eql(expected);
+    });
+  });
+  describe('Arrays', () => {
+    it('should format query', () => {
+      const formatted = formatFindQueryObject(
+        {foos: [1, '2', 3]},
+        data.model('arrays', {foos: Array.of(Number)}),
+      );
+      const expected = [
+        {
+          field: 'foos',
+          operator: 'is',
+          value: [1, 2, 3],
+        }
+      ];
+      should(formatted).eql(expected);
     });
   });
 });

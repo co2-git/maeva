@@ -4,16 +4,31 @@ import should from 'should';
 
 import * as models from '../test/models';
 
-describe.skip('Insert Many', () => {
-  it.skip('should insert teams', async () => {
+describe('Insert Many', () => {
+  it('should insert teams', async () => {
     const teams = await data.insertMany(models.teamModel, [
       {name: 'PSG'},
       {name: 'Juventus'},
     ]);
-    should(teams).eql([
-      {name: 'PSG', id: 1},
-      {name: 'Juventus', id: 2},
-    ]);
+    should(teams).be.an.Array().and.have.length(2);
+    should(teams[0]).be.an.Object();
+    should(teams[0]).have.property('id').which.is.a.Number();
+    should(teams[0]).have.property('name').which.eql('PSG');
+    should(teams[1]).be.an.Object();
+    should(teams[1]).have.property('id').which.is.a.Number();
+    should(teams[1]).have.property('name').which.eql('Juventus');
+  });
+  it('should find teams', async () => {
+    const teams = await data.findMany(models.teamModel, {
+      name: data.in('PSG', 'Juventus')
+    });
+    should(teams).be.an.Array().and.have.length(2);
+    should(teams[0]).be.an.Object();
+    should(teams[0]).have.property('id').which.is.a.Number();
+    should(teams[0]).have.property('name').which.eql('PSG');
+    should(teams[1]).be.an.Object();
+    should(teams[1]).have.property('id').which.is.a.Number();
+    should(teams[1]).have.property('name').which.eql('Juventus');
   });
   after(async () => {
     await data.removeMany(models.teamModel);

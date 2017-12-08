@@ -17,18 +17,44 @@ const destructureShape = (field, value, model) => {
 };
 
 const formatFindQueryObject = (query, model, options = {}) => {
-  const converted = {};
-
+  const converted = [];
   for (const field in query) {
     const value = query[field];
+    let convertedValue;
     if (field in model.fields) {
       const type = getType(model.fields[field]);
-      converted[field] = formatFindQueryValue(value, type, options);
+      const formattedValue = formatFindQueryValue(value, type, options);
+      convertedValue = {
+        field, operator: 'is',
+        value: formattedValue,
+      };
     } else if (/\./.test(field)) {
-      converted[field] = destructureShape(field, value, model);
+      const formattedValue = destructureShape(field, value, model);
+      convertedValue = {
+        field,
+        operator: 'is',
+        value: formattedValue,
+      };
+    }
+    if (convertedValue) {
+      if (
+        typeof convertedValue.value === 'object' &&
+        !(convertedValue.value instanceof Date)
+      ) {
+        if ('above' in convertedValue.value) {
+          convertedValue.operator = 'above';
+          convertedValue.value = convertedValue.value.above;
+        } else if ('before' in convertedValue.value) {
+          convertedValue.operator = 'before';
+          convertedValue.value = convertedValue.value.before;
+        } else if ('in' in convertedValue.value) {
+          convertedValue.operator = 'in';
+          convertedValue.value = convertedValue.value.in;
+        }
+      }
+      converted.push(convertedValue);
     }
   }
-
   return converted;
 };
 

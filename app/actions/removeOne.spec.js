@@ -4,7 +4,7 @@ import should from 'should';
 
 import * as models from '../test/models';
 
-describe.skip('Remove one', () => {
+describe('Remove one', () => {
   it('should insert teams', async () => {
     await data.insertMany(models.teamModel, [
       {name: 'PSG'},

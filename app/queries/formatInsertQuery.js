@@ -1,21 +1,21 @@
 import getType from '../types/getType';
-import convertValue from './convertValue';
+import formatInsertQueryValue from './formatInsertQueryValue';
 
-const convertFieldsForInsert = async (doc, model, options = {}) => {
-  const converted = {};
+const formatInsertQuery = (doc, model, options = {}) => {
+  const formatted = {};
 
   for (const field in doc) {
     if (field in model.fields) {
       const type = getType(model.fields[field]);
       const value = doc[field];
-      converted[field] = await convertValue(value, type, options);
+      formatted[field] = formatInsertQueryValue(value, type, options);
     }
   }
 
   return {
     ...doc,
-    ...converted
+    ...formatted
   };
 };
 
-export default convertFieldsForInsert;
+export default formatInsertQuery;

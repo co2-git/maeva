@@ -1,15 +1,27 @@
-import keys from 'lodash/keys';
+import cloneDeep from 'lodash/cloneDeep';
 import requestConnection from '../connect/requestConnection';
-import convertFieldsForFind from '../model/convertFieldsForFind';
+import formatFindQuery from '../queries/formatFindQuery';
 
-const removeMany = (model, query = {}, options = {}) =>
+const removeMany = (model, query = {}, _options = {}) =>
   new Promise(async (resolve, reject) => {
     try {
-      const {connector} = options.connection || await requestConnection();
-      if (keys(query).length) {
-        query = await convertFieldsForFind(query, model, {connector});
+      const options = cloneDeep(_options);
+
+      if (!options.connection) {
+        options.connection = await requestConnection();
       }
-      const results = await connector.actions.removeMany(query, model);
+
+      if (!options.connection.connector) {
+        throw new Error('Connection has no connector');
+      }
+
+      query = await formatFindQuery(query, model, options);
+
+      const results = await options.connection.connector.actions.removeMany(
+        query,
+        model,
+      );
+
       resolve(results);
     } catch (error) {
       reject(error);

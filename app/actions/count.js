@@ -25,8 +25,10 @@ const count = (model, _query = {}, _options = {}) =>
         throw new Error('Connector has no count action');
       }
 
-      const results = await options.connection.connector.actions
-        .count(query, model);
+      const results = await options.connection.connector.actions.count(
+        query,
+        model
+      );
 
       resolve(results);
     } catch (error) {

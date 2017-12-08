@@ -1,11 +1,7 @@
 import maevaError from '../error';
 
 const applyValidators = (doc, model) => {
-  const converted = {};
-
-  let field: string;
-
-  for (field in model.fields) {
+  for (const field in doc) {
     if (model.options.validate && (field in model.options.validate)) {
       const validator = model.options.validate[field];
       if (
@@ -20,11 +16,6 @@ const applyValidators = (doc, model) => {
       }
     }
   }
-
-  return {
-    ...doc,
-    ...converted
-  };
 };
 
 export default applyValidators;
