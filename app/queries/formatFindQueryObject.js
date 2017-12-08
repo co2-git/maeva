@@ -35,7 +35,7 @@ const formatFindQueryObject = (query, model, options = {}) => {
       const type = getType(model.fields[field]);
       if (value instanceof RegExp) {
         convertedValue = {
-          field, operator: 'matches',
+          field, operator: 'match',
           value: value.toString(),
         };
       } else {

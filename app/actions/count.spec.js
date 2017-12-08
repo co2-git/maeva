@@ -142,6 +142,12 @@ describe('Count', () => {
     ));
     should(count).eql(4);
   });
+  it('should count users by regular expression', async () => {
+    const count = await data.count(models.playerModel, {
+      name: /o/i
+    });
+    should(count).eql(2);
+  });
   after(async () => {
     await data.removeMany(models.teamModel);
     await data.removeMany(models.playerModel);

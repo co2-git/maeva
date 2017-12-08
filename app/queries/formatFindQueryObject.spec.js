@@ -189,7 +189,7 @@ describe('Format find query object', () => {
         const expected = [
           {
             field: 'foo',
-            operator: 'matches',
+            operator: 'match',
             value: '/hello/i',
           }
         ];
