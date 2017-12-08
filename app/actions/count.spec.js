@@ -4,7 +4,7 @@ import should from 'should';
 import * as data from '..';
 import * as models from '../test/models';
 
-describe('Count', () => {
+describe.only('Count', () => {
   let barca;
   let madrid;
   let psg;
@@ -21,7 +21,7 @@ describe('Count', () => {
     const count = await data.count(models.teamModel);
     should(count).eql(5);
   });
-  it.skip('should insert players', async () => {
+  it('should insert players', async () => {
     barca = await data.findOne(models.teamModel, {name: 'Barca'});
     madrid = await data.findOne(models.teamModel, {name: 'Madrid'});
     psg = await data.findOne(models.teamModel, {name: 'PSG'});
@@ -79,17 +79,17 @@ describe('Count', () => {
       },
     ]);
   });
-  it.skip('should count users by team', async () => {
+  it('should count users by team', async () => {
     // team=0
     const count = await data.count(models.playerModel, {team: barca});
     should(count).eql(3);
   });
-  it.skip('should count users by who is captain', async () => {
+  it('should count users by who is captain', async () => {
     // isCaptain=true
     const count = await data.count(models.playerModel, {isCaptain: true});
     should(count).eql(1);
   });
-  it.skip('should count users by goals', async () => {
+  it('should count users by goals', async () => {
     // stats.goals=1000
     const count = await data.count(models.playerModel, {'stats.goals': 1000});
     should(count).eql(1);

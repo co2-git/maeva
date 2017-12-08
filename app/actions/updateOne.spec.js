@@ -9,7 +9,7 @@ describe('Update One', () => {
   it('should insert team', async () => {
     psg = await data.insertOne(models.teamModel, {name: 'PSG'});
   });
-  it.skip('should insert players in team', async () => {
+  it('should insert players in team', async () => {
     await data.insertMany(models.playerModel, [
       {name: 'Cavani', team: psg},
       {name: 'Alves', team: psg},
@@ -17,7 +17,7 @@ describe('Update One', () => {
       {name: 'Rabbiot', team: psg},
     ]);
   });
-  it.skip('should update first player', async () => {
+  it('should update first player', async () => {
     const updated = await data.updateOne(
       models.playerModel,
       {},

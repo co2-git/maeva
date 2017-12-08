@@ -15,7 +15,7 @@ const findMany = (model, query = {}, _options = {}) =>
         throw new Error('Connection has no connector');
       }
 
-      query = await formatFindQuery(query, model, options);
+      query = formatFindQuery(query, model, options);
 
       const results = await options.connection.connector.actions.findMany(
         query,

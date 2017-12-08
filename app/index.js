@@ -24,10 +24,10 @@ export {default as removeOne} from './actions/removeOne';
 export {default as shape} from './types/shape';
 export {default as type} from './types/type';
 export {default as tuple} from './types/tuple';
-// export {default as updateById} from './actions/updateById';
-// export {default as updateByIds} from './actions/updateByIds';
-// export {default as updateMany} from './actions/updateMany';
-// export {default as updateOne} from './actions/updateOne';
+export {default as updateById} from './actions/updateById';
+export {default as updateByIds} from './actions/updateByIds';
+export {default as updateMany} from './actions/updateMany';
+export {default as updateOne} from './actions/updateOne';
 
 export {
   _in as in,

@@ -11,7 +11,7 @@ describe('Update by ids', () => {
   it('should insert a team', async () => {
     psg = await data.insertOne(models.teamModel, {name: 'PSG'});
   });
-  it.skip('should insert players in team', async () => {
+  it('should insert players in team', async () => {
     mbappe = await data.insertOne(models.playerModel, {
       name: 'M\'Bappe',
       team: psg,
@@ -25,7 +25,7 @@ describe('Update by ids', () => {
       {name: 'Alves', team: psg}
     ]);
   });
-  it.skip('should update players by id', async () => {
+  it('should update players by id', async () => {
     const updated = await data.updateByIds(
       models.playerModel,
       [mbappe, neymar],
@@ -34,8 +34,8 @@ describe('Update by ids', () => {
     should(updated).be.an.Array().and.have.length(2);
     should(updated[0]).have.property('name').which.eql('M\'Bappe');
     should(updated[0]).have.property('stats').which.eql({goals: 500});
-    should(updated[0]).have.property('name').which.eql('Neymar');
-    should(updated[0]).have.property('stats').which.eql({goals: 500});
+    should(updated[1]).have.property('name').which.eql('Neymar');
+    should(updated[1]).have.property('stats').which.eql({goals: 500});
   });
   after(async () => {
     await data.removeMany(models.teamModel);

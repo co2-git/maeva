@@ -9,7 +9,7 @@ describe('Update Many', () => {
   it('should insert team', async () => {
     psg = await data.insertOne(models.teamModel, {name: 'PSG'});
   });
-  it.skip('should insert players in team', async () => {
+  it('should insert players in team', async () => {
     await data.insertMany(models.playerModel, [
       {name: 'Cavani', team: psg},
       {name: 'Alves', team: psg},
@@ -17,13 +17,12 @@ describe('Update Many', () => {
       {name: 'Rabbiot', team: psg},
     ]);
   });
-  it.skip('should update many players', async () => {
+  it('should update many players', async () => {
     const updated = await data.updateMany(
       models.playerModel,
       {},
       {isCaptain: true},
     );
-    console.log({updated});
     should(updated).be.an.Object();
     should(updated).have.property('name').which.eql('Cavani');
   });

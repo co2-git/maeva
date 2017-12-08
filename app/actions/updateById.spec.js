@@ -13,7 +13,7 @@ describe('Update by id', () => {
       {name: 'Manchester City'},
     ]);
   });
-  it.skip('should update a team by its id', async () => {
+  it('should update a team by its id', async () => {
     const updated = await data.updateById(
       models.teamModel,
       psg,

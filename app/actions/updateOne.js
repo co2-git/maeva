@@ -1,18 +1,27 @@
-import keys from 'lodash/keys';
+import cloneDeep from 'lodash/cloneDeep';
 import requestConnection from '../connect/requestConnection';
-import convertFieldsForFind from '../model/convertFieldsForFind';
+import formatFindQuery from '../queries/formatFindQuery';
+import formatUpdateQuery from '../queries/formatUpdateQuery';
 
-const updateOne = (model, query = {}, updater = {}, options = {}) =>
+const updateOne = (model, _query = {}, _updater = {}, _options = {}) =>
   new Promise(async (resolve, reject) => {
     try {
-      const {connector} = options.connection || await requestConnection();
+      const options = cloneDeep(_options);
 
-      if (keys(query).length) {
-        query = await convertFieldsForFind(query, model, {connector});
+      if (!options.connection) {
+        options.connection = await requestConnection();
       }
 
-      const results = await connector.actions.updateOne(query, updater, model);
-
+      if (!options.connection.connector) {
+        throw new Error('Connection has no connector');
+      }
+      const query = formatFindQuery(_query, model, options);
+      const updater = formatUpdateQuery(_updater, model, options);
+      const results = await options.connection.connector.actions.updateOne(
+        query,
+        updater,
+        model
+      );
       resolve(results);
     } catch (error) {
       reject(error);
