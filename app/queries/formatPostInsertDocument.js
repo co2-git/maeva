@@ -15,11 +15,12 @@ new Promise(async (resolve, reject) => {
 
     doc = applyDefault(doc, model);
 
-    doc = await formatInsertQuery(doc, model);
+    doc = await formatInsertQuery(doc, model, options);
 
     if (connector.id) {
       doc[connector.id.name] = getType(connector.id.type).convert(
-        response[connector.id.name]
+        response[connector.id.name],
+        options,
       );
     }
 

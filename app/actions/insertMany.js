@@ -24,6 +24,7 @@ new Promise(async (resolve, reject) => {
     const response = await options.connection.connector.actions.insertMany(
       $documents,
       model,
+      options,
     );
     const $$documents = await Promise.all(
       response.map(doc => formatPostInsertDocument(

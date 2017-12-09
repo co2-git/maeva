@@ -7,7 +7,7 @@ const linkType = () => ({
       !options.connection ||
       !options.connection.connector ||
       !options.connection.connector.id ||
-      typeof options.connection.connector.id.type !== 'function'
+      !options.connection.connector.id.type
     ) {
       return value;
     }
@@ -17,21 +17,21 @@ const linkType = () => ({
       typeof value === 'object' &&
       options.connection.connector.id.name in value
     ) {
-      return type.convert(value[options.connection.connector.id.name]);
+      return type.convert(value[options.connection.connector.id.name], options);
     }
-    return type.convert(value);
+    return type.convert(value, options);
   },
   validate: (value, options = {}) => {
     if (
       !options.connection ||
       !options.connection.connector ||
       !options.connection.connector.id ||
-      typeof options.connection.connector.id.type !== 'function'
+      !options.connection.connector.id.type
     ) {
       throw new Error('Missing connector info to retrieve id from');
     }
     const idType = getType(options.connection.connector.id.type);
-    idType.validate(value);
+    idType.validate(value, options);
   },
 });
 
