@@ -23,8 +23,9 @@ describe('Update Many', () => {
       {},
       {isCaptain: true},
     );
-    should(updated).be.an.Object();
-    should(updated).have.property('name').which.eql('Cavani');
+    should(updated).be.an.Array();
+    should(updated[0]).have.property('name').which.eql('Cavani');
+    should(updated[0]).have.property('isCaptain').which.eql(true);
   });
   after(async () => {
     await data.removeMany(models.teamModel);

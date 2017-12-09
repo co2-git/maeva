@@ -6,31 +6,26 @@ import formatPostInsertDocument from './formatPostInsertDocument';
 describe('Format post insert document', () => {
   it('should return doc as is', async () => {
     const model = data.model('foo', {foo: Number});
-    const results = await formatPostInsertDocument({foo: 1, id: 1}, model, {
+    const results = await formatPostInsertDocument({foo: 1}, model, {
       connection: data.connections[0]
     });
-    const expected = {foo: 1, id: 1};
-    should(results).eql(expected);
+    should(results).have.property('foo').which.eql(1);
   });
   it('should ignore non-declared fields', async () => {
     const model = data.model('foo', {foo: Number});
     const results = await formatPostInsertDocument(
-      {foo: 1, id: 1, bar: 'hello'},
+      {foo: 1, bar: 'hello'},
       model,
       {connection: data.connections[0]}
     );
-    const expected = {foo: 1, id: 1};
-    should(results).eql(expected);
+    should(results).not.have.property('bar');
   });
   it('should convert fields', async () => {
     const model = data.model('foo', {foo: Number});
-    const results = await formatPostInsertDocument(
-      {foo: '1', id: '1'},
-      model,
-      {connection: data.connections[0]}
-    );
-    const expected = {foo: 1, id: 1};
-    should(results).eql(expected);
+    const results = await formatPostInsertDocument({foo: '1'}, model, {
+      connection: data.connections[0]
+    });
+    should(results).have.property('foo').which.eql(1);
   });
   it('should fail if validators fail', async () => {
     const model = data.model('foo', {foo: Number}, {

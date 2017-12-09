@@ -1,7 +1,7 @@
 import getType from '../types/getType';
 import formatUpdateQueryValue from './formatUpdateQueryValue';
 
-const destructureShape = (field, value, model) => {
+const getShapeType = (field, value, model, options) => {
   const fields = field.split(/\./);
   let type;
   let getter = model.fields;
@@ -13,7 +13,7 @@ const destructureShape = (field, value, model) => {
       getter = getter[fields[index]];
     }
   }
-  return type.convert(value);
+  return type;
 };
 
 const formatUpdateQueryObject = (query, model, options = {}) => {
@@ -25,11 +25,13 @@ const formatUpdateQueryObject = (query, model, options = {}) => {
       const type = getType(model.fields[field]);
       const formattedValue = formatUpdateQueryValue(value, type, options);
       convertedValue = {
-        field, operator: 'set',
+        field,
+        operator: 'set',
         value: formattedValue,
       };
     } else if (/\./.test(field)) {
-      const formattedValue = destructureShape(field, value, model);
+      const type = getShapeType(field, value, model, options);
+      const formattedValue = formatUpdateQueryValue(value, type, options);
       convertedValue = {
         field,
         operator: 'set',
@@ -41,15 +43,18 @@ const formatUpdateQueryObject = (query, model, options = {}) => {
         typeof convertedValue.value === 'object' &&
         !(convertedValue.value instanceof Date)
       ) {
-        if ('above' in convertedValue.value) {
-          convertedValue.operator = 'above';
-          convertedValue.value = convertedValue.value.above;
-        } else if ('before' in convertedValue.value) {
-          convertedValue.operator = 'before';
-          convertedValue.value = convertedValue.value.before;
-        } else if ('in' in convertedValue.value) {
-          convertedValue.operator = 'in';
-          convertedValue.value = convertedValue.value.in;
+        if ('add' in convertedValue.value) {
+          convertedValue.operator = 'add';
+          convertedValue.value = convertedValue.value.add;
+        } else if ('subtract' in convertedValue.value) {
+          convertedValue.operator = 'subtract';
+          convertedValue.value = convertedValue.value.subtract;
+        } else if ('multiply' in convertedValue.value) {
+          convertedValue.operator = 'multiply';
+          convertedValue.value = convertedValue.value.multiply;
+        } else if ('divide' in convertedValue.value) {
+          convertedValue.operator = 'divide';
+          convertedValue.value = convertedValue.value.divide;
         }
       }
       converted.push(convertedValue);

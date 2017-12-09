@@ -7,26 +7,11 @@ const formatUpdateQueryValue = (value, type, options = {}) => {
     const operator = first(keys(operators));
     const operatorValue = operators[operator];
     switch (operator) {
-    case 'in':
-    case 'out': {
-      const values = operatorValue.map(_value => type.convert(_value, options));
-      return {[operator]: values};
-    }
-    case 'not':
-    case 'above':
-    case 'below':
-    case 'hasLength':
-    case 'hasNotLength':
-    case 'hasLengthAbove':
-    case 'hasLengthBelow':
-    case 'before':
-    case 'after':
+    case 'add':
+    case 'subtract':
+    case 'multiply':
+    case 'divide':
       return {[operator]: type.convert(operatorValue, options)};
-    case 'matches':
-    case 'matchesNot':
-    case 'includes':
-    case 'excludes':
-      break;
     default:
       throw new Error(`Unknown operator: ${operator}`);
     }

@@ -32,11 +32,15 @@ export {default as updateOne} from './actions/updateOne';
 export {
   _in as in,
   above,
+  add,
   after,
   and,
   before,
   below,
+  divide,
+  multiply,
   not,
   or,
   out,
+  subtract,
 } from './operators';

@@ -193,7 +193,6 @@ describe('Format find query object', () => {
             value: '/hello/i',
           }
         ];
-        console.log(JSON.stringify({expected, formatted}, null, 2));
         should(formatted).eql(expected);
       });
     });

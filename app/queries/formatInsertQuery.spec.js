@@ -8,19 +8,17 @@ describe('Format insert query', () => {
     const model = data.model('foo', {
       foo: String,
       bar: Number,
-      link: data.link()
     });
     const query = {
       foo: 1,
       bar: '2',
-      link: {name: 'hey', id: 22},
     };
     const formatted = formatInsertQuery(
       query,
       model,
       {connection: data.connections[0]}
     );
-    const expected = {foo: '1', bar: 2, link: 22};
+    const expected = {foo: '1', bar: 2};
     should(formatted).eql(expected);
   });
 });

@@ -12,10 +12,8 @@ describe('Insert Many', () => {
     ]);
     should(teams).be.an.Array().and.have.length(2);
     should(teams[0]).be.an.Object();
-    should(teams[0]).have.property('id').which.is.a.Number();
     should(teams[0]).have.property('name').which.eql('PSG');
     should(teams[1]).be.an.Object();
-    should(teams[1]).have.property('id').which.is.a.Number();
     should(teams[1]).have.property('name').which.eql('Juventus');
   });
   it('should find teams', async () => {
@@ -24,10 +22,8 @@ describe('Insert Many', () => {
     });
     should(teams).be.an.Array().and.have.length(2);
     should(teams[0]).be.an.Object();
-    should(teams[0]).have.property('id').which.is.a.Number();
     should(teams[0]).have.property('name').which.eql('PSG');
     should(teams[1]).be.an.Object();
-    should(teams[1]).have.property('id').which.is.a.Number();
     should(teams[1]).have.property('name').which.eql('Juventus');
   });
   after(async () => {

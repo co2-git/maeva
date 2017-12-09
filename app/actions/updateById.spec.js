@@ -1,6 +1,7 @@
 /* globals describe it after */
 import * as data from '../';
 import should from 'should';
+import idsAreSame from '../connect/idsAreSame';
 
 import * as models from '../test/models';
 
@@ -21,7 +22,7 @@ describe('Update by id', () => {
     );
     should(updated).be.an.Object();
     should(updated).have.property('name').which.eql('Liverpool');
-    should(updated).have.property('id').which.eql(data.getDocumentId(psg));
+    should(idsAreSame(updated, psg)).eql(true);
   });
   after(async () => {
     await data.removeMany(models.teamModel);

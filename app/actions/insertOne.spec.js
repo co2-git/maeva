@@ -9,7 +9,6 @@ describe('Insert One', () => {
   it('should insert one team', async () => {
     team = await data.insertOne(models.teamModel, {name: 'Barca'});
     should(team).be.an.Object();
-    should(team).have.property('id').which.is.a.Number();
     should(team).have.property('name').which.eql('Barca');
   });
   it('should insert one player', async () => {
