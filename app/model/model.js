@@ -1,5 +1,7 @@
-const model = (name, fields = {}, options = {}) => {
-  const _model = {fields, name, options};
+import keys from 'lodash/keys';
+
+const model = (name, fields = {}, options = {}, helpers = {}) => {
+  const _model = {fields, name, options, helpers};
 
   if (typeof name !== 'string' || !name) {
     throw new Error('ERROR_MISSING_VALID_NAME');
@@ -9,6 +11,9 @@ const model = (name, fields = {}, options = {}) => {
   }
   if (typeof options !== 'object' || options === null) {
     _model.options = {};
+  }
+  if (typeof helpers !== 'object' || helpers === null) {
+    _model.helpers = {};
   }
 
   return _model;
