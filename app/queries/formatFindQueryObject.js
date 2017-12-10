@@ -9,7 +9,7 @@ const destructureShape = (field, value, model) => {
   let getter = model.fields;
   for (let index = 0; index < fields.length; index++) {
     type = getType(getter[fields[index]]);
-    if (type.name === 'shape') {
+    if (type.name.shape) {
       getter = type.get();
     } else {
       getter = getter[fields[index]];
@@ -23,7 +23,7 @@ const destructureShape = (field, value, model) => {
   } else {
     result = type.convert(value);
   }
-  return result;
+  return {type, value: result};
 };
 
 const formatFindQueryObject = (query, model, options = {}) => {
@@ -37,20 +37,27 @@ const formatFindQueryObject = (query, model, options = {}) => {
         convertedValue = {
           field, operator: 'match',
           value: value.toString(),
+          type: type.name,
         };
       } else {
         const formattedValue = formatFindQueryValue(value, type, options);
         convertedValue = {
-          field, operator: 'is',
+          field,
+          operator: 'is',
           value: formattedValue,
+          type: type.name,
         };
       }
     } else if (/\./.test(field)) {
-      const formattedValue = destructureShape(field, value, model);
+      const {
+        value: formattedValue,
+        type
+      } = destructureShape(field, value, model);
       convertedValue = {
         field,
         operator: 'is',
         value: formattedValue,
+        type: type.name,
       };
     }
     if (convertedValue) {
@@ -67,12 +74,14 @@ const formatFindQueryObject = (query, model, options = {}) => {
         } else if ('in' in convertedValue.value) {
           convertedValue.operator = 'in';
           convertedValue.value = convertedValue.value.in;
+          convertedValue.type = {array: convertedValue.type};
         } else if ('not' in convertedValue.value) {
           convertedValue.operator = 'not';
           convertedValue.value = convertedValue.value.not;
         } else if ('out' in convertedValue.value) {
           convertedValue.operator = 'out';
           convertedValue.value = convertedValue.value.out;
+          convertedValue.type = {array: convertedValue.type};
         } else if ('below' in convertedValue.value) {
           convertedValue.operator = 'below';
           convertedValue.value = convertedValue.value.below;

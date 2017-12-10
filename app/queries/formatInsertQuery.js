@@ -1,21 +1,19 @@
 import getType from '../types/getType';
 import formatInsertQueryValue from './formatInsertQueryValue';
 
-const formatInsertQuery = (doc, model, options = {}) => {
-  const formatted = {};
-
-  for (const field in doc) {
+const formatInsertQuery = (document, model, options = {}) => {
+  const documents = [];
+  for (const field in document) {
     if (field in model.fields) {
       const type = getType(model.fields[field]);
-      const value = doc[field];
-      formatted[field] = formatInsertQueryValue(value, type, options);
+      documents.push({
+        field,
+        value: type.convert(document[field], options),
+        type: type.name,
+      });
     }
   }
-
-  return {
-    ...doc,
-    ...formatted
-  };
+  return documents;
 };
 
 export default formatInsertQuery;

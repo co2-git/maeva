@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
-import requestConnection from '../connect/requestConnection';
+
 import formatFindQuery from '../queries/formatFindQuery';
+import requestConnection from '../connect/requestConnection';
 
 const count = (model, _query = {}, _options = {}) =>
   new Promise(async (resolve, reject) => {

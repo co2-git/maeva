@@ -1,13 +1,13 @@
 import getType from '../types/getType';
 import formatUpdateQueryValue from './formatUpdateQueryValue';
 
-const getShapeType = (field, value, model, options) => {
+const getShapeType = (field, value, model) => {
   const fields = field.split(/\./);
   let type;
   let getter = model.fields;
   for (let index = 0; index < fields.length; index++) {
     type = getType(getter[fields[index]]);
-    if (type.name === 'shape') {
+    if (type.name.shape) {
       getter = type.get();
     } else {
       getter = getter[fields[index]];
@@ -28,6 +28,7 @@ const formatUpdateQueryObject = (query, model, options = {}) => {
         field,
         operator: 'set',
         value: formattedValue,
+        type: type.name,
       };
     } else if (/\./.test(field)) {
       const type = getShapeType(field, value, model, options);
@@ -36,6 +37,7 @@ const formatUpdateQueryObject = (query, model, options = {}) => {
         field,
         operator: 'set',
         value: formattedValue,
+        type: type.name,
       };
     }
     if (convertedValue) {

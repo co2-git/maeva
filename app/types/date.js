@@ -1,5 +1,5 @@
 const validate = date => {
-  if (!(date instanceof Date && date.toString() !== 'Invalid Date')) {
+  if (!date instanceof Date || date.toString() === 'Invalid Date') {
     throw new Error('Expected valid date');
   }
 };
@@ -16,6 +16,7 @@ const date = {
     }
   },
   validate,
+  print: value => value.getTime(),
 };
 
 export default date;

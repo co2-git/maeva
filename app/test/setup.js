@@ -3,6 +3,7 @@ import * as data from '..';
 let connectorName;
 let connector;
 let url;
+const options = {};
 
 for (const arg of process.argv) {
   if (/^connector=/.test(arg)) {
@@ -13,6 +14,16 @@ for (const arg of process.argv) {
     }
   } else if (/^url=/.test(arg)) {
     url = arg.replace(/^url=/, '');
+  } else if (/^options\..+=/.test(arg)) {
+    const bits = arg.split('=');
+    const key = bits.shift().split(/\./)[1];
+    try {
+      options[key] = JSON.parse(bits.join('='));
+    } catch (error) {
+      try {
+        options[key] = JSON.parse(`"${bits.join('=')}"`);
+      } catch (error2) {}
+    }
   }
 }
 
@@ -28,4 +39,4 @@ try {
   }
 }
 
-data.connect(connector(url));
+data.connect(connector(url, options));

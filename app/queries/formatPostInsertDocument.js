@@ -1,30 +1,33 @@
+import pick from 'lodash/pick';
+import keys from 'lodash/keys';
+
 import applyDefault from '../model/applyDefault';
 import applyValidators from '../model/applyValidators';
 import didInsert from '../model/didInsert';
 import formatInsertQuery from './formatInsertQuery';
+import getIdName from '../connect/getIdName';
 import getType from '../types/getType';
-import pickFields from '../model/pickFields';
 
 const formatPostInsertDocument = (response, model, options = {}) =>
 new Promise(async (resolve, reject) => {
   try {
-    let doc;
-    const {connector} = options.connection;
+    let doc = {};
 
-    doc = pickFields(response, model, 'insert');
-
-    doc = applyDefault(doc, model);
-
-    doc = await formatInsertQuery(doc, model, options);
-
-    if (connector.id) {
-      doc[connector.id.name] = getType(connector.id.type).convert(
-        response[connector.id.name],
-        options,
-      );
+    for (const field in model.fields) {
+      const type = getType(model.fields[field]);
+      if (field in response) {
+        doc[field] = type.convert(response[field]);
+      } else if (model.options.default && (field in model.options.default)) {
+        doc[field] = type.convert(
+          typeof model.options.default[field] === 'function' ?
+            model.options.default[field]() : model.options.default[field]
+        );
+      }
     }
 
-    applyValidators(doc, model);
+    const idName = getIdName(options.connectiom);
+
+    doc[idName] = response[idName];
 
     await didInsert({...doc}, model);
 

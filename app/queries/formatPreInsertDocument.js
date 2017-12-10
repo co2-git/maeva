@@ -1,41 +1,55 @@
-import includes from 'lodash/includes';
-
-import applyDefault from '../model/applyDefault';
-import applyValidators from '../model/applyValidators';
 import beforeInsert from '../hooks/beforeInsert';
-import formatInsertQuery from './formatInsertQuery';
-import maevaError from '../error';
-import pickFields from '../model/pickFields';
-import validateInsertQuery from './validateInsertQuery';
+import getType from '../types/getType';
 
 const formatPreInsertDocument = (document, model, options = {}) =>
 new Promise(async (resolve, reject) => {
   try {
-    let doc;
-
-    doc = pickFields(document, model, 'insert');
-
-    doc = applyDefault(doc, model);
-
-    doc = formatInsertQuery(doc, model, options);
-
-    applyValidators(doc, model);
-
-    validateInsertQuery(doc, model, options);
+    let doc = {};
+    const fields = [];
 
     for (const field in model.fields) {
-      if (!(field in doc) && includes(model.options.required, field)) {
-        throw maevaError(
-          'insertOne',
-          `Missing required field "${field}" from model "${model.name}"`,
-          {field, model, document: doc}
+      const type = getType(model.fields[field]);
+      if (field in document) {
+        doc[field] = type.convert(document[field], options);
+      } else if (model.options.default && (field in model.options.default)) {
+        doc[field] = type.convert(
+          typeof model.options.default[field] === 'function' ?
+            model.options.default[field]() : model.options.default[field],
+          options
         );
+      }
+    }
+
+    for (const field in doc) {
+      const value = doc[field];
+      if (model.options.validate && model.options.validate[field]) {
+        if (
+          typeof model.options.validate[field] === 'function' &&
+          !model.options.validate[field](value)
+        ) {
+          throw new Error(`Field "${field}" failed to validate "${value}"`);
+        }
+        if (
+          model.options.validate[field] instanceof RegExp &&
+          !model.options.validate[field].test(value)
+        ) {
+          throw new Error(`Field "${field}" did not match "${value}"`);
+        }
       }
     }
 
     doc = await beforeInsert(doc, model);
 
-    resolve(doc);
+    for (const field in doc) {
+      const type = getType(model.fields[field]);
+      fields.push({
+        field,
+        type: type.name,
+        value: type.print(doc[field]),
+      });
+    }
+
+    resolve(fields);
   } catch (error) {
     reject(error);
   }

@@ -1,8 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep';
-import requestConnection from '../connect/requestConnection';
-import convertId from '../connect/convertId';
-import validateId from '../connect/validateId';
+
 import formatUpdateQuery from '../queries/formatUpdateQuery';
+import getType from '../types/getType';
+import link from '../types/link';
+import requestConnection from '../connect/requestConnection';
 
 const updateByIds = (model, _ids, _updater, _options = {}) =>
 new Promise(async (resolve, reject) => {
@@ -17,10 +18,12 @@ new Promise(async (resolve, reject) => {
       throw new Error('Connection has no connector');
     }
 
-    const ids = _ids.map(_id => convertId(_id, options));
+    const linkType = getType(link());
+
+    const ids = _ids.map(_id => linkType.convert(_id, options));
 
     for (const id of ids) {
-      validateId(id, options);
+      linkType.validate(id, options);
     }
 
     const updater = formatUpdateQuery(_updater, model, options);

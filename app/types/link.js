@@ -1,4 +1,5 @@
 import getType from './getType';
+import get from 'lodash/get';
 
 const linkType = () => ({
   name: 'link',
@@ -6,32 +7,33 @@ const linkType = () => ({
     if (
       !options.connection ||
       !options.connection.connector ||
-      !options.connection.connector.id ||
-      !options.connection.connector.id.type
+      !options.connection.connector.idName
     ) {
       return value;
     }
-    const type = getType(options.connection.connector.id.type);
+    let idName;
+    if (typeof options.connection.connector.idName === 'function') {
+      idName = options.connection.connector.idName();
+    } else {
+      idName = options.connection.connector.idName;
+    }
     if (
       value &&
       typeof value === 'object' &&
-      options.connection.connector.id.name in value
+      idName in value
     ) {
-      return type.convert(value[options.connection.connector.id.name], options);
+      return value[idName];
     }
-    return type.convert(value, options);
+    return value;
   },
   validate: (value, options = {}) => {
     if (
       !options.connection ||
       !options.connection.connector ||
-      !options.connection.connector.id ||
-      !options.connection.connector.id.type
+      !options.connection.connector.idName
     ) {
       throw new Error('Missing connector info to retrieve id from');
     }
-    const idType = getType(options.connection.connector.id.type);
-    idType.validate(value, options);
   },
 });
 

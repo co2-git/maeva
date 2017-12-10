@@ -3,8 +3,9 @@ import getType from './getType';
 
 const tuple = (...types) => {
   const _types = map(types, getType);
+  const name = {tuple: _types.map(type => type.name)};
   return {
-    name: 'tuple',
+    name,
     convert(array) {
       if (!Array.isArray(array)) {
         return array;

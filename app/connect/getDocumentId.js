@@ -1,8 +1,5 @@
-import getId from './getId';
+import getIdName from './getIdName';
 
-const getDocumentId = (doc, connection) => {
-  const id = getId(connection);
-  return doc[id.name];
-};
+const getDocumentId = (doc, connection) => doc[getIdName(connection)];
 
 export default getDocumentId;

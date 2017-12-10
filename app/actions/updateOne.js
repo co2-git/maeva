@@ -1,7 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep';
-import requestConnection from '../connect/requestConnection';
+
 import formatFindQuery from '../queries/formatFindQuery';
 import formatUpdateQuery from '../queries/formatUpdateQuery';
+import requestConnection from '../connect/requestConnection';
 
 const updateOne = (model, _query = {}, _updater = {}, _options = {}) =>
   new Promise(async (resolve, reject) => {

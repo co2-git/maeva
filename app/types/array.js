@@ -3,7 +3,7 @@ import getType from './getType';
 const arrayType = (type) => {
   const _type = getType(type);
   return {
-    name: 'array',
+    name: {array: _type.name},
     convert: (array, options = {}) => {
       if (Array.isArray(array)) {
         return array.map(item => _type.convert(item, options));
@@ -16,7 +16,6 @@ const arrayType = (type) => {
       }
       array.forEach(_type.validate);
     },
-    type: 'array',
   };
 };
 

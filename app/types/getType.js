@@ -27,17 +27,20 @@ const _getType = type => {
 
 export default function getType(type) {
   const _type = _getType(type);
-  if (typeof _type === 'undefined') {
-    throw new TypeError('Type can not be undefined');
-  }
-  if (typeof _type.convert !== 'function') {
-    throw new TypeError('Type must have a convert function');
-  }
-  if (typeof _type.validate !== 'function') {
-    throw new TypeError('Type must have a validate function');
-  }
   if (!_type.name) {
     throw new TypeError('Types must have names');
+  }
+  if (typeof _type === 'undefined') {
+    throw new TypeError(`Type ${_type.name} can not be undefined`);
+  }
+  if (typeof _type.convert !== 'function') {
+    throw new TypeError(`Type ${_type.name} must have a convert function`);
+  }
+  if (typeof _type.validate !== 'function') {
+    throw new TypeError(`Type ${_type.name} must have a validate function`);
+  }
+  if (typeof _type.print !== 'function') {
+    _type.print = _type.convert;
   }
   return _type;
 }
