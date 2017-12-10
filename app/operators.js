@@ -6,6 +6,7 @@ export const and = (...values) => () => ({and: values});
 export const before = value => () => ({before: value});
 export const below = value => () => ({below: value});
 export const divide = (value = 1) => () => ({divide: value});
+export const increment = (value = 1) => () => ({increment: value});
 export const multiply = (value = 1) => () => ({multiply: value});
 export const not = value => () => ({not: value});
 export const or = (...values) => () => ({or: values});

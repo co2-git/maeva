@@ -11,6 +11,7 @@ const formatUpdateQueryValue = (value, type, options = {}) => {
     case 'subtract':
     case 'multiply':
     case 'divide':
+    case 'increment':
       return {[operator]: type.convert(operatorValue, options)};
     default:
       throw new Error(`Unknown operator: ${operator}`);

@@ -48,6 +48,9 @@ const formatUpdateQueryObject = (query, model, options = {}) => {
         if ('add' in convertedValue.value) {
           convertedValue.operator = 'add';
           convertedValue.value = convertedValue.value.add;
+        } else if ('increment' in convertedValue.value) {
+          convertedValue.operator = 'increment';
+          convertedValue.value = convertedValue.value.increment;
         } else if ('subtract' in convertedValue.value) {
           convertedValue.operator = 'subtract';
           convertedValue.value = convertedValue.value.subtract;

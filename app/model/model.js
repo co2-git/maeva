@@ -1,5 +1,3 @@
-import keys from 'lodash/keys';
-
 const model = (name, fields = {}, options = {}, helpers = {}) => {
   const _model = {fields, name, options, helpers};
 
