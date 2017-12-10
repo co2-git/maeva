@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 
+import after from './hooks/after';
 import formatUpdateQuery from '../queries/formatUpdateQuery';
 import getType from '../types/getType';
 import link from '../types/link';
@@ -33,6 +34,8 @@ new Promise(async (resolve, reject) => {
       updater,
       model,
     );
+
+    after('udpate', {...updated}, model);
 
     resolve(updated);
 

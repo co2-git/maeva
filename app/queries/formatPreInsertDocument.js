@@ -1,4 +1,4 @@
-import beforeInsert from '../hooks/beforeInsert';
+import before from '../hooks/before';
 import getType from '../types/getType';
 
 const formatPreInsertDocument = (document, model, options = {}) =>
@@ -38,7 +38,7 @@ new Promise(async (resolve, reject) => {
       }
     }
 
-    doc = await beforeInsert(doc, model);
+    doc = await before('insert', doc, model);
 
     for (const field in doc) {
       const type = getType(model.fields[field]);

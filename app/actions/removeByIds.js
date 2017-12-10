@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 
+import after from './hooks/after';
 import getType from '../types/getType';
 import link from '../types/link';
 import requestConnection from '../connect/requestConnection';
@@ -31,6 +32,8 @@ const removeByIds = (model, _ids, _options = {}) =>
         ids,
         model
       );
+
+      after('remove', [...removed], model);
 
       resolve(removed);
 

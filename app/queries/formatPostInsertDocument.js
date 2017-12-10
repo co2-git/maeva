@@ -1,10 +1,4 @@
-import pick from 'lodash/pick';
-import keys from 'lodash/keys';
-
-import applyDefault from '../model/applyDefault';
-import applyValidators from '../model/applyValidators';
-import didInsert from '../model/didInsert';
-import formatInsertQuery from './formatInsertQuery';
+import after from '../hooks/after';
 import getIdName from '../connect/getIdName';
 import getType from '../types/getType';
 
@@ -29,7 +23,7 @@ new Promise(async (resolve, reject) => {
 
     doc[idName] = response[idName];
 
-    await didInsert({...doc}, model);
+    await after('insert', {...doc}, model);
 
     resolve(doc);
   } catch (error) {

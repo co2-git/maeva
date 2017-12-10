@@ -1,23 +1,22 @@
 import get from 'lodash/get';
 
-const afterInsert = (doc, model) =>
+const beforeHook = (action, doc, model) =>
 new Promise(async (resolve, reject) => {
   try {
-    const hook = get(model, 'options.after.insert');
+    const hook = get(model, `options.before.${action}`);
     if (Array.isArray(hook)) {
       for (const _hook of hook) {
         doc = await _hook(doc, model);
       }
-      resolve();
+      resolve(doc);
     } else if (typeof hook === 'function') {
-      await hook(doc, model);
-      resolve();
+      resolve(await hook(doc, model));
     } else {
-      resolve();
+      resolve(doc);
     }
   } catch (error) {
     reject(error);
   }
 });
 
-export default afterInsert;
+export default beforeHook;
