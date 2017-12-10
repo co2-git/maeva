@@ -5,6 +5,7 @@ export const after = value => () => ({after: value});
 export const and = (...values) => () => ({and: values});
 export const before = value => () => ({before: value});
 export const below = value => () => ({below: value});
+export const decrement = (value = 1) => () => ({decrement: value});
 export const divide = (value = 1) => () => ({divide: value});
 export const increment = (value = 1) => () => ({increment: value});
 export const multiply = (value = 1) => () => ({multiply: value});

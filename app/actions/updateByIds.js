@@ -28,13 +28,18 @@ new Promise(async (resolve, reject) => {
 
     const updater = formatUpdateQuery(_updater, model, options);
 
-    const results = await options.connection.connector.actions.updateByIds(
+    const updated = await options.connection.connector.actions.updateByIds(
       ids,
       updater,
       model,
     );
 
-    resolve(results);
+    resolve(updated);
+
+    options.connection.emitter.emit('upated', {
+      documents: updated,
+      model,
+    });
   } catch (error) {
     reject(error);
   }

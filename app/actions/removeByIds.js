@@ -27,12 +27,17 @@ const removeByIds = (model, _ids, _options = {}) =>
         linkType.validate(id, options);
       }
 
-      const results = await options.connection.connector.actions.removeByIds(
+      const removed = await options.connection.connector.actions.removeByIds(
         ids,
         model
       );
 
-      resolve(results);
+      resolve(removed);
+
+      options.connection.emitter.emit('removed', {
+        documents: removed,
+        model,
+      });
     } catch (error) {
       reject(error);
     }

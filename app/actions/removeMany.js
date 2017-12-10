@@ -18,12 +18,17 @@ const removeMany = (model, query = {}, _options = {}) =>
 
       query = await formatFindQuery(query, model, options);
 
-      const results = await options.connection.connector.actions.removeMany(
+      const removed = await options.connection.connector.actions.removeMany(
         query,
         model,
       );
 
-      resolve(results);
+      resolve(removed);
+
+      options.connection.emitter.emit('removed', {
+        documents: removed,
+        model,
+      });
     } catch (error) {
       reject(error);
     }

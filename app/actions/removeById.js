@@ -23,12 +23,17 @@ new Promise(async (resolve, reject) => {
 
     linkType.validate(id, options);
 
-    const results = await options.connection.connector.actions.removeById(
+    const removed = await options.connection.connector.actions.removeById(
       id,
       model
     );
 
-    resolve(results);
+    resolve(removed);
+
+    options.connection.emitter.emit('removed', {
+      documents: [removed],
+      model,
+    });
   } catch (error) {
     reject(error);
   }

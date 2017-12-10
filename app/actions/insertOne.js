@@ -26,7 +26,10 @@ const insertOne = (model = {}, document = {}, _options = {}) =>
 
       resolve(doc);
 
-      options.connection.emitter.emit('inserted', {document: doc, model});
+      options.connection.emitter.emit('inserted', {
+        documents: [doc],
+        model
+      });
     } catch (error) {
       reject(error);
     }

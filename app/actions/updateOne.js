@@ -18,12 +18,16 @@ const updateOne = (model, _query = {}, _updater = {}, _options = {}) =>
       }
       const query = formatFindQuery(_query, model, options);
       const updater = formatUpdateQuery(_updater, model, options);
-      const results = await options.connection.connector.actions.updateOne(
+      const updated = await options.connection.connector.actions.updateOne(
         query,
         updater,
         model
       );
-      resolve(results);
+      resolve(updated);
+      options.connection.emitter.emit('upated', {
+        documents: [updated],
+        model,
+      });
     } catch (error) {
       reject(error);
     }

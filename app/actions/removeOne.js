@@ -18,12 +18,17 @@ new Promise(async (resolve, reject) => {
 
     const query = await formatFindQuery(_query, model, options);
 
-    const results = await options.connection.connector.actions.removeOne(
+    const removed = await options.connection.connector.actions.removeOne(
       query,
       model
     );
 
-    resolve(results);
+    resolve(removed);
+
+    options.connection.emitter.emit('removed', {
+      documents: [removed],
+      model,
+    });
   } catch (error) {
     reject(error);
   }
