@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 
-import after from './hooks/after';
+import after from '../hooks/after';
 import formatUpdateQuery from '../queries/formatUpdateQuery';
 import getType from '../types/getType';
 import link from '../types/link';
@@ -33,7 +33,7 @@ new Promise(async (resolve, reject) => {
       model,
     );
 
-    after('update', updated, model);
+    await after('update', updated, model);
 
     resolve(updated);
 

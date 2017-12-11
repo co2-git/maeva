@@ -1,6 +1,6 @@
-import getType from '../types/getType';
+// import getType from '../types/getType';
 
-const validateInsertQuery = (doc, model, options) => {
+const validateInsertQuery = () => {
   // for (const field in doc) {
   //   const type = getType(model.fields[field]);
   //   const value = doc[field];

@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 
-import after from './hooks/after';
+import after from '../hooks/after';
 import formatFindQuery from '../queries/formatFindQuery';
 import requestConnection from '../connect/requestConnection';
 
@@ -24,7 +24,7 @@ const removeMany = (model, query = {}, _options = {}) =>
         model,
       );
 
-      after('remove', [...removed], model);
+      await after('remove', [...removed], model);
 
       resolve(removed);
 

@@ -13,6 +13,12 @@ describe('Find One', () => {
     const found = await data.findOne(models.teamModel, {name: 'Barca'});
     should(found).eql(barca);
   });
+  it('should return null if no such collection', async () => {
+    const fakeModel = {...models.teamModel};
+    fakeModel.name = 'trololo';
+    const found = await data.findOne(fakeModel, {name: 'Arsenal'});
+    should(found).be.null();
+  });
   after(async () => {
     await data.removeMany(models.teamModel);
     await data.removeMany(models.playerModel);

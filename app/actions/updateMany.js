@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 
-import after from './hooks/after';
+import after from '../hooks/after';
 import formatFindQuery from '../queries/formatFindQuery';
 import formatUpdateQuery from '../queries/formatUpdateQuery';
 import requestConnection from '../connect/requestConnection';
@@ -24,7 +24,7 @@ const updateMany = (model, _query = {}, _updater = {}, _options = {}) =>
         updater,
         model
       );
-      after('update', [...updated], model);
+      await after('update', [...updated], model);
       resolve(updated);
       options.connection.emitter.emit('upated', {
         documents: updated,

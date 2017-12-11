@@ -1,5 +1,4 @@
 import getType from '../types/getType';
-import formatInsertQueryValue from './formatInsertQueryValue';
 
 const formatInsertQuery = (document, model, options = {}) => {
   const documents = [];
