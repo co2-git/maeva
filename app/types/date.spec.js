@@ -3,7 +3,7 @@ import should from 'should';
 
 import getType from '../types/getType';
 
-describe('Date', () => {
+describe.only('Date', () => {
   let type;
   it('should return a data type', () => {
     type = getType(Date);

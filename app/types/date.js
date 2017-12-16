@@ -1,6 +1,9 @@
 const validate = date => {
-  if (!date instanceof Date || date.toString() === 'Invalid Date') {
-    throw new Error('Expected valid date');
+  if (!(date instanceof Date)) {
+    throw new Error('Value is not a date');
+  }
+  if (date.toString() === 'Invalid Date') {
+    throw new Error('Date is invalid');
   }
 };
 

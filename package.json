@@ -1,6 +1,6 @@
 {
   "name": "maeva",
-  "version": "4.3.6",
+  "version": "4.3.7",
   "description": "Agnostic database models in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "babel": "rm -rf dist; babel --out-dir dist app",
     "eslint": "eslint app",
     "flow": "flow",
-    "mocha": "mocha --require dist/test/setup.js dist/actions/*.spec.js",
+    "mocha": "mocha --require dist/test/setup.js dist/actions/*.spec.js dist/types/*.spec.js",
     "test": "yarn mocha"
   },
   "author": "",
