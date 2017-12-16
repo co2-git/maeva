@@ -35,6 +35,58 @@ await data.findMany(players, {
 }, {sort: 'score', range: 100});
 ```
 
+# Client/Server architecture
+
+`maeva` has been developed with the dichotomy client/server in mind. That's why we provide connectors for the two most basic ways a client app would fire queries: HTTP(s) and Web Sockets.
+
+## HTTP example
+
+In your server app:
+
+```js
+import * as data from 'maeva';
+import postgres from 'maeva-postgresql';
+import http from 'maeva-http';
+
+const db = data.connect(postgres('pql://mypostgresserver.com'));
+data.connect(http.server('http://myserver.com', {connector: db}));
+```
+
+In your client app:
+
+```js
+import * as data from 'maeva';
+import http from 'maeva-http';
+
+const usersModel = data.model('users', {email: String});
+data.connect(http('http://myserver.com'));
+const users = await data.findMany(usersModel);
+```
+
+## Web Sockets example
+
+In your server app:
+
+```js
+import * as data from 'maeva';
+import postgres from 'maeva-postgresql';
+import sockets from 'maeva-sockets';
+
+const db = data.connect(postgres('pql://mypostgresserver.com'));
+data.connect(sockets.server('ws://myserver.com', {connector: db}));
+```
+
+In your client app:
+
+```js
+import * as data from 'maeva';
+import sockets from 'maeva-sockets';
+
+const usersModel = data.model('users', {email: String});
+data.connect(sockets('ws://myserver.com'));
+const users = await data.findMany(usersModel);
+```
+
 # Connectors
 
 ## Most popular databases
