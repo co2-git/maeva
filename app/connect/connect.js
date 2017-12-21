@@ -24,7 +24,11 @@ const connect = (connector) => {
 
   connections.push(connection);
 
-  connection.connector.actions.connect();
+  const conn = connection.connector.actions.connect();
+
+  if (conn instanceof Promise) {
+    conn.catch(error => emitter.emit('error', error));
+  }
 
   connection.connector.emitter.on('connected', () => {
     connection.status = 'connected';
