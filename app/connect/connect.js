@@ -24,12 +24,6 @@ const connect = (connector) => {
 
   connections.push(connection);
 
-  const conn = connection.connector.actions.connect();
-
-  if (conn instanceof Promise) {
-    conn.catch(error => emitter.emit('error', error));
-  }
-
   connection.connector.emitter.on('connected', () => {
     connection.status = 'connected';
     connection.emitter.emit('connected', connection);
@@ -46,6 +40,15 @@ const connect = (connector) => {
     connection.status = 'failed';
     connection.emitter.emit('error', error);
     emitter.emit('error', error);
+  });
+
+  setTimeout(() => {
+    try {
+      connection.connector.actions.connect();
+    } catch (error) {
+      connection.emitter.emit('error', error);
+      emitter.emit('error', error);
+    }
   });
 
   return connection;
