@@ -31,25 +31,39 @@ const connect = (connector) => {
   });
 
   connection.connector.emitter.on('disconnected', () => {
+    console.log('maeva disconnected');
     connection.status = 'disconnected';
     connection.emitter.emit('disconnected', connection);
     emitter.emit('disconnected', connection);
+    if (connection.connector.options.keepAlive) {
+      setTimeout(connectFn, connection.connector.options.keepAlive);
+    }
   });
 
   connection.connector.emitter.on('error', (error) => {
-    connection.status = 'failed';
     connection.emitter.emit('error', error);
     emitter.emit('error', error);
+    if (
+      (
+        connection.status === 'connecting' ||
+        connection.status === 'disconnected'
+      ) &&
+      connection.connector.options.keepAlive
+    ) {
+      setTimeout(connectFn, connection.connector.options.keepAlive);
+    }
   });
 
-  setTimeout(() => {
+  const connectFn = () => {
     try {
       connection.connector.actions.connect();
     } catch (error) {
       connection.emitter.emit('error', error);
       emitter.emit('error', error);
     }
-  });
+  };
+
+  setTimeout(connectFn);
 
   return connection;
 };
