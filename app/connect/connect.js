@@ -31,7 +31,6 @@ const connect = (connector) => {
   });
 
   connection.connector.emitter.on('disconnected', () => {
-    console.log('maeva disconnected');
     connection.status = 'disconnected';
     connection.emitter.emit('disconnected', connection);
     emitter.emit('disconnected', connection);
