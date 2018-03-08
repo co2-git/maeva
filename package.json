@@ -1,11 +1,11 @@
 {
   "name": "maeva",
-  "version": "4.4.3",
+  "version": "4.4.16",
   "description": "Agnostic database models in JavaScript",
   "main": "dist/index.js",
   "scripts": {
     "babel:watch": "rm -rf dist; babel --watch --out-dir dist app",
-    "babel": "rm -rf dist; babel --out-dir dist app",
+    "babel": "bash ./babel.sh",
     "eslint": "eslint app",
     "flow": "flow",
     "mocha": "mocha --require dist/test/setup.js dist/actions/*.spec.js dist/types/*.spec.js",
@@ -31,6 +31,8 @@
     "should": "^11.1.0"
   },
   "dependencies": {
-    "lodash": "^4.15.0"
+    "docusaurus-init": "^1.0.1",
+    "lodash": "^4.15.0",
+    "reactors-icons": "^3.0.13"
   }
 }

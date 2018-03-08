@@ -63,7 +63,8 @@ const formatFindQueryObject = (query, model, options = {}) => {
     if (convertedValue) {
       if (
         typeof convertedValue.value === 'object' &&
-        !(convertedValue.value instanceof Date)
+        !(convertedValue.value instanceof Date) &&
+        convertedValue.value !== null
       ) {
         if ('above' in convertedValue.value) {
           convertedValue.operator = 'above';

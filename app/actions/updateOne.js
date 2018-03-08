@@ -24,7 +24,7 @@ const updateOne = (model, _query = {}, _updater = {}, _options = {}) =>
       );
       await after('udpate', {...updated}, model);
       resolve(updated);
-      options.connection.emitter.emit('upated', {
+      options.connection.emitter.emit('updated', {
         documents: [updated],
         model,
       });

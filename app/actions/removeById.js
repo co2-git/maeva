@@ -29,7 +29,9 @@ new Promise(async (resolve, reject) => {
       model
     );
 
-    await after('remove', {...removed}, model);
+    if (options.hook !== false) {
+      await after('remove', {...removed}, model);
+    }
 
     resolve(removed);
 

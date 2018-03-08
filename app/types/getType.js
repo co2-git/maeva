@@ -4,11 +4,12 @@ import booleanType from './boolean';
 import dateType from './date';
 import numberType from './number';
 import stringType from './string';
+import nullType from './null';
 
 const _getType = type => {
   switch (type) {
   case null:
-    throw new TypeError('Type can not be null');
+    return nullType;
   case String:
     return stringType;
   case Number:

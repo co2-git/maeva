@@ -16,6 +16,7 @@ export {default as insertOne} from './actions/insertOne';
 export {default as link} from './types/link';
 export {default as mixed} from './types/mixed';
 export {default as model} from './model/model';
+export {default as nill} from './types/null';
 export {default as onConnect} from './events/onConnect';
 export {default as onDisconnect} from './events/onDisconnect';
 export {default as removeById} from './actions/removeById';

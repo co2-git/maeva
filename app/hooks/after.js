@@ -6,7 +6,7 @@ new Promise(async (resolve, reject) => {
     const hook = get(model, `options.after.${action}`);
     if (Array.isArray(hook)) {
       for (const _hook of hook) {
-        doc = await _hook(doc, model);
+        await _hook(doc, model);
       }
       resolve();
     } else if (typeof hook === 'function') {

@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 
 import after from '../hooks/after';
+import before from '../hooks/before';
 import formatUpdateQuery from '../queries/formatUpdateQuery';
 import getType from '../types/getType';
 import link from '../types/link';
@@ -27,7 +28,9 @@ new Promise(async (resolve, reject) => {
       linkType.validate(id, options);
     }
 
-    const updater = formatUpdateQuery(_updater, model, options);
+    let updater = formatUpdateQuery(_updater, model, options);
+
+    updater = await before('update', {...updater}, model);
 
     const updated = await options.connection.connector.actions.updateByIds(
       ids,
@@ -39,7 +42,7 @@ new Promise(async (resolve, reject) => {
 
     resolve(updated);
 
-    options.connection.emitter.emit('upated', {
+    options.connection.emitter.emit('updated', {
       documents: updated,
       model,
     });
